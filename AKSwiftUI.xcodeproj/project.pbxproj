@@ -1,0 +1,470 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3919F7332C83157000E63624 /* AKSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7322C83157000E63624 /* AKSwiftUIApp.swift */; };
+		3919F7352C83157000E63624 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7342C83157000E63624 /* ContentView.swift */; };
+		3919F7372C83157100E63624 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3919F7362C83157100E63624 /* Assets.xcassets */; };
+		3919F73A2C83157100E63624 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3919F7392C83157100E63624 /* Preview Assets.xcassets */; };
+		3919F7502C83159500E63624 /* AKSUButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7472C83159500E63624 /* AKSUButton.swift */; };
+		3919F7512C83159500E63624 /* AKSUDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7482C83159500E63624 /* AKSUDropdown.swift */; };
+		3919F7522C83159500E63624 /* AKSUInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7492C83159500E63624 /* AKSUInput.swift */; };
+		3919F7532C83159500E63624 /* AKSUTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F74A2C83159500E63624 /* AKSUTheme.swift */; };
+		3919F7552C840E8000E63624 /* AKSUInputGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7542C840E8000E63624 /* AKSUInputGroup.swift */; };
+		3919F7572C84B24600E63624 /* AKSUCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7562C84B24600E63624 /* AKSUCheckBox.swift */; };
+		3919F7592C85585200E63624 /* AKSURadio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7582C85585200E63624 /* AKSURadio.swift */; };
+		3919F75B2C85586F00E63624 /* AKSURange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F75A2C85586F00E63624 /* AKSURange.swift */; };
+		3919F75D2C85587900E63624 /* AKSUProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F75C2C85587900E63624 /* AKSUProgress.swift */; };
+		3919F75F2C85588300E63624 /* AKSUTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F75E2C85588300E63624 /* AKSUTable.swift */; };
+		3919F7632C8558AE00E63624 /* AKSUFlex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7622C8558AE00E63624 /* AKSUFlex.swift */; };
+		3919F7652C855E8A00E63624 /* AKSUSplitWnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7642C855E8A00E63624 /* AKSUSplitWnd.swift */; };
+		3919F7682C85747200E63624 /* AKSUClick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7672C85747200E63624 /* AKSUClick.swift */; };
+		3919F76A2C85FAF700E63624 /* AKSUCircleProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7692C85FAF700E63624 /* AKSUCircleProgress.swift */; };
+		3919F76F2C85FCA000E63624 /* AKSUCircleRingShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F76E2C85FCA000E63624 /* AKSUCircleRingShape.swift */; };
+		3919F7712C85FF5D00E63624 /* AKSUGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7702C85FF5D00E63624 /* AKSUGrid.swift */; };
+		3919F7762C86004400E63624 /* AKSUPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7752C86004400E63624 /* AKSUPopover.swift */; };
+		3919F7782C86006500E63624 /* AKSUToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7772C86006500E63624 /* AKSUToast.swift */; };
+		3919F77A2C8600B600E63624 /* AKSUCollapse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7792C8600B600E63624 /* AKSUCollapse.swift */; };
+		3919F77C2C86011400E63624 /* AKSUTooltips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F77B2C86011400E63624 /* AKSUTooltips.swift */; };
+		3919F77E2C86D40300E63624 /* AKSUSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F77D2C86D40300E63624 /* AKSUSegment.swift */; };
+		3919F7802C86F09600E63624 /* AKSUAnyViewArrayBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F77F2C86F09500E63624 /* AKSUAnyViewArrayBuilder.swift */; };
+		3919F7832C88610500E63624 /* AKSUContainBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7822C88610500E63624 /* AKSUContainBox.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3919F72F2C83157000E63624 /* AKSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AKSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3919F7322C83157000E63624 /* AKSwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSwiftUIApp.swift; sourceTree = "<group>"; };
+		3919F7342C83157000E63624 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3919F7362C83157100E63624 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3919F7392C83157100E63624 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		3919F73B2C83157100E63624 /* AKSwiftUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AKSwiftUI.entitlements; sourceTree = "<group>"; };
+		3919F7472C83159500E63624 /* AKSUButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUButton.swift; sourceTree = "<group>"; };
+		3919F7482C83159500E63624 /* AKSUDropdown.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUDropdown.swift; sourceTree = "<group>"; };
+		3919F7492C83159500E63624 /* AKSUInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUInput.swift; sourceTree = "<group>"; };
+		3919F74A2C83159500E63624 /* AKSUTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUTheme.swift; sourceTree = "<group>"; };
+		3919F7542C840E8000E63624 /* AKSUInputGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUInputGroup.swift; sourceTree = "<group>"; };
+		3919F7562C84B24600E63624 /* AKSUCheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUCheckBox.swift; sourceTree = "<group>"; };
+		3919F7582C85585200E63624 /* AKSURadio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSURadio.swift; sourceTree = "<group>"; };
+		3919F75A2C85586F00E63624 /* AKSURange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSURange.swift; sourceTree = "<group>"; };
+		3919F75C2C85587900E63624 /* AKSUProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUProgress.swift; sourceTree = "<group>"; };
+		3919F75E2C85588300E63624 /* AKSUTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUTable.swift; sourceTree = "<group>"; };
+		3919F7622C8558AE00E63624 /* AKSUFlex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUFlex.swift; sourceTree = "<group>"; };
+		3919F7642C855E8A00E63624 /* AKSUSplitWnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUSplitWnd.swift; sourceTree = "<group>"; };
+		3919F7672C85747200E63624 /* AKSUClick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUClick.swift; sourceTree = "<group>"; };
+		3919F7692C85FAF700E63624 /* AKSUCircleProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUCircleProgress.swift; sourceTree = "<group>"; };
+		3919F76E2C85FCA000E63624 /* AKSUCircleRingShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUCircleRingShape.swift; sourceTree = "<group>"; };
+		3919F7702C85FF5D00E63624 /* AKSUGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUGrid.swift; sourceTree = "<group>"; };
+		3919F7752C86004400E63624 /* AKSUPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUPopover.swift; sourceTree = "<group>"; };
+		3919F7772C86006500E63624 /* AKSUToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUToast.swift; sourceTree = "<group>"; };
+		3919F7792C8600B600E63624 /* AKSUCollapse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUCollapse.swift; sourceTree = "<group>"; };
+		3919F77B2C86011400E63624 /* AKSUTooltips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUTooltips.swift; sourceTree = "<group>"; };
+		3919F77D2C86D40300E63624 /* AKSUSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUSegment.swift; sourceTree = "<group>"; };
+		3919F77F2C86F09500E63624 /* AKSUAnyViewArrayBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AKSUAnyViewArrayBuilder.swift; path = AKSwiftUI/AKSwiftUI/Helper/AKSUAnyViewArrayBuilder.swift; sourceTree = SOURCE_ROOT; };
+		3919F7822C88610500E63624 /* AKSUContainBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUContainBox.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3919F72C2C83157000E63624 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3919F7262C83157000E63624 = {
+			isa = PBXGroup;
+			children = (
+				3919F7312C83157000E63624 /* AKSwiftUI */,
+				3919F7302C83157000E63624 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3919F7302C83157000E63624 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3919F72F2C83157000E63624 /* AKSwiftUI.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3919F7312C83157000E63624 /* AKSwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				3919F74B2C83159500E63624 /* AKSwiftUI */,
+				3919F7322C83157000E63624 /* AKSwiftUIApp.swift */,
+				3919F7342C83157000E63624 /* ContentView.swift */,
+				3919F7362C83157100E63624 /* Assets.xcassets */,
+				3919F73B2C83157100E63624 /* AKSwiftUI.entitlements */,
+				3919F7382C83157100E63624 /* Preview Content */,
+			);
+			path = AKSwiftUI;
+			sourceTree = "<group>";
+		};
+		3919F7382C83157100E63624 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				3919F7392C83157100E63624 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		3919F7462C83159500E63624 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				3919F77F2C86F09500E63624 /* AKSUAnyViewArrayBuilder.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		3919F74B2C83159500E63624 /* AKSwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				3919F7602C85588700E63624 /* unfinish */,
+				3919F7462C83159500E63624 /* Helper */,
+				3919F7662C856FD500E63624 /* Layout */,
+				3919F74A2C83159500E63624 /* AKSUTheme.swift */,
+				3919F7472C83159500E63624 /* AKSUButton.swift */,
+				3919F7672C85747200E63624 /* AKSUClick.swift */,
+				3919F7492C83159500E63624 /* AKSUInput.swift */,
+				3919F7542C840E8000E63624 /* AKSUInputGroup.swift */,
+				3919F7482C83159500E63624 /* AKSUDropdown.swift */,
+				3919F7562C84B24600E63624 /* AKSUCheckBox.swift */,
+				3919F7822C88610500E63624 /* AKSUContainBox.swift */,
+				3919F7582C85585200E63624 /* AKSURadio.swift */,
+				3919F75A2C85586F00E63624 /* AKSURange.swift */,
+				3919F75C2C85587900E63624 /* AKSUProgress.swift */,
+				3919F7692C85FAF700E63624 /* AKSUCircleProgress.swift */,
+				3919F76E2C85FCA000E63624 /* AKSUCircleRingShape.swift */,
+				3919F7792C8600B600E63624 /* AKSUCollapse.swift */,
+				3919F77D2C86D40300E63624 /* AKSUSegment.swift */,
+			);
+			path = AKSwiftUI;
+			sourceTree = "<group>";
+		};
+		3919F7602C85588700E63624 /* unfinish */ = {
+			isa = PBXGroup;
+			children = (
+				3919F75E2C85588300E63624 /* AKSUTable.swift */,
+				3919F7702C85FF5D00E63624 /* AKSUGrid.swift */,
+				3919F7752C86004400E63624 /* AKSUPopover.swift */,
+				3919F7772C86006500E63624 /* AKSUToast.swift */,
+				3919F77B2C86011400E63624 /* AKSUTooltips.swift */,
+			);
+			path = unfinish;
+			sourceTree = "<group>";
+		};
+		3919F7662C856FD500E63624 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				3919F7622C8558AE00E63624 /* AKSUFlex.swift */,
+				3919F7642C855E8A00E63624 /* AKSUSplitWnd.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3919F72E2C83157000E63624 /* AKSwiftUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3919F73E2C83157100E63624 /* Build configuration list for PBXNativeTarget "AKSwiftUI" */;
+			buildPhases = (
+				3919F72B2C83157000E63624 /* Sources */,
+				3919F72C2C83157000E63624 /* Frameworks */,
+				3919F72D2C83157000E63624 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AKSwiftUI;
+			productName = AKSwiftUI;
+			productReference = 3919F72F2C83157000E63624 /* AKSwiftUI.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3919F7272C83157000E63624 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					3919F72E2C83157000E63624 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = 3919F72A2C83157000E63624 /* Build configuration list for PBXProject "AKSwiftUI" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3919F7262C83157000E63624;
+			productRefGroup = 3919F7302C83157000E63624 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3919F72E2C83157000E63624 /* AKSwiftUI */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3919F72D2C83157000E63624 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3919F73A2C83157100E63624 /* Preview Assets.xcassets in Resources */,
+				3919F7372C83157100E63624 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3919F72B2C83157000E63624 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3919F7802C86F09600E63624 /* AKSUAnyViewArrayBuilder.swift in Sources */,
+				3919F7522C83159500E63624 /* AKSUInput.swift in Sources */,
+				3919F7352C83157000E63624 /* ContentView.swift in Sources */,
+				3919F7762C86004400E63624 /* AKSUPopover.swift in Sources */,
+				3919F7832C88610500E63624 /* AKSUContainBox.swift in Sources */,
+				3919F7332C83157000E63624 /* AKSwiftUIApp.swift in Sources */,
+				3919F77A2C8600B600E63624 /* AKSUCollapse.swift in Sources */,
+				3919F7572C84B24600E63624 /* AKSUCheckBox.swift in Sources */,
+				3919F75F2C85588300E63624 /* AKSUTable.swift in Sources */,
+				3919F76A2C85FAF700E63624 /* AKSUCircleProgress.swift in Sources */,
+				3919F7652C855E8A00E63624 /* AKSUSplitWnd.swift in Sources */,
+				3919F7532C83159500E63624 /* AKSUTheme.swift in Sources */,
+				3919F75B2C85586F00E63624 /* AKSURange.swift in Sources */,
+				3919F7782C86006500E63624 /* AKSUToast.swift in Sources */,
+				3919F7682C85747200E63624 /* AKSUClick.swift in Sources */,
+				3919F7592C85585200E63624 /* AKSURadio.swift in Sources */,
+				3919F75D2C85587900E63624 /* AKSUProgress.swift in Sources */,
+				3919F77E2C86D40300E63624 /* AKSUSegment.swift in Sources */,
+				3919F7632C8558AE00E63624 /* AKSUFlex.swift in Sources */,
+				3919F77C2C86011400E63624 /* AKSUTooltips.swift in Sources */,
+				3919F7512C83159500E63624 /* AKSUDropdown.swift in Sources */,
+				3919F7502C83159500E63624 /* AKSUButton.swift in Sources */,
+				3919F7712C85FF5D00E63624 /* AKSUGrid.swift in Sources */,
+				3919F7552C840E8000E63624 /* AKSUInputGroup.swift in Sources */,
+				3919F76F2C85FCA000E63624 /* AKSUCircleRingShape.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3919F73C2C83157100E63624 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		3919F73D2C83157100E63624 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		3919F73F2C83157100E63624 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AKSwiftUI/AKSwiftUI.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AKSwiftUI/Preview Content\"";
+				DEVELOPMENT_TEAM = AJA3N5MX75;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alwaysking.AKSwiftUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		3919F7402C83157100E63624 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AKSwiftUI/AKSwiftUI.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AKSwiftUI/Preview Content\"";
+				DEVELOPMENT_TEAM = AJA3N5MX75;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alwaysking.AKSwiftUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3919F72A2C83157000E63624 /* Build configuration list for PBXProject "AKSwiftUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3919F73C2C83157100E63624 /* Debug */,
+				3919F73D2C83157100E63624 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3919F73E2C83157100E63624 /* Build configuration list for PBXNativeTarget "AKSwiftUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3919F73F2C83157100E63624 /* Debug */,
+				3919F7402C83157100E63624 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3919F7272C83157000E63624 /* Project object */;
+}

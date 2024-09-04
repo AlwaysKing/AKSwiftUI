@@ -1,0 +1,114 @@
+//
+//  AKSUCheckBox.swift
+//  AKSwiftUI
+//
+//  Created by alwaysking on 2024/9/1.
+//
+
+import SwiftUI
+
+struct AKSUCheckBox: View {
+    @Environment(\.self) var environment
+    @Environment(\.isEnabled) private var isEnabled
+    @Binding var checked: Bool
+    var label: String = ""
+    var color: Color
+    var actionColor: Color
+    var change: ((Bool) -> Void)?
+
+    @State var realChecked: Bool
+
+    init(label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
+        self.label = label
+        self.color = color
+        self.actionColor = actionColor
+        self._checked = .constant(false)
+        self.change = change
+        self.realChecked = false
+    }
+
+    init(checked: Bool, label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
+        self._checked = .constant(false)
+        self.label = label
+        self.color = color
+        self.actionColor = actionColor
+        self.change = change
+        self.realChecked = checked
+    }
+
+    init(checked: Binding<Bool>, label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
+        self._checked = checked
+        self.label = label
+        self.color = color
+        self.actionColor = actionColor
+        self.change = change
+        self.realChecked = checked.wrappedValue
+    }
+
+    var body: some View {
+        HStack {
+            ZStack {
+                if realChecked {
+                    Image(systemName: "checkmark")
+                        .foregroundColor(.white)
+                }
+            }
+            .frame(width: 20, height: 20)
+            .background(realChecked ? actionColor : nil)
+            .cornerRadius(4.0)
+            .overlay {
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(realChecked ? actionColor : AKSUColor.gray)
+            }
+            .overlay {
+                if !isEnabled {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(AKSUColor.dyGrayMask)
+                }
+            }
+
+            Text(label)
+                .font(.title2)
+                .foregroundColor(isEnabled ? color : color.merge(up: AKSUColor.dyGrayMask, mode: environment))
+                .padding(.trailing)
+        }
+        .background(.white.opacity(0.01))
+        .onTapGesture {
+            realChecked.toggle()
+            checked = realChecked
+            if let change = change {
+                change(realChecked)
+            }
+        }
+    }
+}
+
+struct AKSUCheckBox_Previews: PreviewProvider {
+    static var previews: some View {
+        ZStack {
+            AKSUCheckBoxPreviewsView()
+        }
+        .frame(width: 600, height: 600)
+    }
+}
+
+struct AKSUCheckBoxPreviewsView: View {
+    @State var checked: Bool = false
+    @State var list: [String] = ["E"]
+
+    var body: some View {
+        VStack {
+            HStack {
+                AKSUCheckBox(label: "A") {
+                    checked in
+                    print("check1 = \(checked)")
+                }
+
+                AKSUCheckBox(checked: checked, label: "B") {
+                    checked in
+                    print("check2 = \(checked)")
+                }
+            }
+        }
+    }
+}
