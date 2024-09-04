@@ -39,12 +39,12 @@ struct AKSUCollapse<K: Equatable, V: View>: View {
         .frame(width: size.width, height: size.height)
         .contentShape(Rectangle())
         .clipped()
-        .onChange(of: realSize) { oldValue, newValue in
+        .onChange(of: realSize) { _ in
             let isExpaned = index == key
             size.width = !horizontal || isExpaned ? realSize.width : 0
             size.height = horizontal || isExpaned ? realSize.height : 0
         }
-        .onChange(of: index) { oldValue, newValue in
+        .onChange(of: index) { _ in
             let isExpaned = index == key
             withAnimation {
                 size.width = !horizontal || isExpaned ? realSize.width : 0

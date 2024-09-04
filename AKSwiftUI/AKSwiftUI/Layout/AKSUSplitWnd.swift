@@ -1,5 +1,5 @@
 //
-//  AKSUSplitView.swift
+//  AKSUSplitWnd.swift
 //  AKSwiftUI
 //
 //  Created by alwaysking on 2024/9/2.
@@ -7,13 +7,14 @@
 
 import SwiftUI
 
+@available(macOS 14.0, *)
 struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
     let leftView: LeftView
     let mainView: MainView
     let rightView: AnyView
 
     var mainLayout: (min: CGFloat?, ideal: CGFloat, max: CGFloat?) = (nil, 600, nil)
-    
+
     @Binding var showLeft: Bool
     @State var realShowLeft: NavigationSplitViewVisibility = .detailOnly
     var leftButton: Bool
@@ -54,63 +55,61 @@ struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
         self._showRight = showRight
     }
 
-    var body: some View
-    {
+    var body: some View {
         HStack {
-            NavigationSplitView(columnVisibility: $realShowLeft)
-                {
-                    leftView
-                        .toolbar(removing: .sidebarToggle)
-                        .toolbar {
-                            if leftButton {
-                                ToolbarItem {
-                                    Button {
-                                        withAnimation {
-                                            if realShowLeft == .detailOnly {
-                                                realShowLeft = .all
-                                                showLeft = true
-                                            } else {
-                                                realShowLeft = .detailOnly
-                                                showLeft = false
-                                            }
-                                        }
-                                    } label: {
-                                        if let leftImage = leftImage {
-                                            leftImage
+            NavigationSplitView(columnVisibility: $realShowLeft) {
+                leftView
+                    .toolbar(removing: .sidebarToggle)
+                    .toolbar {
+                        if leftButton {
+                            ToolbarItem {
+                                Button {
+                                    withAnimation {
+                                        if realShowLeft == .detailOnly {
+                                            realShowLeft = .all
+                                            showLeft = true
                                         } else {
-                                            Image(systemName: "sidebar.leading").imageScale(.large)
+                                            realShowLeft = .detailOnly
+                                            showLeft = false
                                         }
                                     }
-                                }
-                            }
-                        }
-                        .navigationSplitViewColumnWidth(min: leftLayout.min, ideal: leftLayout.ideal, max: leftLayout.max)
-                }
-                detail: {
-                    mainView
-                        .navigationSplitViewColumnWidth(min: mainLayout.min, ideal: mainLayout.ideal, max: mainLayout.max)
-                }
-                .inspector(isPresented: $realShowRight) {
-                    rightView
-                        .toolbar {
-                            if rightButton {
-                                Spacer()
-                                Button(action: {
-                                    realShowRight.toggle()
-                                    showRight = realShowRight
-                                }) {
-                                    if let rightImage = rightImage {
-                                        rightImage
+                                } label: {
+                                    if let leftImage = leftImage {
+                                        leftImage
                                     } else {
-                                        Image(systemName: "sidebar.trailing").imageScale(.large)
+                                        Image(systemName: "sidebar.leading").imageScale(.large)
                                     }
                                 }
                             }
                         }
-                        .inspectorColumnWidth(min: rightLayout.min, ideal: rightLayout.ideal, max: rightLayout.max)
-                }
+                    }
+                    .navigationSplitViewColumnWidth(min: leftLayout.min, ideal: leftLayout.ideal, max: leftLayout.max)
+            }
+            detail: {
+                mainView
+                    .navigationSplitViewColumnWidth(min: mainLayout.min, ideal: mainLayout.ideal, max: mainLayout.max)
+            }
+            .inspector(isPresented: $realShowRight) {
+                rightView
+                    .toolbar {
+                        if rightButton {
+                            Spacer()
+                            Button(action: {
+                                realShowRight.toggle()
+                                showRight = realShowRight
+                            }) {
+                                if let rightImage = rightImage {
+                                    rightImage
+                                } else {
+                                    Image(systemName: "sidebar.trailing").imageScale(.large)
+                                }
+                            }
+                        }
+                    }
+                    .inspectorColumnWidth(min: rightLayout.min, ideal: rightLayout.ideal, max: rightLayout.max)
+            }
         }
-        .onChange(of: showLeft) { oldValue, newValue in
+        .onChange(of: showLeft) { _ in
             withAnimation {
                 if showLeft == true {
                     realShowLeft = .all
@@ -119,17 +118,17 @@ struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
                 }
             }
         }
-        .onChange(of: showRight) { oldValue, newValue in
+        .onChange(of: showRight) { newValue in
             realShowRight = newValue
         }
     }
-    
+
     func mainWndSize(min: CGFloat?, ideal: CGFloat, max: CGFloat?) -> Self {
         var tmp = self
         tmp.mainLayout = (min: min, ideal: ideal, max: max)
         return tmp
     }
-    
+
     func leftWndSize(min: CGFloat?, ideal: CGFloat, max: CGFloat?) -> Self {
         var tmp = self
         tmp.leftLayout = (min: min, ideal: ideal, max: max)
@@ -153,7 +152,7 @@ struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
         tmp.rightLayout = (min: min, ideal: ideal, max: max)
         return tmp
     }
-    
+
     func showRightToolButton(show: Bool) -> Self {
         var tmp = self
         tmp.rightButton = show
@@ -167,6 +166,7 @@ struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
     }
 }
 
+@available(macOS 14.0, *)
 struct AKSUSplitWnd_Previews: PreviewProvider {
     @State var showLeftView: Bool = true
 
@@ -178,6 +178,7 @@ struct AKSUSplitWnd_Previews: PreviewProvider {
     }
 }
 
+@available(macOS 14.0, *)
 struct AKSUSplitWndPreviewsView: View {
     @State var showLeftView: Bool = true
     @State var showRightView: Bool = false
@@ -201,7 +202,8 @@ struct AKSUSplitWndPreviewsView: View {
             }
         }
         .setRightToolButton {
-                Image(systemName: "eraser.fill").imageScale(.large)
+            Image(systemName: "eraser.fill").imageScale(.large)
         }
+        VStack {}
     }
 }

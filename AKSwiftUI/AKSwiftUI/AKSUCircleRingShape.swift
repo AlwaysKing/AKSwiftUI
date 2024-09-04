@@ -1,5 +1,5 @@
 //
-//  AKSUCircleShape.swift
+//  AKSUCircleRingShape.swift
 //  AKSwiftUI
 //
 //  Created by alwaysking on 2024/9/2.
@@ -58,7 +58,7 @@ struct AKSUCircleRingShapePreviewsView: View {
             }.frame(width: 100, height: 100).padding()
 
             AKSURange(progress: $range)
-                .onChange(of: range) { oldValue, newValue in
+                .onChange(of: range) { _ in
                     progress = range / 100
                 }
         }

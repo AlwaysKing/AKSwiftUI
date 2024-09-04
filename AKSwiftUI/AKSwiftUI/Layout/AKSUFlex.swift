@@ -1,5 +1,5 @@
 //
-//  AKFlex.swift
+//  AKSUFlex.swift
 //  AKSwiftUI
 //
 //  Created by alwaysking on 2024/9/2.
@@ -257,7 +257,7 @@ struct AKSUFlexPreviewsView: View {
 
             VStack {
                 AKSUContainBox(label: "All", key: .all, list: $edges)
-                HStack {                    
+                HStack {
                     AKSUContainBox(label: "horizontal", key: .horizontal, list: $edges)
                     AKSUContainBox(label: "leading", key: .leading, list: $edges)
                     AKSUContainBox(label: "trailing", key: .trailing, list: $edges)

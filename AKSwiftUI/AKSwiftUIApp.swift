@@ -9,12 +9,17 @@ import SwiftUI
 
 @main
 struct AKSwiftUIApp: App {
-    @State var ligth: Bool = true
+    @State var light: Bool = true
 
     var body: some Scene {
         WindowGroup {
-            ContentView(ligth: $ligth)
-                .preferredColorScheme(ligth ? .light : .dark)
+            if #available(macOS 14, *) {
+                SplitWndContentView(light: $light)
+                    .preferredColorScheme(light ? .light : .dark)
+            } else {
+                SpliteContentView(light: $light)
+                    .preferredColorScheme(light ? .light : .dark)
+            }
         }
     }
 }

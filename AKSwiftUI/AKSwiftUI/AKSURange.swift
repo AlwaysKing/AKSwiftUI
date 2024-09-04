@@ -76,7 +76,7 @@ struct AKSURange: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: height)
         .background(.white.opacity(0.01))
-        .onTapGesture { location in
+        .onTapGestureLocation { location in
             computerProgress(x: location.x)
         }
         .gesture(

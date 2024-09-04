@@ -1,5 +1,5 @@
 //
-//  AKSU.swift
+//  AKSUCircleProgress.swift
 //  AKSwiftUI
 //
 //  Created by alwaysking on 2024/9/2.
@@ -52,7 +52,7 @@ struct AKSUCircleProgressPreviewsView: View {
                 .padding()
 
             AKSURange(progress: $range)
-                .onChange(of: range) { oldValue, newValue in
+                .onChange(of: range) { _ in
                     progress = range / 100
                 }
         }

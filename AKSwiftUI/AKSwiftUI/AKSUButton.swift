@@ -74,7 +74,7 @@ struct AKSUButton<T: View>: View {
             }
         }
         .shadow(color: bgColor != .white ? bgColor : .black, radius: plain ? 0 : (hovering ? 4 : 2))
-        .onTapGesture { location in
+        .onTapGestureLocation { location in
             if isEnabled {
                 circleOffset = (location.x, location.y)
                 circleWidth = 0

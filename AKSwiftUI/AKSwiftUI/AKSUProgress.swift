@@ -1,5 +1,5 @@
 //
-//  AKSURange.swift
+//  AKSUProgress.swift
 //  AKSwiftUI
 //
 //  Created by alwaysking on 2024/9/2.
@@ -38,7 +38,8 @@ struct AKSUProgress: View {
                                 GeometryReader { geometry in
                                     Color.clear.onAppear {
                                         titleWidth = geometry.size.width
-                                    }.onChange(of: progress) { oldValue, newValue in
+                                    }
+                                    .onChange(of: progress) { _ in
                                         titleWidth = geometry.size.width
                                     }
                                 }
@@ -111,7 +112,7 @@ struct AKSUProgressPreviewsView: View {
                 .padding()
 
             AKSURange(progress: $range)
-                .onChange(of: range) { oldValue, newValue in
+                .onChange(of: range) { _ in
                     progress = range / 100
                 }
         }

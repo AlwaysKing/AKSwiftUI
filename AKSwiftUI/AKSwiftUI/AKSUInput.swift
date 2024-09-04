@@ -79,12 +79,12 @@ struct AKSUInput: View {
                     .padding([.top, .bottom], 8)
                     .padding([.leading, .trailing], style == .line ? 4 : 16)
                     .focused($focused)
-                    .onChange(of: focused) { _, _ in
+                    .onChange(of: focused) { _ in
                         withAnimation {
                             labelActionActivate = !text.isEmpty || focused
                         }
                     }
-                    .onChange(of: text) { _, _ in
+                    .onChange(of: text) { _ in
                         withAnimation {
                             labelActionActivate = !text.isEmpty || focused
                         }

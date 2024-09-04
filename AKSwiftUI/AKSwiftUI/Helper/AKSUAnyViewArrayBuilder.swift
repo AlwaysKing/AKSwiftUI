@@ -11,11 +11,11 @@ import SwiftUI
     public static func buildBlock() -> [AnyView] {
         []
     }
-    
+
     public static func buildBlock(_ components: AnyView...) -> [AnyView] {
         components
     }
-    
+
     /// Allows for mixing of individual Views together with `ForEach` loops.
     ///
     /// Example:
@@ -33,11 +33,11 @@ import SwiftUI
             $0
         }
     }
-    
+
     public static func buildExpression<V: View>(_ expression: V) -> [AnyView] {
         [AnyView(expression)]
     }
-    
+
     /// Allows for index-based `ForEach` loops.
     ///
     /// Example:
@@ -55,7 +55,7 @@ import SwiftUI
             AnyView(expression.content($0))
         }
     }
-    
+
     public static func buildEither(first: [AnyView]) -> [AnyView] {
         return first
     }
@@ -63,7 +63,7 @@ import SwiftUI
     public static func buildEither(second: [AnyView]) -> [AnyView] {
         return second
     }
-    
+
     public static func buildIf(_ element: [AnyView]?) -> [AnyView] {
         return element ?? []
     }

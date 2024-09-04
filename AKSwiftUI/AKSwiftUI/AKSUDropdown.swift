@@ -184,6 +184,7 @@ public struct AKSUDropdownItem<K: Hashable>: View {
     private var hoverColor: Color = AKSUColor.primary
     @State private var hovering: Bool = false
     @State private var height: CGFloat = 0.0
+    @State private var oldHeight: CGFloat = 0.0
     private var selected: Bool = false
 
     init(index: K, @AKSUAnyViewArrayBuilder content: () -> [AnyView], action: (() -> Void)? = nil) {
@@ -216,9 +217,10 @@ public struct AKSUDropdownItem<K: Hashable>: View {
                 }
             }
         }
-        .onChange(of: height) { oldValue, newValue in
-            if let bind = bind, oldValue != newValue {
-                bind(oldValue, newValue)
+        .onChange(of: height) { newValue in
+            if let bind = bind, oldHeight != newValue {
+                bind(oldHeight, newValue)
+                oldHeight = newValue
             }
         }
         .onHover {
@@ -336,7 +338,7 @@ struct AKSUDropdownPreviewsView: View {
             .frame(width: 200)
             .zIndex(3)
 
-            AKSUDropdown(selected: $color, bgColor: color) {
+            AKSUDropdown(selected: self.$color, bgColor: self.color) {
                 Text("primary")
                     .AKSUDropdownTag(index: AKSUColor.primary)
 
@@ -353,7 +355,7 @@ struct AKSUDropdownPreviewsView: View {
             .zIndex(2)
 
             HStack {
-                AKSUDropdown(selected: $text, plain: true, height: 40, dropHeight: 72) {
+                AKSUDropdown(selected: self.$text, plain: true, height: 40, dropHeight: 72) {
                     HStack {
                         Spacer()
                         Text("primary")

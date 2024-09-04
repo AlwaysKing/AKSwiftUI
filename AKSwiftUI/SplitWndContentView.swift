@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  SplitWndContentView.swift
 //  AKSwiftUI
 //
 //  Created by alwaysking on 2024/8/29.
@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @Binding var ligth: Bool
+@available(macOS 14.0, *)
+struct SplitWndContentView: View {
+    @Binding var light: Bool
 
     @State var showLeftView: Bool = true
     @State var showRightView: Bool = true
@@ -55,7 +56,7 @@ struct ContentView: View {
                 .padding()
                 .background {
                     if bg {
-                        Color(red: r/255, green: g/255, blue: b/255)
+                        Color(red: r / 255, green: g / 255, blue: b / 255)
                     } else {
                         Color.clear
                     }
@@ -84,10 +85,10 @@ struct ContentView: View {
                 VStack {
                     HStack {
                         AKSUClick {
-                            Image(systemName: ligth ? "sun.max" : "moon.fill")
+                            Image(systemName: light ? "sun.max" : "moon.fill")
                                 .font(.title)
                         } action: {
-                            ligth.toggle()
+                            light.toggle()
                         }
 
                         AKSUClick {
@@ -131,6 +132,7 @@ struct ContentView: View {
     }
 }
 
+@available(macOS 14.0, *)
 #Preview {
-    ContentView(ligth: .constant(true))
+    SplitWndContentView(light: .constant(true))
 }
