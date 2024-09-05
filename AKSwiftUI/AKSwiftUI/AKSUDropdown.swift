@@ -338,7 +338,7 @@ struct AKSUDropdownPreviewsView: View {
             .frame(width: 200)
             .zIndex(3)
 
-            AKSUDropdown(selected: self.$color, bgColor: self.color) {
+            AKSUDropdown(selected: $color, bgColor: color) {
                 Text("primary")
                     .AKSUDropdownTag(index: AKSUColor.primary)
 
@@ -355,7 +355,7 @@ struct AKSUDropdownPreviewsView: View {
             .zIndex(2)
 
             HStack {
-                AKSUDropdown(selected: self.$text, plain: true, height: 40, dropHeight: 72) {
+                AKSUDropdown(selected: $text, plain: true, height: 40, dropHeight: 72) {
                     HStack {
                         Spacer()
                         Text("primary")
