@@ -24,7 +24,7 @@ struct SpliteContentView: View {
     let menu: [String: [String]] = [
         "主题": ["Color"],
         "布局": ["Flex"],
-        "组件": ["Button", "Click", "Input", "InputGroup", "Dropdown", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "CircleProgress", "Collapse", "Segment"],
+        "组件": ["Button", "Click", "Input", "InputGroup", "Dropdown", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "CircleProgress", "Collapse", "Segment"]
     ]
 
     var body: some View {

@@ -23,10 +23,12 @@ struct AKSUInput: View {
     var disableActionLabel: Bool = false
     // 主要颜色
     let actionColor: Color = AKSUColor.primary
-    // 接收输入的内容
-    @Binding var text: String
+    // 是否显示清空按钮
+    var clearButton: Bool = true
     // 密码模式
     var password: Bool = false
+    // 接收输入的内容
+    @Binding var text: String
     // 回车事件触发
     var submit: (() -> Void)? = nil
     // 是否获得焦点
@@ -61,12 +63,11 @@ struct AKSUInput: View {
                         .frame(height: 15)
                         .allowsHitTesting(false)
                 } else {
-                    VStack {
-                    }
-                    .frame(height: 15)
+                    VStack {}
+                        .frame(height: 15)
                 }
 
-                HStack {
+                HStack(spacing: 0) {
                     ZStack {
                         if password {
                             SecureField(disableActionLabel ? label : "", text: $text)
@@ -77,7 +78,8 @@ struct AKSUInput: View {
                     .textFieldStyle(.plain)
                     .font(.title2)
                     .padding([.top, .bottom], 8)
-                    .padding([.leading, .trailing], style == .line ? 4 : 16)
+                    .padding(.leading, style == .line ? 4 : 16)
+                    .padding(.trailing, text.isEmpty || !focused || !clearButton ? (style == .line ? 4 : 16) : 0)
                     .focused($focused)
                     .onChange(of: focused) { _ in
                         withAnimation {
@@ -95,7 +97,7 @@ struct AKSUInput: View {
                         }
                     }
 
-                    if !text.isEmpty && focused {
+                    if !text.isEmpty && focused && clearButton {
                         ZStack {
                             Image(systemName: "x.circle").foregroundColor(AKSUColor.gray)
                         }
@@ -137,18 +139,20 @@ struct AKSUInput: View {
                     }
                 )
                 .padding(.top, -6)
-                .onTapGesture {
-                    focused = true
-                }
-
                 if style == .line && isEnabled {
-                    VStack {
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 2)
-                    .background(focused ? actionColor : AKSUColor.gray.opacity(0.5))
-                    .cornerRadius(2)
-                    .padding(0)
+                    VStack {}
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 2)
+                        .background(focused ? actionColor : AKSUColor.gray.opacity(0.5))
+                        .cornerRadius(2)
+                        .padding(0)
+                }
+            }
+        }
+        .onOutsideClick { inside in
+            DispatchQueue.main.async {
+                if inside == false {
+                    focused = false
                 }
             }
         }
@@ -168,14 +172,27 @@ struct AKSUInputPreviewsView: View {
     @State var input: String = ""
     var body: some View {
         VStack {
-            AKSUInput(style: .box, label: "请输入用户名", text: $input)
-                .frame(width: 150)
+            HStack {
+                AKSUInput(style: .box, label: "请输入用户名1", text: $input)
+                    .frame(width: 150)
+                AKSUInput(style: .box, label: "请输入用户名1", clearButton: false, text: $input)
+                    .frame(width: 150)
+            }
 
-            AKSUInput(style: .box, label: "请输入用户名", disableActionLabel: true, text: $input)
-                .frame(width: 150)
+            HStack {
+                AKSUInput(style: .box, label: "请输入用户名2", disableActionLabel: true, text: $input)
+                    .frame(width: 150)
+                AKSUInput(style: .box, label: "请输入用户名2", disableActionLabel: true, clearButton: false, text: $input)
+                    .frame(width: 150)
+            }
 
-            AKSUInput(style: .line, label: "密码", text: $input, password: true)
-                .frame(width: 150)
+            HStack {
+                AKSUInput(style: .line, label: "密码3", password: true, text: $input)
+                    .frame(width: 150)
+
+                AKSUInput(style: .line, label: "密码3", clearButton: false, password: true, text: $input)
+                    .frame(width: 150)
+            }
         }
     }
 }

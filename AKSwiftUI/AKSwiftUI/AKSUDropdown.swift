@@ -57,76 +57,73 @@ struct AKSUDropdown<K: Hashable>: View {
             // 文本
             ZStack {
                 if let show = content[selected] {
-                    show.disableHover(canAction: style == .selectBtn) {
+                    show.disableHover(canAction: self.style == .selectBtn) {
                         _, new in
-                        selectedRealHeight = new
+                        self.selectedRealHeight = new
                     }
                 }
             }
             .frame(maxWidth: .infinity)
             .frame(minHeight: 18)
             .padding([.top, .bottom], 10)
-            .frame(height: height)
-            .background(hoveringContent && style == .selectBtn ? .black.opacity(0.1) : .clear)
+            .frame(height: self.height)
+            .background(self.hoveringContent && self.style == .selectBtn ? .black.opacity(0.1) : .clear)
             .onHover {
-                hoveringContent = $0
+                self.hoveringContent = $0
             }
 
-            if style == .selectBtn {
-                VStack {
-                }
-                .frame(width: 1, height: selectedRealHeight)
-                .padding([.top, .bottom], 10)
-                .padding([.leading, .trailing], 0)
-                .background(AKSUColor.dyGrayMask)
+            if self.style == .selectBtn {
+                VStack {}
+                    .frame(width: 1, height: self.selectedRealHeight)
+                    .padding([.top, .bottom], 10)
+                    .padding([.leading, .trailing], 0)
+                    .background(AKSUColor.dyGrayMask)
             }
 
             // 下来按钮
             VStack(spacing: 0) {
                 Image(systemName: "triangleshape.fill")
                     .font(.system(size: 10))
-                    .foregroundColor(color)
-                    .rotationEffect(Angle(degrees: showDrop ? -180 : -90))
+                    .foregroundColor(self.color)
+                    .rotationEffect(Angle(degrees: self.showDrop ? -180 : -90))
                     .padding(.trailing, 10)
             }
-            .frame(height: selectedRealHeight)
+            .frame(height: self.selectedRealHeight)
             .padding([.leading, .top, .bottom], 10)
-            .background(hoveringToggle && style == .selectBtn ? .black.opacity(0.1) : .clear)
+            .background(self.hoveringToggle && self.style == .selectBtn ? .black.opacity(0.1) : .clear)
             .onTapGesture {
-                if style == .selectBtn {
+                if self.style == .selectBtn {
                     withAnimation {
-                        showDrop.toggle()
+                        self.showDrop.toggle()
                     }
                 }
             }
             .onHover {
-                hoveringToggle = $0
+                self.hoveringToggle = $0
             }
         }
         .frame(maxWidth: .infinity)
-        .background(!isEnabled ? AKSUColor.dyGrayMask : .clear)
-        .background(hoveringAll && style != .selectBtn ? .black.opacity(0.1) : .clear)
-        .background(bgColor)
-        .cornerRadius(plain ? 0 : 4)
-        .focusable()
-        .focusEffectDisabled()
-        .focused($focused)
+        .background(!self.isEnabled ? AKSUColor.dyGrayMask : .clear)
+        .background(self.hoveringAll && self.style != .selectBtn ? .black.opacity(0.1) : .clear)
+        .background(self.bgColor)
+        .cornerRadius(self.plain ? 0 : 4)
+        .focused(self.$focused)
         .onHover {
-            hoveringAll = $0
+            self.hoveringAll = $0
         }
-        .shadow(color: bgColor != .white ? bgColor : .black, radius: plain ? 0 : (focused ? 4 : 2))
-        .onChange(of: focused) {
-            if focused == false {
-                showDrop = false
+        .shadow(color: self.bgColor != .white ? self.bgColor : .black, radius: self.plain ? 0 : (self.focused ? 4 : 2))
+        .onChange(of: self.focused) { _ in
+            if self.focused == false {
+                self.showDrop = false
             }
         }
         .simultaneousGesture(
             TapGesture()
                 .onEnded {
-                    focused = true
-                    if style != .selectBtn {
+                    self.focused = true
+                    if self.style != .selectBtn {
                         withAnimation {
-                            showDrop.toggle()
+                            self.showDrop.toggle()
                         }
                     }
                 }
@@ -137,20 +134,21 @@ struct AKSUDropdown<K: Hashable>: View {
                 ZStack {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 0) {
-                            ForEach(sort, id: \.self) { index in
-                                if style == .select || index != selected {
-                                    content[index]!
-                                        .binding(canAction: style == .selectBtn, b: { old, new in
-                                            contentRealHeight -= old
-                                            contentRealHeight += new
+                            ForEach(self.sort, id: \.self) { index in
+                                if self.style == .select || index != self.selected {
+                                    self.content[index]!
+                                        .binding(canAction: self.style == .selectBtn, b: { old, new in
+                                            self.contentRealHeight -= old
+                                            self.contentRealHeight += new
                                         })
+                                        .disabled(!self.showDrop)
                                         .simultaneousGesture(
                                             TapGesture()
                                                 .onEnded {
-                                                    if style == .select {
-                                                        selected = index
+                                                    if self.style == .select {
+                                                        self.selected = index
                                                     }
-                                                    showDrop = false
+                                                    self.showDrop = false
                                                 }
                                         )
                                 }
@@ -158,16 +156,24 @@ struct AKSUDropdown<K: Hashable>: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .frame(width: g.size.width, height: dropMaxHeight != nil ? min(dropMaxHeight!, contentRealHeight) : contentRealHeight)
+                    .frame(width: g.size.width, height: self.dropMaxHeight != nil ? min(self.dropMaxHeight!, self.contentRealHeight) : self.contentRealHeight)
                 }
                 .background(.white)
                 .cornerRadius(4)
                 .shadow(radius: 2)
                 .padding(.top, g.size.height + 2)
-                .opacity(showDrop ? 1.0 : 0.0)
+                .opacity(self.showDrop ? 1.0 : 0.0)
             }
         }
-        .zIndex((showDrop || focused) ? 2 : 1)
+        .zIndex((self.showDrop || self.focused) ? 2 : 1)
+        .onOutsideClick { inside in
+            DispatchQueue.main.async {
+                if inside == false {
+                    self.focused = false
+                    self.showDrop = false
+                }
+            }
+        }
     }
 }
 
@@ -202,33 +208,33 @@ public struct AKSUDropdownItem<K: Hashable>: View {
 
     public var body: some View {
         HStack {
-            ForEach(Array(0 ..< content.count), id: \.self) { i in
-                content[i]
+            ForEach(Array(0 ..< self.content.count), id: \.self) { i in
+                self.content[i]
             }
         }
         .frame(maxWidth: .infinity)
-        .padding([.top, .bottom], selected ? 0 : 10)
-        .foregroundColor(selected || hovering ? .white : .black)
+        .padding([.top, .bottom], self.selected ? 0 : 10)
+        .foregroundColor(self.selected || self.hovering ? .white : .black)
         .overlay {
             GeometryReader {
                 g in
                 Color.clear.onAppear {
-                    height = g.size.height
+                    self.height = g.size.height
                 }
             }
         }
-        .onChange(of: height) { newValue in
+        .onChange(of: self.height) { newValue in
             if let bind = bind, oldHeight != newValue {
-                bind(oldHeight, newValue)
-                oldHeight = newValue
+                bind(self.oldHeight, newValue)
+                self.oldHeight = newValue
             }
         }
         .onHover {
-            hovering = $0
+            self.hovering = $0
         }
-        .background(!selected && hovering ? hoverColor : .clear)
+        .background(!self.selected && self.hovering ? self.hoverColor : .clear)
         .onTapGesture {
-            if canAction {
+            if self.canAction {
                 if let action = action {
                     action()
                 }
@@ -338,7 +344,7 @@ struct AKSUDropdownPreviewsView: View {
             .frame(width: 200)
             .zIndex(3)
 
-            AKSUDropdown(selected: $color, bgColor: color) {
+            AKSUDropdown(selected: self.$color, bgColor: self.color) {
                 Text("primary")
                     .AKSUDropdownTag(index: AKSUColor.primary)
 
@@ -355,7 +361,7 @@ struct AKSUDropdownPreviewsView: View {
             .zIndex(2)
 
             HStack {
-                AKSUDropdown(selected: $text, plain: true, height: 40, dropHeight: 72) {
+                AKSUDropdown(selected: self.$text, plain: true, height: 40, dropHeight: 72) {
                     HStack {
                         Spacer()
                         Text("primary")
