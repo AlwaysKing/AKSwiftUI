@@ -30,7 +30,7 @@ struct OutsideClickCheckView<V: View>: View {
         .overlay {
             if tick {
                 GeometryReader { g in
-                    Color.clear.onAppear {
+                    Color.clear.task {
                         if g.frame(in: .global).contains(point) {
                             outsideClick(true)
                         } else {

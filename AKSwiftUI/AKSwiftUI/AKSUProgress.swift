@@ -16,6 +16,7 @@ struct AKSUProgress: View {
     let color: Color = .white
     let actionColor: Color = AKSUColor.primary
 
+    var hiddenLabel: Bool = false
     var height: CGFloat = 20.0
 
     @State private var width: CGFloat = 0.0
@@ -31,23 +32,25 @@ struct AKSUProgress: View {
                 }
                 .frame(alignment: .leading)
 
-                HStack(spacing: 0) {
-                    HStack {
-                        Text(progressString()).foregroundColor(.white)
-                            .overlay {
-                                GeometryReader { geometry in
-                                    Color.clear.onAppear {
-                                        titleWidth = geometry.size.width
-                                    }
-                                    .onChange(of: progress) { _ in
-                                        titleWidth = geometry.size.width
+                if !hiddenLabel {
+                    HStack(spacing: 0) {
+                        HStack {
+                            Text(progressString()).foregroundColor(.white)
+                                .overlay {
+                                    GeometryReader { geometry in
+                                        Color.clear.task {
+                                            titleWidth = geometry.size.width
+                                        }
+                                        .onChange(of: progress) { _ in
+                                            titleWidth = geometry.size.width
+                                        }
                                     }
                                 }
-                            }
-                            .padding(.leading, titlePadding())
+                                .padding(.leading, titlePadding())
+                        }
+                        .frame(width: computerOffset(), alignment: .leading)
+                        Spacer()
                     }
-                    .frame(width: computerOffset(), alignment: .leading)
-                    Spacer()
                 }
             }
             .overlay {
@@ -103,6 +106,11 @@ struct AKSUProgressPreviewsView: View {
         VStack {
             Text("\(range)")
             Text("\(progress)")
+
+            AKSUProgress(progress: progress, hiddenLabel: true, height: 5)
+                .frame(width: 300)
+                .padding()
+
             AKSUProgress(progress: progress)
                 .frame(width: 300)
                 .padding()

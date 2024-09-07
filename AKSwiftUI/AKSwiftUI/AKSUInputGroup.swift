@@ -75,7 +75,7 @@ struct AKSUInputGroup: View {
                         }
                         .overlay {
                             GeometryReader { geometry in
-                                Color.clear.onAppear {
+                                Color.clear.task {
                                     leadingWidth = geometry.size.width
                                 }
                             }
@@ -165,7 +165,7 @@ struct AKSUInputGroup: View {
                         }
                         .overlay {
                             GeometryReader { geometry in
-                                Color.clear.onAppear {
+                                Color.clear.task {
                                     trailingWidth = geometry.size.width
                                 }
                             }
@@ -217,7 +217,7 @@ struct AKSUInputGroup: View {
             }
             .overlay {
                 GeometryReader { geometry in
-                    Color.clear.onAppear {
+                    Color.clear.task {
                         realHeight = max(2, geometry.size.height)
                     }
                 }
@@ -292,7 +292,7 @@ struct AKSUInputGroupPreviewsView: View {
                 VStack {
                     AKSUInputGroup(label: "用户名", text: $input)
                         .addTrailling {
-                            AKSUButton(plain: true, height: height) {
+                            AKSUButton(style: .plain, height: height) {
                                 Text("确定")
                                     .foregroundColor(.white)
                                     .font(.title)
@@ -306,7 +306,7 @@ struct AKSUInputGroupPreviewsView: View {
 
                     AKSUInputGroup(label: "用户名", text: $input)
                         .addLeading {
-                            AKSUButton(plain: true, height: height) {
+                            AKSUButton(style: .plain, height: height) {
                                 Text("确定")
                                     .foregroundColor(.white)
                                     .font(.title)
@@ -320,7 +320,7 @@ struct AKSUInputGroupPreviewsView: View {
 
                     AKSUInputGroup(label: "用户名", text: $input)
                         .addLeading {
-                            AKSUButton(plain: true, height: height) {
+                            AKSUButton(style: .plain, height: height) {
                                 Text("确定")
                                     .foregroundColor(.white)
                                     .font(.title)
@@ -332,7 +332,7 @@ struct AKSUInputGroupPreviewsView: View {
                             .frame(width: 100)
                         }
                         .addTrailling {
-                            AKSUButton(plain: true, height: height) {
+                            AKSUButton(style: .plain, height: height) {
                                 Text("确定")
                                     .foregroundColor(.white)
                                     .font(.title)
@@ -416,7 +416,7 @@ struct AKSUInputGroupPreviewsView: View {
             HStack {
                 AKSUInputGroup(label: "用户名", text: $input)
                     .addLeading {
-                        AKSUButton(plain: true, height: height) {
+                        AKSUButton(style: .plain, height: height) {
                             Text("确定")
                                 .foregroundColor(.white)
                                 .font(.title)
@@ -428,7 +428,7 @@ struct AKSUInputGroupPreviewsView: View {
                         .frame(width: 100)
                     }
                     .addLeading {
-                        AKSUButton(plain: true, height: height) {
+                        AKSUButton(style: .plain, height: height) {
                             Text("取消")
                                 .foregroundColor(.white)
                                 .font(.title)
@@ -439,7 +439,7 @@ struct AKSUInputGroupPreviewsView: View {
                         .frame(width: 100)
                     }
                     .addTrailling {
-                        AKSUButton(plain: true, height: height) {
+                        AKSUButton(style: .plain, height: height) {
                             Text("确定")
                                 .foregroundColor(.white)
                                 .font(.title)
@@ -451,7 +451,7 @@ struct AKSUInputGroupPreviewsView: View {
                         .frame(width: 100)
                     }
                     .addTrailling {
-                        AKSUButton(plain: true, height: height) {
+                        AKSUButton(style: .plain, height: height) {
                             Text("取消")
                                 .foregroundColor(.white)
                                 .font(.title)

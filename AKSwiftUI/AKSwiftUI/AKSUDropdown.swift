@@ -218,7 +218,7 @@ public struct AKSUDropdownItem<K: Hashable>: View {
         .overlay {
             GeometryReader {
                 g in
-                Color.clear.onAppear {
+                Color.clear.task {
                     self.height = g.size.height
                 }
             }

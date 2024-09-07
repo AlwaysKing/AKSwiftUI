@@ -68,7 +68,7 @@ struct AKSURange: View {
         }
         .overlay {
             GeometryReader { geometry in
-                Color.clear.onAppear {
+                Color.clear.task {
                     width = geometry.size.width
                 }
             }

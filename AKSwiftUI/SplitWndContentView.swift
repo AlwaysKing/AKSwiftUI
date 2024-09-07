@@ -23,8 +23,8 @@ struct SplitWndContentView: View {
     @State var selected: String = "Color"
 
     let menu: [String: [String]] = [
-        "主题": ["Color"],
-        "布局": ["Flex"],
+        "主题": ["Color", "Font"],
+        "布局": ["Flex", "Grid"],
         "组件": ["Button", "Click", "Input", "InputGroup", "Dropdown", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "CircleProgress", "Collapse", "Segment"]
     ]
 
@@ -34,7 +34,9 @@ struct SplitWndContentView: View {
                 VStack {
                     switch selected {
                     case "Color": AKSUColorPreviewsView()
+                    case "Font": AKSUFontPreviewsView()
                     case "Flex": AKSUFlexPreviewsView()
+                    case "Grid": AKSUGridPreviewsView()
                     case "Button": AKSUButtonPreviewsView()
                     case "Click": AKSUClickPreviewsView()
                     case "Input": AKSUInputPreviewsView()

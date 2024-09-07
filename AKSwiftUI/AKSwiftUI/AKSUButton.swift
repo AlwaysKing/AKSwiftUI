@@ -9,62 +9,92 @@ import SwiftUI
 
 var AKSUButtonPadding: CGFloat = 10
 
-func AKSUButtonContentHeight(totalHeight: CGFloat) -> CGFloat {
-    return max(totalHeight - AKSUButtonPadding * 2, 0)
+enum AKSUButtonStyle {
+    case normal
+    case plain
+    case circle
+}
+
+enum AKSUButtonClickAnimation {
+    case none
+    case center
+    case offset
 }
 
 struct AKSUButton<T: View>: View {
     @Environment(\.isEnabled) private var isEnabled
     @ViewBuilder let content: () -> T
+
     @State var hovering: Bool = false
+    @State var circleStyleSize: CGFloat = 0.0
+
     let color: Color
     let bgColor: Color
     let height: CGFloat?
     let action: () -> Void
+    let style: AKSUButtonStyle
+    let autoPadding: Bool
+    let clickStyke: AKSUButtonClickAnimation
 
-    @State var circleWidth: CGFloat = 0.0
-    @State var circleOpacity: CGFloat = 0.0
-    @State var circleOffset: (x: CGFloat, y: CGFloat) = (0, 0)
-    @State var circleSize: CGFloat = 100.0
-    var plain: Bool
+    // 点击动画
+    @State var animationCircleWidth: CGFloat = 0.0
+    @State var animationCircleOpacity: CGFloat = 0.0
+    @State var animationCircleOffset: (x: CGFloat, y: CGFloat) = (0, 0)
+    @State var animationCircleSize: CGFloat = 100.0
 
-    init(plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, content: @escaping () -> T, action: @escaping () -> Void) {
+    init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = color
         self.bgColor = bgColor
         self.content = content
         self.action = action
-        self.plain = plain
+        self.style = style
         self.height = height
+        self.animationCircleSize = height ?? 0
+        self.autoPadding = autoPadding
+        self.clickStyke = clickStyke
     }
 
     var body: some View {
         ZStack {
             content()
                 .foregroundColor(color)
-                .padding([.leading, .trailing])
-                .padding([.top, .bottom], AKSUButtonPadding)
+                .padding([.leading, .trailing], autoPadding ? 16 : 0)
+                .padding([.top, .bottom], autoPadding ? 8 : 0)
+                .overlay {
+                    GeometryReader { geometry in
+                        Color.clear.task {
+                            if let height = height {
+                                circleStyleSize = height
+                            } else {
+                                circleStyleSize = max(geometry.size.width, geometry.size.height)
+                            }
+                        }
+                    }
+                }
         }
+        .frame(height: height)
+        .frame(width: style != .circle || circleStyleSize == 0 ? nil : circleStyleSize, height: style != .circle || circleStyleSize == 0 ? nil : circleStyleSize)
         .background(
             GeometryReader { g in
-                ZStack {
-                    Circle()
-                        .fill(.white.opacity(0.5))
-                        .frame(width: circleWidth, height: circleWidth)
-                        .opacity(circleOpacity)
-                        .offset(x: circleOffset.x - g.size.width / 2, y: circleOffset.y - g.size.height / 2)
-                }
-                .frame(width: g.size.width, height: g.size.height)
-                .clipped()
-                .onAppear {
-                    circleSize = g.size.width * 2
+                if clickStyke != .none {
+                    ZStack {
+                        Circle()
+                            .fill(.white.opacity(0.5))
+                            .frame(width: animationCircleWidth, height: animationCircleWidth)
+                            .opacity(animationCircleOpacity)
+                            .offset(x: clickStyke == .center ? 0 : animationCircleOffset.x - g.size.width / 2, y: clickStyke == .center ? 0 : animationCircleOffset.y - g.size.height / 2)
+                    }
+                    .frame(width: g.size.width, height: g.size.height)
+                    .onAppear {
+                        animationCircleSize = g.size.width * 2
+                    }
                 }
             }
         )
-        .frame(height: height)
         .background(hovering ? .black.opacity(0.1) : .clear)
         .background(isEnabled ? .clear : AKSUColor.dyGrayMask)
         .background(bgColor)
-        .cornerRadius(plain ? 0 : 4)
+        .cornerRadius(style == .plain ? 0 : 4)
         .onHover {
             hovering = $0
             if hovering {
@@ -73,15 +103,22 @@ struct AKSUButton<T: View>: View {
                 NSCursor.pop()
             }
         }
-        .shadow(color: bgColor != .white ? bgColor : .black, radius: plain ? 0 : (hovering ? 4 : 2))
+        .mask {
+            if style == .circle {
+                Circle()
+            } else {
+                Rectangle()
+            }
+        }
+        .shadow(color: bgColor != .white ? bgColor : .black, radius: style == .plain ? 0 : (hovering ? 4 : 2))
         .onTapGestureLocation { location in
             if isEnabled {
-                circleOffset = (location.x, location.y)
-                circleWidth = 0
-                circleOpacity = 1.0
+                animationCircleOffset = (location.x, location.y)
+                animationCircleWidth = 0
+                animationCircleOpacity = 1.0
                 withAnimation {
-                    circleOpacity = 0.0
-                    circleWidth = circleSize
+                    animationCircleOpacity = 0.0
+                    animationCircleWidth = animationCircleSize
                 }
                 action()
             }
@@ -90,13 +127,16 @@ struct AKSUButton<T: View>: View {
 }
 
 extension AKSUButton where T == Text {
-    init<S>(_ title: S, plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, action: @escaping () -> Void) where S: StringProtocol {
+    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.bgColor = bgColor
         content = { Text(title).font(.title) }
         self.action = action
-        self.plain = plain
+        self.style = style
         self.height = height
+        self.animationCircleSize = height ?? 0
+        self.autoPadding = autoPadding
+        self.clickStyke = clickStyke
     }
 }
 
@@ -132,8 +172,18 @@ struct AKSUButtonPreviewsView: View {
             } action: {
             }
 
+            AKSUButton(style: .plain, clickStyke: .center, height: 100) {
+                Text("Plain")
+                    .foregroundColor(.white)
+                    .font(.title)
+                    .frame(maxWidth: .infinity)
+            }
+            action: {
+            }
+            .frame(width: 100)
+
             HStack {
-                AKSUButton(plain: true, height: 40) {
+                AKSUButton(style: .circle, clickStyke: .center) {
                     Text("Plain")
                         .foregroundColor(.white)
                         .font(.title)
@@ -142,6 +192,20 @@ struct AKSUButtonPreviewsView: View {
                 action: {
                 }
                 .frame(width: 100)
+
+                AKSUButton(style: .circle, clickStyke: .none) {
+                    Image(systemName: "folder").imageScale(.large)
+                } action: {
+                }
+
+                AKSUButton(style: .circle, height: 40, autoPadding: false) {
+                    Image(systemName: "folder").imageScale(.large)
+                } action: {
+                }
+                AKSUButton(style: .circle, autoPadding: false) {
+                    Image(systemName: "folder").imageScale(.large)
+                } action: {
+                }
             }
         }
     }
