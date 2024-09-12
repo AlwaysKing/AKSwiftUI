@@ -44,8 +44,9 @@
 		933218BF2C8AE74D00F32103 /* AKSUColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9332189F2C8AE74D00F32103 /* AKSUColor.swift */; };
 		933218E92C8AE98600F32103 /* AKSUFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933218E82C8AE98600F32103 /* AKSUFont.swift */; };
 		933219192C8B219100F32103 /* AKSUSpliteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933219182C8B219100F32103 /* AKSUSpliteView.swift */; };
-		933219492C8F3EF800F32103 /* RightClickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933219482C8F3EF800F32103 /* RightClickView.swift */; };
+		933219492C8F3EF800F32103 /* AKSUMouseEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933219482C8F3EF800F32103 /* AKSUMouseEventView.swift */; };
 		93509D652C88A7BC00CA3645 /* SpliteContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93509D642C88A7BC00CA3645 /* SpliteContentView.swift */; };
+		93E845E72C91E6BD00DCCB0C /* AKSUMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E845E62C91E6BD00DCCB0C /* AKSUMenu.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,8 +90,9 @@
 		933218E82C8AE98600F32103 /* AKSUFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUFont.swift; sourceTree = "<group>"; };
 		933218EA2C8AED0800F32103 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		933219182C8B219100F32103 /* AKSUSpliteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUSpliteView.swift; sourceTree = "<group>"; };
-		933219482C8F3EF800F32103 /* RightClickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightClickView.swift; sourceTree = "<group>"; };
+		933219482C8F3EF800F32103 /* AKSUMouseEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUMouseEventView.swift; sourceTree = "<group>"; };
 		93509D642C88A7BC00CA3645 /* SpliteContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpliteContentView.swift; sourceTree = "<group>"; };
+		93E845E62C91E6BD00DCCB0C /* AKSUMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUMenu.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,7 +172,7 @@
 				933218832C8AE74D00F32103 /* MouseEventMonitor.swift */,
 				933218842C8AE74D00F32103 /* OutsideClickCheckView.swift */,
 				933218852C8AE74D00F32103 /* TapGesture.swift */,
-				933219482C8F3EF800F32103 /* RightClickView.swift */,
+				933219482C8F3EF800F32103 /* AKSUMouseEventView.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -220,6 +222,7 @@
 				9332189D2C8AE74D00F32103 /* AKSURange.swift */,
 				9332189E2C8AE74D00F32103 /* AKSUSegment.swift */,
 				9332188C2C8AE74D00F32103 /* AKSUTable.swift */,
+				93E845E62C91E6BD00DCCB0C /* AKSUMenu.swift */,
 			);
 			path = AKSwiftUI;
 			sourceTree = "<group>";
@@ -318,7 +321,7 @@
 				933218B92C8AE74D00F32103 /* AKSUInput.swift in Sources */,
 				933218B82C8AE74D00F32103 /* AKSUDropdown.swift in Sources */,
 				93509D652C88A7BC00CA3645 /* SpliteContentView.swift in Sources */,
-				933219492C8F3EF800F32103 /* RightClickView.swift in Sources */,
+				933219492C8F3EF800F32103 /* AKSUMouseEventView.swift in Sources */,
 				933218B12C8AE74D00F32103 /* AKSUButton.swift in Sources */,
 				933218AF2C8AE74D00F32103 /* AKSUTooltips.swift in Sources */,
 				933218AC2C8AE74D00F32103 /* AKSUPopover.swift in Sources */,
@@ -330,6 +333,7 @@
 				933218A12C8AE74D00F32103 /* AKSUStepAnimationView.swift in Sources */,
 				933218B02C8AE74D00F32103 /* AKSUBadges.swift in Sources */,
 				933218A22C8AE74D00F32103 /* Extract.swift in Sources */,
+				93E845E72C91E6BD00DCCB0C /* AKSUMenu.swift in Sources */,
 				933218A52C8AE74D00F32103 /* AKSUAnyViewArrayBuilder.swift in Sources */,
 				933218BC2C8AE74D00F32103 /* AKSURadio.swift in Sources */,
 				933218B42C8AE74D00F32103 /* AKSUCircleRingShape.swift in Sources */,

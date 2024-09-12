@@ -23,6 +23,7 @@ struct OutsideClickCheckView<V: View>: View {
             MouseEventMonitor.start(uuid: uuid, filter: [.leftMouseDown, .rightMouseDown]) { location, _ in
                 point = location
                 tick = true
+                return false
             }
         }.onDisappear {
             MouseEventMonitor.stop(uuid: uuid)

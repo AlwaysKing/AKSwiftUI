@@ -200,9 +200,10 @@ struct AKSUTable<Value: Identifiable & Equatable>: View {
                         }
                         .frame(height: getRealRowHeight(index: item.index, value: item.value, height: item.height), alignment: .leading)
                         .frame(minWidth: 25)
-                        .onRightClick { point, event in
+                        .onMouseEvent(event:[.rightMouseDown]) { point, event in
                             rightSelection(row: item, point: point, event: event)
                             refreshUI.toggle()
+                            return true
                         }
                         .background {
                             GeometryReader { geometry in

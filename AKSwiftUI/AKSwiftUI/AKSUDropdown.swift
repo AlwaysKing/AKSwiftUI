@@ -25,17 +25,19 @@ struct AKSUDropdown<K: Hashable>: View {
     var dropMaxHeight: CGFloat?
     var content: [K: AKSUDropdownItem<K>] = [:]
     var sort: [K] = []
+    let menu = AKSUMenu()
 
     @State var contentRealHeight: CGFloat = 0.0
     @State var selectedRealHeight: CGFloat = 0.0
-    // 是否获得焦点
-    @FocusState private var focused: Bool
     // 显示内容
     @State private var showDrop: Bool = false
     // hover
     @State var hoveringAll: Bool = false
     @State var hoveringContent: Bool = false
     @State var hoveringToggle: Bool = false
+
+    @State var location: CGRect = CGRect.zero
+    @State var mouseEvent: NSEvent? = nil
 
     init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, dropHeight: CGFloat? = nil, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
         self._selected = selected
@@ -71,7 +73,21 @@ struct AKSUDropdown<K: Hashable>: View {
             .onHover {
                 self.hoveringContent = $0
             }
+            .simultaneousGesture(
+                TapGesture()
+                    .onEnded {
+                        if style != .selectBtn {
+                            if let mouseEvent = mouseEvent {
+                                ToggleDropMenu(event: mouseEvent)
+                            }
+                        }
+                    }
+            )
+//            .onMouseEvent(event: [.leftMouseDown]) { point, event in
+//                mouseEvent = event
+//            }
 
+            // 分隔符
             if self.style == .selectBtn {
                 VStack {}
                     .frame(width: 1, height: self.selectedRealHeight)
@@ -80,7 +96,7 @@ struct AKSUDropdown<K: Hashable>: View {
                     .background(AKSUColor.dyGrayMask)
             }
 
-            // 下来按钮
+            // 下拉按钮
             VStack(spacing: 0) {
                 Image(systemName: "triangleshape.fill")
                     .font(.system(size: 10))
@@ -91,15 +107,13 @@ struct AKSUDropdown<K: Hashable>: View {
             .frame(height: self.selectedRealHeight)
             .padding([.leading, .top, .bottom], 10)
             .background(self.hoveringToggle && self.style == .selectBtn ? .black.opacity(0.1) : .clear)
-            .onTapGesture {
-                if self.style == .selectBtn {
-                    withAnimation {
-                        self.showDrop.toggle()
-                    }
-                }
-            }
             .onHover {
                 self.hoveringToggle = $0
+            }
+            .onTapGesture {
+                if let mouseEvent = mouseEvent {
+                    ToggleDropMenu(event: mouseEvent)
+                }
             }
         }
         .frame(maxWidth: .infinity)
@@ -107,73 +121,70 @@ struct AKSUDropdown<K: Hashable>: View {
         .background(self.hoveringAll && self.style != .selectBtn ? .black.opacity(0.1) : .clear)
         .background(self.bgColor)
         .cornerRadius(self.plain ? 0 : 4)
-        .focused(self.$focused)
         .onHover {
             self.hoveringAll = $0
         }
-        .shadow(color: self.bgColor != .white ? self.bgColor : .black, radius: self.plain ? 0 : (self.focused ? 4 : 2))
-        .onChange(of: self.focused) { _ in
-            if self.focused == false {
-                self.showDrop = false
-            }
-        }
-        .simultaneousGesture(
-            TapGesture()
-                .onEnded {
-                    self.focused = true
-                    if self.style != .selectBtn {
-                        withAnimation {
-                            self.showDrop.toggle()
-                        }
-                    }
-                }
-        )
+        .shadow(color: self.bgColor != .white ? self.bgColor : .black, radius: self.plain ? 0 : 2)
         .overlay {
             GeometryReader {
                 g in
-                ZStack {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 0) {
-                            ForEach(self.sort, id: \.self) { index in
-                                if self.style == .select || index != self.selected {
-                                    self.content[index]!
-                                        .binding(canAction: self.style == .selectBtn, b: { old, new in
-                                            self.contentRealHeight -= old
-                                            self.contentRealHeight += new
-                                        })
-                                        .disabled(!self.showDrop)
-                                        .simultaneousGesture(
-                                            TapGesture()
-                                                .onEnded {
-                                                    if self.style == .select {
-                                                        self.selected = index
-                                                    }
-                                                    self.showDrop = false
-                                                }
-                                        )
+                Color.clear.onAppear {
+                    location = g.frame(in: .global)
+                }.onChange(of: g.frame(in: .global)) { _ in
+                    location = g.frame(in: .global)
+                }
+            }
+        }
+        .onMouseEvent(event: [.leftMouseDown]) { point, event in
+            mouseEvent = event
+            return false
+        }
+    }
+
+    func ToggleDropMenu(event: NSEvent) {
+        if !showDrop {
+            menu.menuContent = AnyView(menuContent())
+            menu.hiddenEvent = {
+                withAnimation {
+                    showDrop = false
+                }
+            }
+
+            menu.showView(point: CGPoint(x: location.minX, y: location.maxY + 2), width: location.width, height: 300, view: event.window?.contentView)
+        }
+
+        withAnimation {
+            showDrop.toggle()
+        }
+    }
+
+    func menuContent() -> some View {
+        VStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(self.sort, id: \.self) { index in
+                        if self.style == .select || index != self.selected {
+                            self.content[index]!
+                                .binding(canAction: self.style == .selectBtn, b: { old, new in
+                                    self.contentRealHeight -= old
+                                    self.contentRealHeight += new
+                                })
+                                .onMouseEvent(event: [.leftMouseDown]) { _, _ in
+                                    if self.style == .select {
+                                        self.selected = index
+                                    }
+                                    self.showDrop = false
+                                    menu.close()
+                                    return true
                                 }
-                            }
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .frame(width: g.size.width, height: self.dropMaxHeight != nil ? min(self.dropMaxHeight!, self.contentRealHeight) : self.contentRealHeight)
                 }
-                .background(.white)
-                .cornerRadius(4)
-                .shadow(radius: 2)
-                .padding(.top, g.size.height + 2)
-                .opacity(self.showDrop ? 1.0 : 0.0)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .zIndex((self.showDrop || self.focused) ? 2 : 1)
-        .onOutsideClick { inside in
-            DispatchQueue.main.async {
-                if inside == false {
-                    self.focused = false
-                    self.showDrop = false
-                }
-            }
-        }
+        .frame(width: location.width, height: 300, alignment: .top)
+        .background(.white)
     }
 }
 
@@ -342,7 +353,6 @@ struct AKSUDropdownPreviewsView: View {
                     }
             }
             .frame(width: 200)
-            .zIndex(3)
 
             AKSUDropdown(selected: self.$color, bgColor: self.color) {
                 Text("primary")
@@ -358,7 +368,6 @@ struct AKSUDropdownPreviewsView: View {
                     .AKSUDropdownTag(index: AKSUColor.danger)
             }
             .frame(width: 200)
-            .zIndex(2)
 
             HStack {
                 AKSUDropdown(selected: self.$text, plain: true, height: 40, dropHeight: 72) {

@@ -10,26 +10,25 @@ import Foundation
 
 class MouseEventMonitor {
     static var eventMonitor: Any?
-    static var cbList: [UUID: (filter: [NSEvent.EventType], cb: (CGPoint, NSEvent) -> Void)] = [:]
+    static var cbList: [UUID: (filter: [NSEvent.EventType], cb: (CGPoint, NSEvent) -> Bool)] = [:]
 
-    static func start(uuid: UUID, filter: [NSEvent.EventType], cb: @escaping (CGPoint, NSEvent) -> Void) {
+    static func start(uuid: UUID, filter: [NSEvent.EventType], cb: @escaping (CGPoint, NSEvent) -> Bool) {
         // 插入列队
         cbList[uuid] = (filter, cb)
 
         if eventMonitor == nil {
             eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown, .rightMouseDragged, .leftMouseUp, .rightMouseUp, .leftMouseDragged, .mouseEntered, .mouseMoved, .mouseExited, .otherMouseDown, .otherMouseUp, .otherMouseDragged]) { event -> NSEvent? in
-//                if let window = event.window {
-//                    let height = window.contentView!.frame.height
-//                    let locationInWindow = event.locationInWindow
-//                    let flippedY = height - locationInWindow.y
-//                    let flippedLocation = NSPoint(x: locationInWindow.x, y: flippedY)
-                    guard let location = filpLocationPoint(event: event) else { return event }
-                    for item in cbList {
-                        if item.value.filter.contains(event.type) {
-                            item.value.cb(location, event)
-                        }
+                guard let location = filpLocationPoint(event: event) else { return event }
+
+                var stopEvent = false
+                for item in cbList {
+                    if item.value.filter.contains(event.type) {
+                        stopEvent = item.value.cb(location, event) || stopEvent
                     }
-//                }
+                }
+                if stopEvent {
+                    return nil
+                }
                 return event
             }
         }
