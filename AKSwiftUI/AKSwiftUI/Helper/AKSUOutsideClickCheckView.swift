@@ -1,19 +1,17 @@
 //
-//  RightClickView.swift
+//  OutsideClickCheckView.swift
 //  AKSwiftUI
 //
-//  Created by AlwaysKing on 2024/9/9.
+//  Created by AlwaysKing on 2024/9/5.
 //
 
 import SwiftUI
 
-struct AKSUMouseEventView<V: View>: View {
+struct AKSUOutsideClickCheckView<V: View>: View {
     @State var rect: CGRect = CGRect.zero
 
-    let filter: [NSEvent.EventType]
-
     @ViewBuilder let content: () -> V
-    let mouseEventCB: (CGPoint, NSEvent?) -> Bool
+    let outsideClick: (_ inside: Bool) -> Void
     @State var uuid: UUID = UUID()
 
     var body: some View {
@@ -21,10 +19,8 @@ struct AKSUMouseEventView<V: View>: View {
             content()
         }
         .onAppear {
-            MouseEventMonitor.start(uuid: uuid, filter: filter) { location, event in
-                if rect.contains(location) {
-                    return mouseEventCB(CGPoint(x: location.x - rect.origin.x, y: location.y - rect.origin.y), event)
-                }
+            MouseEventMonitor.start(uuid: uuid, filter: [.leftMouseDown, .rightMouseDown]) { location, _ in
+                outsideClick(rect.contains(location))
                 return false
             }
         }.onDisappear {
@@ -45,7 +41,7 @@ struct AKSUMouseEventView<V: View>: View {
 }
 
 extension View {
-    func onMouseEvent(event: [NSEvent.EventType], click: @escaping (CGPoint, NSEvent?) -> Bool) -> some View {
-        return AKSUMouseEventView(filter: event, content: { self }, mouseEventCB: click)
+    func onOutsideClick(click: @escaping (Bool) -> Void) -> some View {
+        return AKSUOutsideClickCheckView(content: { self }, outsideClick: click)
     }
 }
