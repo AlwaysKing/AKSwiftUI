@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class AKSUMenu: NSObject {
+class AKSUPopWnd: NSObject {
     var window: NSWindow
     var parent: NSWindow? = nil
     var menuContent: AnyView? = nil
@@ -30,9 +30,14 @@ class AKSUMenu: NSObject {
         super.init()
     }
 
-    func show(point: CGPoint, width: CGFloat, height: CGFloat, parent: NSWindow) {
-        guard let menuContent = menuContent else { return }
-        window.contentView = NSHostingView(rootView: AKSUMenuView(width: width, height: height, content: menuContent))
+    func show(point: CGPoint, width: CGFloat, height: CGFloat, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil) {
+        if let view = view {
+            window.contentView = NSHostingView(rootView: AKSUPopWndView(width: width, height: height, content: view))
+        } else if let menuContent = menuContent {
+            window.contentView = NSHostingView(rootView: AKSUPopWndView(width: width, height: height, content: menuContent))
+        } else {
+            return
+        }
 
         // 将windowMenu添加到父亲窗口
         if parent.childWindows != nil {
@@ -48,6 +53,9 @@ class AKSUMenu: NSObject {
         let parentRect = parent.frame
         self.parent = parent
         window.setFrame(NSRect(x: point.x + parentRect.minX - 4, y: parentRect.maxY - point.y - height + 4, width: width, height: height), display: true)
+        if !autoHidden {
+            return
+        }
         if !monitor {
             monitor = true
             NotificationCenter.default.addObserver(forName: NSWindow.didResignKeyNotification, object: parent, queue: nil) { notification in
@@ -56,7 +64,7 @@ class AKSUMenu: NSObject {
             }
 
             // 监听窗口为点击
-            MouseEventMonitor.start(uuid: uuid, window: window, filter: [.leftMouseDown, .rightMouseDown]) { _, event in
+            MouseEventMonitor.start(uuid: uuid, window: nil, filter: [.leftMouseDown, .rightMouseDown]) { _, event in
                 if event.window != self.window {
                     self.close()
                     self.hiddenEvent?()
@@ -67,15 +75,14 @@ class AKSUMenu: NSObject {
     }
 
     func close() {
-        print("close")
-        self.window.close()
         monitor = false
+        self.window.close()
         NotificationCenter.default.removeObserver(self, name: NSWindow.didResignKeyNotification, object: parent)
         MouseEventMonitor.stop(uuid: uuid)
     }
 }
 
-struct AKSUMenuView: View {
+struct AKSUPopWndView: View {
     let width: CGFloat
     let height: CGFloat
     @State var contentHeight: CGFloat = 0
@@ -93,17 +100,17 @@ struct AKSUMenuView: View {
     }
 }
 
-struct AKSUMenu_Previews: PreviewProvider {
+struct AKSUPopWnd_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
-            AKSUMenuPreviewsView()
+            AKSUPopWndPreviewsView()
         }
         .frame(width: 600, height: 600)
     }
 }
 
-struct AKSUMenuPreviewsView: View {
-    let menu = AKSUMenu()
+struct AKSUPopWndPreviewsView: View {
+    let menu = AKSUPopWnd()
 
     var body: some View {
         ZStack {

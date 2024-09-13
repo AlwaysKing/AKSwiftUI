@@ -20,12 +20,12 @@ struct SplitWndContentView: View {
     @State var g: CGFloat = 0.0
     @State var b: CGFloat = 0.0
 
-    @State var selected: String = "Dropdown"
+    @State var selected: String = "Popover"
 
     let menu: [String: [String]] = [
         "主题": ["Color", "Font"],
         "布局": ["Flex", "Grid"],
-        "组件": ["Button", "Click", "Input", "InputGroup", "Dropdown", "Menu", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "CircleProgress", "Collapse", "Segment", "Table"]
+        "组件": ["Button", "Click", "Input", "InputGroup", "Dropdown", "PopWnd", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "CircleProgress", "Collapse", "Segment", "Table"]
     ]
 
     var body: some View {
@@ -42,7 +42,8 @@ struct SplitWndContentView: View {
                     case "Input": AKSUInputPreviewsView()
                     case "InputGroup": AKSUInputGroupPreviewsView()
                     case "Dropdown": AKSUDropdownPreviewsView()
-                    case "Menu": AKSUMenuPreviewsView()
+                    case "PopWnd": AKSUPopWndPreviewsView()
+                    case "Popover": AKSUPopoverPreviewsView()
                     case "CheckBox": AKSUCheckBoxPreviewsView()
                     case "ContainBox": AKSUContainBoxPreviewsView()
                     case "Radio": AKSURadioPreviewsView()

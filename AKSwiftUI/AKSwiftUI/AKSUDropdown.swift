@@ -25,7 +25,7 @@ struct AKSUDropdown<K: Hashable>: View {
     var dropMaxHeight: CGFloat?
     var content: [K: AKSUDropdownItem<K>] = [:]
     var sort: [K] = []
-    let menu = AKSUMenu()
+    let menu = AKSUPopWnd()
 
     @State var noPadding: Bool = false
 
@@ -132,13 +132,6 @@ struct AKSUDropdown<K: Hashable>: View {
         .onMouseEvent(event: [.leftMouseDown, .rightMouseDown]) { point, event in
             mouseEvent = event
             return false
-        } side: { inside in
-            if !inside {
-                if showDrop {
-                    showDrop = false
-                    menu.close()
-                }
-            }
         }
     }
 

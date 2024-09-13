@@ -45,7 +45,9 @@
 		933219192C8B219100F32103 /* AKSUSpliteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933219182C8B219100F32103 /* AKSUSpliteView.swift */; };
 		933219492C8F3EF800F32103 /* AKSUMouseEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933219482C8F3EF800F32103 /* AKSUMouseEventView.swift */; };
 		93509D652C88A7BC00CA3645 /* SpliteContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93509D642C88A7BC00CA3645 /* SpliteContentView.swift */; };
-		93E845E72C91E6BD00DCCB0C /* AKSUMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E845E62C91E6BD00DCCB0C /* AKSUMenu.swift */; };
+		93E845E72C91E6BD00DCCB0C /* AKSUPopWnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E845E62C91E6BD00DCCB0C /* AKSUPopWnd.swift */; };
+		93F8239B2C949CC50011C475 /* AKSUWarpStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F8239A2C949CC50011C475 /* AKSUWarpStack.swift */; };
+		93F8239D2C949FF30011C475 /* AKSUWindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F8239C2C949FF30011C475 /* AKSUWindowAccessor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,7 +92,9 @@
 		933219182C8B219100F32103 /* AKSUSpliteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUSpliteView.swift; sourceTree = "<group>"; };
 		933219482C8F3EF800F32103 /* AKSUMouseEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUMouseEventView.swift; sourceTree = "<group>"; };
 		93509D642C88A7BC00CA3645 /* SpliteContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpliteContentView.swift; sourceTree = "<group>"; };
-		93E845E62C91E6BD00DCCB0C /* AKSUMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUMenu.swift; sourceTree = "<group>"; };
+		93E845E62C91E6BD00DCCB0C /* AKSUPopWnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUPopWnd.swift; sourceTree = "<group>"; };
+		93F8239A2C949CC50011C475 /* AKSUWarpStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUWarpStack.swift; sourceTree = "<group>"; };
+		93F8239C2C949FF30011C475 /* AKSUWindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUWindowAccessor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +174,8 @@
 				933218832C8AE74D00F32103 /* MouseEventMonitor.swift */,
 				933219482C8F3EF800F32103 /* AKSUMouseEventView.swift */,
 				933218852C8AE74D00F32103 /* AKSUClickGesture.swift */,
+				93F8239C2C949FF30011C475 /* AKSUWindowAccessor.swift */,
+				93F8239A2C949CC50011C475 /* AKSUWarpStack.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -212,6 +218,7 @@
 				933218962C8AE74D00F32103 /* AKSUCollapse.swift */,
 				933218972C8AE74D00F32103 /* AKSUContainBox.swift */,
 				933218982C8AE74D00F32103 /* AKSUDropdown.swift */,
+				93E845E62C91E6BD00DCCB0C /* AKSUPopWnd.swift */,
 				933218992C8AE74D00F32103 /* AKSUInput.swift */,
 				9332189A2C8AE74D00F32103 /* AKSUInputGroup.swift */,
 				9332189B2C8AE74D00F32103 /* AKSUProgress.swift */,
@@ -219,7 +226,6 @@
 				9332189D2C8AE74D00F32103 /* AKSURange.swift */,
 				9332189E2C8AE74D00F32103 /* AKSUSegment.swift */,
 				9332188C2C8AE74D00F32103 /* AKSUTable.swift */,
-				93E845E62C91E6BD00DCCB0C /* AKSUMenu.swift */,
 			);
 			path = AKSwiftUI;
 			sourceTree = "<group>";
@@ -310,6 +316,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93F8239D2C949FF30011C475 /* AKSUWindowAccessor.swift in Sources */,
 				933218A92C8AE74D00F32103 /* AKSUFlex.swift in Sources */,
 				933218A82C8AE74D00F32103 /* AKSUClickGesture.swift in Sources */,
 				933218E92C8AE98600F32103 /* AKSUFont.swift in Sources */,
@@ -322,6 +329,7 @@
 				933218B12C8AE74D00F32103 /* AKSUButton.swift in Sources */,
 				933218AF2C8AE74D00F32103 /* AKSUTooltips.swift in Sources */,
 				933218AC2C8AE74D00F32103 /* AKSUPopover.swift in Sources */,
+				93F8239B2C949CC50011C475 /* AKSUWarpStack.swift in Sources */,
 				933218B32C8AE74D00F32103 /* AKSUCircleProgress.swift in Sources */,
 				933218A42C8AE74D00F32103 /* ExtractMulti.swift in Sources */,
 				933218BD2C8AE74D00F32103 /* AKSURange.swift in Sources */,
@@ -330,7 +338,7 @@
 				933218A12C8AE74D00F32103 /* AKSUStepAnimationView.swift in Sources */,
 				933218B02C8AE74D00F32103 /* AKSUBadges.swift in Sources */,
 				933218A22C8AE74D00F32103 /* Extract.swift in Sources */,
-				93E845E72C91E6BD00DCCB0C /* AKSUMenu.swift in Sources */,
+				93E845E72C91E6BD00DCCB0C /* AKSUPopWnd.swift in Sources */,
 				933218A52C8AE74D00F32103 /* AKSUAnyViewArrayBuilder.swift in Sources */,
 				933218BC2C8AE74D00F32103 /* AKSURadio.swift in Sources */,
 				933218B42C8AE74D00F32103 /* AKSUCircleRingShape.swift in Sources */,
