@@ -7,35 +7,71 @@
 
 import SwiftUI
 
-class AKSUMenu {
+class AKSUMenu: NSObject {
+    var window: NSWindow
+    var parent: NSWindow? = nil
+    var menuContent: AnyView? = nil
     var hiddenEvent: (() -> Void)? = nil
-    var menuContent: AnyView?
-    var menuList: [UUID: NSView] = [:]
+    var monitor: Bool = false
+    var uuid: UUID
 
-    func showView(point: CGPoint, width: CGFloat, height: CGFloat, view: NSView?) {
-        guard let view = view else { return }
-        close()
-        let uuid = UUID()
-        let rootView = AKSUMenuView(width: width, height: height, content: menuContent!, uuid: uuid, close: close)
-        let contentView = NSHostingView(rootView: rootView)
-        contentView.frame = NSRect(x: point.x, y: point.y, width: width, height: height)
-        menuList[uuid] = contentView
-        view.addSubview(contentView, positioned: .above, relativeTo: nil)
+    override init() {
+        uuid = UUID()
+        window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 0, height: 0),
+            styleMask: [.fullSizeContentView, .borderless],
+            backing: .buffered, defer: false
+        )
+        window.titlebarAppearsTransparent = true
+        window.backgroundColor = .clear
+        window.level = .popUpMenu
+        window.isReleasedWhenClosed = false
+        window.hasShadow = false
+        super.init()
     }
 
-    func close(uuid: UUID) {
-        menuList[uuid]?.removeFromSuperview()
-        menuList.removeValue(forKey: uuid)
-//        if menuList.count == 0 {
-//            hiddenEvent?()
-//        }
+    func show(point: CGPoint, width: CGFloat, height: CGFloat, parent: NSWindow) {
+        guard let menuContent = menuContent else { return }
+        window.contentView = NSHostingView(rootView: AKSUMenuView(width: width, height: height, content: menuContent))
+
+        // 将windowMenu添加到父亲窗口
+        if parent.childWindows != nil {
+            if !parent.childWindows!.contains(window) {
+                parent.addChildWindow(window, ordered: .above)
+            }
+        } else {
+            parent.addChildWindow(window, ordered: .above)
+        }
+
+        // 改变大小和移动到相应位置
+        // 获取window的位置
+        let parentRect = parent.frame
+        self.parent = parent
+        window.setFrame(NSRect(x: point.x + parentRect.minX - 4, y: parentRect.maxY - point.y - height + 4, width: width, height: height), display: true)
+        if !monitor {
+            monitor = true
+            NotificationCenter.default.addObserver(forName: NSWindow.didResignKeyNotification, object: parent, queue: nil) { notification in
+                self.close()
+                self.hiddenEvent?()
+            }
+
+            // 监听窗口为点击
+            MouseEventMonitor.start(uuid: uuid, window: window, filter: [.leftMouseDown, .rightMouseDown]) { _, event in
+                if event.window != self.window {
+                    self.close()
+                    self.hiddenEvent?()
+                }
+                return false
+            }
+        }
     }
 
     func close() {
-        for item in menuList {
-            item.value.removeFromSuperview()
-        }
-        menuList.removeAll()
+        print("close")
+        self.window.close()
+        monitor = false
+        NotificationCenter.default.removeObserver(self, name: NSWindow.didResignKeyNotification, object: parent)
+        MouseEventMonitor.stop(uuid: uuid)
     }
 }
 
@@ -46,28 +82,14 @@ struct AKSUMenuView: View {
 
     var content: AnyView
 
-    let uuid: UUID
-    var close: (UUID) -> Void
-
     var body: some View {
         VStack {
-            content
-                .frame(width: width, height: contentHeight)
+            content.cornerRadius(4)
         }
         .frame(width: width, height: height, alignment: .top)
         .cornerRadius(4)
         .shadow(radius: 2)
-        .onOutsideClick { inSide in
-            if !inSide {
-                close(uuid)
-            }
-        }
-        .onAppear {
-            contentHeight = 0
-            withAnimation {
-                contentHeight = height
-            }
-        }
+        .padding(4)
     }
 }
 
@@ -94,7 +116,7 @@ struct AKSUMenuPreviewsView: View {
                 print("hidden")
             }
             guard let point = MouseEventMonitor.filpLocationPoint(event: event) else { return false }
-            menu.showView(point: point, width: 120, height: 300, view: event?.window?.contentView)
+            menu.show(point: point, width: 120, height: 300, parent: event!.window!)
             return true
         }
     }

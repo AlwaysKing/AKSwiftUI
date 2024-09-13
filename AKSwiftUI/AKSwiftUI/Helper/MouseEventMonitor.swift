@@ -11,24 +11,29 @@ import Foundation
 class MouseEventMonitor {
     static var eventMonitor: Any?
 
-    static var cbList: [UUID: (filter: [NSEvent.EventType], cb: (CGPoint, NSEvent) -> Bool)] = [:]
+    static var cbList: [UUID: (window: NSWindow?, filter: [NSEvent.EventType], cb: (CGPoint, NSEvent) -> Bool)] = [:]
     static var sort: [UUID] = []
 
-    static func start(uuid: UUID, filter: [NSEvent.EventType], cb: @escaping (CGPoint, NSEvent) -> Bool) {
+    static func start(uuid: UUID, window: NSWindow?, filter: [NSEvent.EventType], cb: @escaping (CGPoint, NSEvent) -> Bool) {
         // 插入列队
-        cbList[uuid] = (filter, cb)
+        cbList[uuid] = (window, filter, cb)
         sort.insert(uuid, at: 0) // (uuid)
 
         if eventMonitor == nil {
             eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown, .rightMouseDragged, .leftMouseUp, .rightMouseUp, .leftMouseDragged, .mouseEntered, .mouseMoved, .mouseExited, .otherMouseDown, .otherMouseUp, .otherMouseDragged]) { event -> NSEvent? in
                 guard let location = filpLocationPoint(event: event) else { return event }
 
-
                 for uuid in sort {
                     if let item = cbList[uuid] {
+                        if item.window != nil {
+                            if item.window != event.window {
+                                continue
+                            }
+                        }
+
                         if item.filter.contains(event.type) {
                             if item.cb(location, event) {
-//                                return nil
+                                return nil
                             }
                         }
                     }

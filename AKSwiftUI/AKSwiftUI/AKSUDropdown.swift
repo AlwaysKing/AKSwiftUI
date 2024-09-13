@@ -27,7 +27,9 @@ struct AKSUDropdown<K: Hashable>: View {
     var sort: [K] = []
     let menu = AKSUMenu()
 
-    @State var contentRealHeight: CGFloat = 0.0
+    @State var noPadding: Bool = false
+
+    @State var dropHeight: CGFloat = 0.0
     @State var selectedRealHeight: CGFloat = 0.0
     // 显示内容
     @State private var showDrop: Bool = false
@@ -39,10 +41,10 @@ struct AKSUDropdown<K: Hashable>: View {
     @State var location: CGRect = CGRect.zero
     @State var mouseEvent: NSEvent? = nil
 
-    init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, dropHeight: CGFloat? = nil, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
+    init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, dropHeight: CGFloat? = nil, noPadding: Bool = false, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
         self._selected = selected
         for item in content() {
-            self.content[item.index] = AKSUDropdownItem(index: item.index, color: bgColor, content: item.content, action: item.action)
+            self.content[item.index] = AKSUDropdownItem(index: item.index, height: item.height, noPadding: item.noPadding ?? noPadding, color: bgColor, content: item.content, action: item.action)
             self.sort.append(item.index)
         }
         self.plain = plain
@@ -51,7 +53,7 @@ struct AKSUDropdown<K: Hashable>: View {
         self.height = height
         self.dropMaxHeight = dropHeight
         self.style = style
-        self.plain = plain
+        self.noPadding = noPadding
     }
 
     var body: some View {
@@ -59,15 +61,14 @@ struct AKSUDropdown<K: Hashable>: View {
             // 文本
             ZStack {
                 if let show = content[selected] {
-                    show.disableHover(canAction: self.style == .selectBtn) {
-                        _, new in
-                        self.selectedRealHeight = new
+                    show.disableHover(canAction: self.style == .selectBtn).onAppear {
+                        selectedRealHeight = show.height
                     }
                 }
             }
             .frame(maxWidth: .infinity)
             .frame(minHeight: 18)
-            .padding([.top, .bottom], 10)
+            .padding([.top, .bottom], noPadding ? 0 : 10)
             .frame(height: self.height)
             .background(self.hoveringContent && self.style == .selectBtn ? .black.opacity(0.1) : .clear)
             .onHover {
@@ -77,20 +78,15 @@ struct AKSUDropdown<K: Hashable>: View {
                 TapGesture()
                     .onEnded {
                         if style != .selectBtn {
-                            if let mouseEvent = mouseEvent {
-                                ToggleDropMenu(event: mouseEvent)
-                            }
+                            ToggleDropMenu()
                         }
                     }
             )
-//            .onMouseEvent(event: [.leftMouseDown]) { point, event in
-//                mouseEvent = event
-//            }
 
             // 分隔符
             if self.style == .selectBtn {
                 VStack {}
-                    .frame(width: 1, height: self.selectedRealHeight)
+                    .frame(width: 1, height: self.height ?? self.selectedRealHeight)
                     .padding([.top, .bottom], 10)
                     .padding([.leading, .trailing], 0)
                     .background(AKSUColor.dyGrayMask)
@@ -111,9 +107,7 @@ struct AKSUDropdown<K: Hashable>: View {
                 self.hoveringToggle = $0
             }
             .onTapGesture {
-                if let mouseEvent = mouseEvent {
-                    ToggleDropMenu(event: mouseEvent)
-                }
+                ToggleDropMenu()
             }
         }
         .frame(maxWidth: .infinity)
@@ -135,24 +129,47 @@ struct AKSUDropdown<K: Hashable>: View {
                 }
             }
         }
-        .onMouseEvent(event: [.leftMouseDown]) { point, event in
+        .onMouseEvent(event: [.leftMouseDown, .rightMouseDown]) { point, event in
             mouseEvent = event
             return false
+        } side: { inside in
+            if !inside {
+                if showDrop {
+                    showDrop = false
+                    menu.close()
+                }
+            }
         }
     }
 
-    func ToggleDropMenu(event: NSEvent) {
+    func ToggleDropMenu() {
+        guard let mouseEvent = mouseEvent else { return }
         if !showDrop {
+            var dropHeight = 0.0
+            for item in content {
+                if style == .selectBtn && selected == item.key {
+                    continue
+                }
+
+                dropHeight += (item.value.height + (item.value.noPadding == true ? 0 : 20))
+            }
+            if let dropMaxHeight = dropMaxHeight {
+                dropHeight = min(dropMaxHeight, dropHeight)
+            }
+            self.dropHeight = dropHeight
+
             menu.menuContent = AnyView(menuContent())
             menu.hiddenEvent = {
                 withAnimation {
                     showDrop = false
                 }
             }
-
-            menu.showView(point: CGPoint(x: location.minX, y: location.maxY + 2), width: location.width, height: 300, view: event.window?.contentView)
+            menu.show(point: CGPoint(x: location.minX, y: location.maxY + 4), width: location.width, height: dropHeight, parent: mouseEvent.window!)
+        } else {
+            menu.close()
         }
 
+        self.mouseEvent = nil
         withAnimation {
             showDrop.toggle()
         }
@@ -165,25 +182,24 @@ struct AKSUDropdown<K: Hashable>: View {
                     ForEach(self.sort, id: \.self) { index in
                         if self.style == .select || index != self.selected {
                             self.content[index]!
-                                .binding(canAction: self.style == .selectBtn, b: { old, new in
-                                    self.contentRealHeight -= old
-                                    self.contentRealHeight += new
-                                })
-                                .onMouseEvent(event: [.leftMouseDown]) { _, _ in
-                                    if self.style == .select {
-                                        self.selected = index
-                                    }
-                                    self.showDrop = false
-                                    menu.close()
-                                    return true
-                                }
+                                .binding(canAction: self.style == .selectBtn)
+                                .simultaneousGesture(
+                                    TapGesture()
+                                        .onEnded {
+                                            if self.style == .select {
+                                                self.selected = index
+                                            }
+                                            self.showDrop = false
+                                            menu.close()
+                                        }
+                                )
                         }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .frame(width: location.width, height: 300, alignment: .top)
+        .frame(width: location.width, height: dropHeight, alignment: .top)
         .background(.white)
     }
 }
@@ -192,29 +208,31 @@ struct AKSUDropdown<K: Hashable>: View {
 public struct AKSUDropdownItem<K: Hashable>: View {
 //    @EnvironmentObject var env: AKSUDropdownEnvironment
     var index: K
+    var height: CGFloat
+    var noPadding: Bool?
     var content: [AnyView]
     var action: (() -> Void)?
-
-    var bind: ((CGFloat, CGFloat) -> Void)? = nil
 
     private var canAction: Bool = false
     private var hoverColor: Color = AKSUColor.primary
     @State private var hovering: Bool = false
-    @State private var height: CGFloat = 0.0
-    @State private var oldHeight: CGFloat = 0.0
     private var selected: Bool = false
 
-    init(index: K, @AKSUAnyViewArrayBuilder content: () -> [AnyView], action: (() -> Void)? = nil) {
+    init(index: K, height: CGFloat = 20, noPadding: Bool? = nil, @AKSUAnyViewArrayBuilder content: () -> [AnyView], action: (() -> Void)? = nil) {
         self.index = index
         self.content = content()
         self.action = action
+        self.height = height
+        self.noPadding = noPadding
     }
 
-    init(index: K, color: Color, content: [AnyView], action: (() -> Void)?) {
+    init(index: K, height: CGFloat = 20, noPadding: Bool? = nil, color: Color, content: [AnyView], action: (() -> Void)?) {
         self.index = index
         self.hoverColor = color
         self.content = content
         self.action = action
+        self.height = height
+        self.noPadding = noPadding
     }
 
     public var body: some View {
@@ -224,22 +242,9 @@ public struct AKSUDropdownItem<K: Hashable>: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding([.top, .bottom], self.selected ? 0 : 10)
+        .frame(height: height)
+        .padding([.top, .bottom], self.selected || noPadding == true ? 0 : 10)
         .foregroundColor(self.selected || self.hovering ? .white : .black)
-        .overlay {
-            GeometryReader {
-                g in
-                Color.clear.task {
-                    self.height = g.size.height
-                }
-            }
-        }
-        .onChange(of: self.height) { newValue in
-            if let bind = bind, oldHeight != newValue {
-                bind(self.oldHeight, newValue)
-                self.oldHeight = newValue
-            }
-        }
         .onHover {
             self.hovering = $0
         }
@@ -253,18 +258,16 @@ public struct AKSUDropdownItem<K: Hashable>: View {
         }
     }
 
-    func disableHover(canAction: Bool, b: @escaping (CGFloat, CGFloat) -> Void) -> AKSUDropdownItem<K> {
+    func disableHover(canAction: Bool) -> AKSUDropdownItem<K> {
         var new = self
         new.selected = true
-        new.bind = b
         new.canAction = canAction
         return new
     }
 
-    func binding(canAction: Bool, b: @escaping (CGFloat, CGFloat) -> Void) -> AKSUDropdownItem<K> {
+    func binding(canAction: Bool) -> AKSUDropdownItem<K> {
         var new = self
         new.selected = false
-        new.bind = b
         new.canAction = canAction
         return new
     }
@@ -272,8 +275,8 @@ public struct AKSUDropdownItem<K: Hashable>: View {
 
 // AKSUDropdown Content Item 修饰函数定义
 extension View {
-    func AKSUDropdownTag<K: Hashable>(index: K, action: (() -> Void)? = nil) -> AKSUDropdownItem<K> {
-        AKSUDropdownItem(index: index, content: { self }, action: action)
+    func AKSUDropdownTag<K: Hashable>(index: K, height: CGFloat = 20, noPadding: Bool? = nil, action: (() -> Void)? = nil) -> AKSUDropdownItem<K> {
+        AKSUDropdownItem(index: index, height: height, noPadding: noPadding, content: { self }, action: action)
     }
 }
 
