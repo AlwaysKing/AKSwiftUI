@@ -25,7 +25,7 @@ struct SplitWndContentView: View {
     let menu: [String: [String]] = [
         "主题": ["Color", "Font"],
         "布局": ["Flex", "Grid"],
-        "组件": ["Button", "Click", "Input", "InputGroup", "Dropdown", "PopWnd", "Toast", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "CircleProgress", "Collapse", "Segment", "Table"]
+        "组件": ["Button", "Click", "Input", "InputGroup", "Dropdown", "PopWnd", "Popover", "Toast", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "CircleProgress", "Collapse", "Segment", "Table"]
     ]
 
     var body: some View {

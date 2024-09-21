@@ -60,6 +60,11 @@ class AKSUToastItemStorage: Identifiable, ObservableObject {
         }
 
         window.setFrame(parent.frame, display: true)
+
+        NotificationCenter.default.addObserver(forName: NSWindow.didResizeNotification, object: parent, queue: OperationQueue.main) {
+            _ in
+            self.window.setFrame(parent.frame, display: true)
+        }
     }
 
     func append(_ view: AKSUToastItemView) {
@@ -104,6 +109,10 @@ class AKSUToast {
             let object = AKSUToastItemStorage(parent: window, colorScheme: colorScheme)
             object.append(view)
             windowsList[window.windowNumber] = object
+            NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: window, queue: OperationQueue.main) {
+                _ in
+                windowsList.removeValue(forKey: window.windowNumber)
+            }
         }
     }
 
@@ -119,7 +128,7 @@ class AKSUToast {
             windowsList[window.windowNumber] = object
         }
     }
-
+    
     static func closeToast(window: NSWindow, location: AKSUToastLocation, id: UUID) {
         if let storage = windowsList[window.windowNumber] {
             storage.remove(location: location, id: id)
