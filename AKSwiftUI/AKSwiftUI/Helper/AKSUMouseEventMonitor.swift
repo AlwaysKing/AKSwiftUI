@@ -8,7 +8,7 @@
 import AppKit
 import Foundation
 
-class MouseEventMonitor {
+class AKSUMouseEventMonitor {
     static var eventMonitor: Any?
 
     static var cbList: [UUID: (window: NSWindow?, filter: [NSEvent.EventType], cb: (CGPoint, NSEvent) -> Bool)] = [:]

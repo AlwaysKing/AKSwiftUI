@@ -897,7 +897,7 @@ struct AKSUTablePreviewsView: View {
             print(list)
 
         } rightClick: { value, key, event in
-            guard let location = MouseEventMonitor.filpLocationPoint(event: event) else { return }
+            guard let location = AKSUMouseEventMonitor.filpLocationPoint(event: event) else { return }
             let menu = NSMenu()
             let menuItem1 = NSMenuItem(title: "Menu Item 1", action: nil, keyEquivalent: "")       
             menu.addItem(menuItem1)

@@ -52,6 +52,8 @@ class AKSUPopWnd: NSObject {
         // 获取window的位置
         let parentRect = parent.frame
         self.parent = parent
+        
+        // 边缘测试
         window.setFrame(NSRect(x: point.x + parentRect.minX - 4, y: parentRect.maxY - point.y - height + 4, width: width, height: height), display: true)
         if !autoHidden {
             return
@@ -64,7 +66,7 @@ class AKSUPopWnd: NSObject {
             }
 
             // 监听窗口为点击
-            MouseEventMonitor.start(uuid: uuid, window: nil, filter: [.leftMouseDown, .rightMouseDown]) { _, event in
+            AKSUMouseEventMonitor.start(uuid: uuid, window: nil, filter: [.leftMouseDown, .rightMouseDown]) { _, event in
                 if event.window != self.window {
                     self.close()
                     self.hiddenEvent?()
@@ -78,7 +80,7 @@ class AKSUPopWnd: NSObject {
         monitor = false
         self.window.close()
         NotificationCenter.default.removeObserver(self, name: NSWindow.didResignKeyNotification, object: parent)
-        MouseEventMonitor.stop(uuid: uuid)
+        AKSUMouseEventMonitor.stop(uuid: uuid)
     }
 }
 
@@ -122,7 +124,7 @@ struct AKSUPopWndPreviewsView: View {
             menu.hiddenEvent = {
                 print("hidden")
             }
-            guard let point = MouseEventMonitor.filpLocationPoint(event: event) else { return false }
+            guard let point = AKSUMouseEventMonitor.filpLocationPoint(event: event) else { return false }
             menu.show(point: point, width: 120, height: 300, parent: event!.window!)
             return true
         }

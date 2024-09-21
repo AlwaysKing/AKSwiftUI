@@ -26,9 +26,95 @@ enum AKSUPopoverAligment {
 }
 
 class AKSUPopover: AKSUPopWnd {
-    func show(rect: CGRect, size: CGSize, padding: CGFloat = 10, alignment: AKSUPopoverAligment, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil) {
-        var point = CGPoint.zero
+    func show(rect: CGRect, size: CGSize, padding: CGFloat = 10, alignment: AKSUPopoverAligment, autoRePosition: Bool = false, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil, rePosition: ((_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment)? = nil) {
+        var newAligment = alignment
+        var point = getPoint(rect: rect, size: size, padding: padding, alignment: alignment)
 
+        if autoRePosition || rePosition != nil {
+            // 先判断窗口
+            let inWndRect = CGRect(x: point.x, y: point.y, width: size.width, height: size.height)
+            let wndEdge = AKSUScreen.window(window: parent, rect: inWndRect)
+            if wndEdge.count != 0 {
+                if let rePosition = rePosition {
+                    newAligment = rePosition(alignment, wndEdge)
+                    point = getPoint(rect: rect, size: size, padding: padding, alignment: newAligment)
+                } else {
+                    // 自动重置位置
+                    newAligment = self.autoRePosition(alignment, wndEdge)
+                    point = getPoint(rect: rect, size: size, padding: padding, alignment: newAligment)
+                }
+            }
+
+            let inScreenRect = CGRect(x: point.x + parent.frame.minX, y: point.y + parent.frame.minY, width: size.width, height: size.height)
+            let screenEdge = AKSUScreen.mainScreen(rect: inScreenRect)
+            if screenEdge.count != 0 {
+                if let rePosition = rePosition {
+                    newAligment = rePosition(alignment, screenEdge)
+                    point = getPoint(rect: rect, size: size, padding: padding, alignment: newAligment)
+                } else {
+                    // 自动重置位置
+                    newAligment = self.autoRePosition(alignment, screenEdge)
+                    point = getPoint(rect: rect, size: size, padding: padding, alignment: newAligment)
+                }
+            }
+        }
+
+        show(point: point, width: size.width, height: size.height, autoHidden: autoHidden, parent: parent, view: view)
+    }
+
+    func autoRePosition(_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment {
+        if edge.contains(.top) {
+            if edge.contains(.left) {
+                // 左上冲突了
+                return .rightTop
+            } else if edge.contains(.right) {
+                return .leftTop
+            } else {
+                if alignment == .upLeading {
+                    return .downLeading
+                } else if alignment == .upTrailling {
+                    return .downTrailling
+                } else {
+                    return .downCenter
+                }
+            }
+        } else if edge.contains(.bottom) {
+            if edge.contains(.left) {
+                return .rightBottom
+            } else if edge.contains(.right) {
+                return .leftBottom
+            } else {
+                if alignment == .downLeading {
+                    return .upLeading
+                } else if alignment == .downTrailling {
+                    return .upTrailling
+                } else {
+                    return .upCenter
+                }
+            }
+        } else if edge.contains(.left) {
+            if alignment == .leftTop {
+                return .rightTop
+            } else if alignment == .leftBottom {
+                return .rightBottom
+            } else {
+                return .rightCenter
+            }
+        } else if edge.contains(.right) {
+            if alignment == .rightTop {
+                return .leftTop
+            } else if alignment == .rightBottom {
+                return .leftBottom
+            } else {
+                return .leftCenter
+            }
+        }
+
+        return alignment
+    }
+
+    func getPoint(rect: CGRect, size: CGSize, padding: CGFloat, alignment: AKSUPopoverAligment) -> CGPoint {
+        var point = CGPoint.zero
         // 封装常用计算逻辑
         let top: () -> CGFloat = { rect.minY - size.height - padding }
         let bottom: () -> CGFloat = { rect.maxY + padding }
@@ -77,8 +163,7 @@ class AKSUPopover: AKSUPopWnd {
             point.x = right()
             point.y = centerY()
         }
-
-        show(point: point, width: size.width, height: size.height, autoHidden: autoHidden, parent: parent, view: view)
+        return point
     }
 }
 

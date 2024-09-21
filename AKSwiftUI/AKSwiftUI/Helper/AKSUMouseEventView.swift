@@ -32,7 +32,7 @@ struct AKSUMouseEventView<V: View>: View {
             }
         }
         .onChange(of: window) { _ in
-            MouseEventMonitor.start(uuid: uuid, window: window, filter: filter) { location, event in
+            AKSUMouseEventMonitor.start(uuid: uuid, window: window, filter: filter) { location, event in
                 if rect.contains(location) {
                     if let mouseEventCB = mouseEventCB {
                         return mouseEventCB(CGPoint(x: location.x - rect.origin.x, y: location.y - rect.origin.y), event)
@@ -48,7 +48,7 @@ struct AKSUMouseEventView<V: View>: View {
                 return false
             }
         }.onDisappear {
-            MouseEventMonitor.stop(uuid: uuid)
+            AKSUMouseEventMonitor.stop(uuid: uuid)
         }
         .overlay {
             GeometryReader {
