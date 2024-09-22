@@ -24,7 +24,6 @@
 		933218AC2C8AE74D00F32103 /* AKSUPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9332188B2C8AE74D00F32103 /* AKSUPopover.swift */; };
 		933218AD2C8AE74D00F32103 /* AKSUTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9332188C2C8AE74D00F32103 /* AKSUTable.swift */; };
 		933218AE2C8AE74D00F32103 /* AKSUToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9332188D2C8AE74D00F32103 /* AKSUToast.swift */; };
-		933218AF2C8AE74D00F32103 /* AKSUTooltips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9332188E2C8AE74D00F32103 /* AKSUTooltips.swift */; };
 		933218B02C8AE74D00F32103 /* AKSUBadges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933218902C8AE74D00F32103 /* AKSUBadges.swift */; };
 		933218B12C8AE74D00F32103 /* AKSUButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933218912C8AE74D00F32103 /* AKSUButton.swift */; };
 		933218B22C8AE74D00F32103 /* AKSUCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933218922C8AE74D00F32103 /* AKSUCheckBox.swift */; };
@@ -42,9 +41,9 @@
 		933218BE2C8AE74D00F32103 /* AKSUSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9332189E2C8AE74D00F32103 /* AKSUSegment.swift */; };
 		933218BF2C8AE74D00F32103 /* AKSUColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9332189F2C8AE74D00F32103 /* AKSUColor.swift */; };
 		933218E92C8AE98600F32103 /* AKSUFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933218E82C8AE98600F32103 /* AKSUFont.swift */; };
-		933219192C8B219100F32103 /* AKSUSpliteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933219182C8B219100F32103 /* AKSUSpliteView.swift */; };
+		933219192C8B219100F32103 /* AKSUSplitStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933219182C8B219100F32103 /* AKSUSplitStack.swift */; };
 		933219492C8F3EF800F32103 /* AKSUMouseEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933219482C8F3EF800F32103 /* AKSUMouseEventView.swift */; };
-		93509D652C88A7BC00CA3645 /* SpliteContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93509D642C88A7BC00CA3645 /* SpliteContentView.swift */; };
+		93509D652C88A7BC00CA3645 /* SplitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93509D642C88A7BC00CA3645 /* SplitContentView.swift */; };
 		93E845E72C91E6BD00DCCB0C /* AKSUPopWnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E845E62C91E6BD00DCCB0C /* AKSUPopWnd.swift */; };
 		93F8239B2C949CC50011C475 /* AKSUWarpStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F8239A2C949CC50011C475 /* AKSUWarpStack.swift */; };
 		93F8239D2C949FF30011C475 /* AKSUWindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F8239C2C949FF30011C475 /* AKSUWindowAccessor.swift */; };
@@ -71,7 +70,6 @@
 		9332188B2C8AE74D00F32103 /* AKSUPopover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUPopover.swift; sourceTree = "<group>"; };
 		9332188C2C8AE74D00F32103 /* AKSUTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUTable.swift; sourceTree = "<group>"; };
 		9332188D2C8AE74D00F32103 /* AKSUToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUToast.swift; sourceTree = "<group>"; };
-		9332188E2C8AE74D00F32103 /* AKSUTooltips.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUTooltips.swift; sourceTree = "<group>"; };
 		933218902C8AE74D00F32103 /* AKSUBadges.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUBadges.swift; sourceTree = "<group>"; };
 		933218912C8AE74D00F32103 /* AKSUButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUButton.swift; sourceTree = "<group>"; };
 		933218922C8AE74D00F32103 /* AKSUCheckBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUCheckBox.swift; sourceTree = "<group>"; };
@@ -90,9 +88,9 @@
 		9332189F2C8AE74D00F32103 /* AKSUColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUColor.swift; sourceTree = "<group>"; };
 		933218E82C8AE98600F32103 /* AKSUFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUFont.swift; sourceTree = "<group>"; };
 		933218EA2C8AED0800F32103 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		933219182C8B219100F32103 /* AKSUSpliteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUSpliteView.swift; sourceTree = "<group>"; };
+		933219182C8B219100F32103 /* AKSUSplitStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUSplitStack.swift; sourceTree = "<group>"; };
 		933219482C8F3EF800F32103 /* AKSUMouseEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUMouseEventView.swift; sourceTree = "<group>"; };
-		93509D642C88A7BC00CA3645 /* SpliteContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpliteContentView.swift; sourceTree = "<group>"; };
+		93509D642C88A7BC00CA3645 /* SplitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitContentView.swift; sourceTree = "<group>"; };
 		93E845E62C91E6BD00DCCB0C /* AKSUPopWnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUPopWnd.swift; sourceTree = "<group>"; };
 		93F8239A2C949CC50011C475 /* AKSUWarpStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUWarpStack.swift; sourceTree = "<group>"; };
 		93F8239C2C949FF30011C475 /* AKSUWindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUWindowAccessor.swift; sourceTree = "<group>"; };
@@ -133,7 +131,7 @@
 				933218A02C8AE74D00F32103 /* AKSwiftUI */,
 				3919F7322C83157000E63624 /* AKSwiftUIApp.swift */,
 				3919F7342C83157000E63624 /* SplitWndContentView.swift */,
-				93509D642C88A7BC00CA3645 /* SpliteContentView.swift */,
+				93509D642C88A7BC00CA3645 /* SplitContentView.swift */,
 				3919F7362C83157100E63624 /* Assets.xcassets */,
 				3919F73B2C83157100E63624 /* AKSwiftUI.entitlements */,
 				933218EA2C8AED0800F32103 /* Info.plist */,
@@ -184,6 +182,7 @@
 		933218892C8AE74D00F32103 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
+				933219182C8B219100F32103 /* AKSUSplitStack.swift */,
 				93F8239C2C949FF30011C475 /* AKSUWindowAccessor.swift */,
 				93F8239A2C949CC50011C475 /* AKSUWarpStack.swift */,
 				933218882C8AE74D00F32103 /* AKSUSplitWnd.swift */,
@@ -193,19 +192,9 @@
 			path = Layout;
 			sourceTree = "<group>";
 		};
-		9332188F2C8AE74D00F32103 /* unfinish */ = {
-			isa = PBXGroup;
-			children = (
-				9332188E2C8AE74D00F32103 /* AKSUTooltips.swift */,
-				933219182C8B219100F32103 /* AKSUSpliteView.swift */,
-			);
-			path = unfinish;
-			sourceTree = "<group>";
-		};
 		933218A02C8AE74D00F32103 /* AKSwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				9332188F2C8AE74D00F32103 /* unfinish */,
 				933218862C8AE74D00F32103 /* Helper */,
 				9332187D2C8AE74D00F32103 /* Animation */,
 				933218892C8AE74D00F32103 /* Layout */,
@@ -327,10 +316,9 @@
 				933218BE2C8AE74D00F32103 /* AKSUSegment.swift in Sources */,
 				933218B92C8AE74D00F32103 /* AKSUInput.swift in Sources */,
 				933218B82C8AE74D00F32103 /* AKSUDropdown.swift in Sources */,
-				93509D652C88A7BC00CA3645 /* SpliteContentView.swift in Sources */,
+				93509D652C88A7BC00CA3645 /* SplitContentView.swift in Sources */,
 				933219492C8F3EF800F32103 /* AKSUMouseEventView.swift in Sources */,
 				933218B12C8AE74D00F32103 /* AKSUButton.swift in Sources */,
-				933218AF2C8AE74D00F32103 /* AKSUTooltips.swift in Sources */,
 				933218AC2C8AE74D00F32103 /* AKSUPopover.swift in Sources */,
 				93F8239B2C949CC50011C475 /* AKSUWarpStack.swift in Sources */,
 				933218B32C8AE74D00F32103 /* AKSUCircleProgress.swift in Sources */,
@@ -349,7 +337,7 @@
 				933218AA2C8AE74D00F32103 /* AKSUSplitWnd.swift in Sources */,
 				933218B22C8AE74D00F32103 /* AKSUCheckBox.swift in Sources */,
 				933218A62C8AE74D00F32103 /* AKSUMouseEventMonitor.swift in Sources */,
-				933219192C8B219100F32103 /* AKSUSpliteView.swift in Sources */,
+				933219192C8B219100F32103 /* AKSUSplitStack.swift in Sources */,
 				93F8239F2C9539F00011C475 /* AKSUScreen.swift in Sources */,
 				933218B72C8AE74D00F32103 /* AKSUContainBox.swift in Sources */,
 				933218B52C8AE74D00F32103 /* AKSUClick.swift in Sources */,

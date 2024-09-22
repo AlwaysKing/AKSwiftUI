@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SpliteContentView: View {
+struct SplitContentView: View {
     @Binding var light: Bool
 
     @State var showLeftView: Bool = true
@@ -138,5 +138,5 @@ struct SpliteContentView: View {
 }
 
 #Preview {
-    SpliteContentView(light: .constant(true))
+    SplitContentView(light: .constant(true))
 }

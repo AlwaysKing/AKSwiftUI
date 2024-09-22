@@ -24,7 +24,7 @@ struct AKSwiftUIApp: App {
                         AKSUToast.changeColorScheme(light ? .light : .dark)
                     }
             } else {
-                SpliteContentView(light: $light)
+                SplitContentView(light: $light)
                     .preferredColorScheme(light ? .light : .dark)
                     .onAppear {
                         AKSUToast.setColorScheme(light ? .light : .dark)

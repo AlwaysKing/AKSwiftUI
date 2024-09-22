@@ -24,11 +24,11 @@ struct AKSUFlexStack<Content: View>: View {
     }
 
     var body: some View {
-        _VariadicView.Tree(FlexStackLayout(left: isLeftToRight, top: isTopToBottom, horizontal: horizontal, edges: edges), content: content)
+        _VariadicView.Tree(AKSUFlexStackLayout(left: isLeftToRight, top: isTopToBottom, horizontal: horizontal, edges: edges), content: content)
     }
 }
 
-struct FlexStackLayout: _VariadicView_UnaryViewRoot {
+struct AKSUFlexStackLayout: _VariadicView_UnaryViewRoot {
     let left: Bool
     let top: Bool
     let horizontal: Bool
@@ -50,7 +50,7 @@ struct FlexStackLayout: _VariadicView_UnaryViewRoot {
     }
 
     private func layout(geometry: GeometryProxy, children: _VariadicView.Children) -> some View {
-        let computer = FlexStackLayoutOffset(stackWidth: geometry.size.width, stackHeight: geometry.size.height, left: left, top: top, horizontal: horizontal)
+        let computer = AKSUFlexStackLayoutOffset(stackWidth: geometry.size.width, stackHeight: geometry.size.height, left: left, top: top, horizontal: horizontal)
         return HStack(alignment: .center) {
             if edges.contains(.horizontal) || edges.contains(.leading) || edges.contains(.all) {
                 Spacer()
@@ -76,7 +76,7 @@ struct FlexStackLayout: _VariadicView_UnaryViewRoot {
     }
 }
 
-private class FlexStackLayoutOffset {
+private class AKSUFlexStackLayoutOffset {
     var index: Int = 0
     var sizeList: [Int: CGSize] = [:]
 

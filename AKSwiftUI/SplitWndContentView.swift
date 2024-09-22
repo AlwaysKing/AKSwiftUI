@@ -20,11 +20,11 @@ struct SplitWndContentView: View {
     @State var g: CGFloat = 0.0
     @State var b: CGFloat = 0.0
 
-    @State var selected: String = "Toast"
+    @State var selected: String = "Split"
 
     let menu: [String: [String]] = [
         "主题": ["Color", "Font"],
-        "布局": ["Flex", "Grid"],
+        "布局": ["Flex", "Grid", "Split"],
         "组件": ["Button", "Click", "Input", "InputGroup", "Dropdown", "PopWnd", "Popover", "Toast", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "CircleProgress", "Collapse", "Segment", "Table"]
     ]
 
@@ -37,6 +37,7 @@ struct SplitWndContentView: View {
                     case "Font": AKSUFontPreviewsView()
                     case "Flex": AKSUFlexPreviewsView()
                     case "Grid": AKSUGridPreviewsView()
+                    case "Split": AKSUSplitStackPreviewsView()
                     case "Button": AKSUButtonPreviewsView()
                     case "Click": AKSUClickPreviewsView()
                     case "Input": AKSUInputPreviewsView()
