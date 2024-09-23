@@ -13,110 +13,134 @@ enum AKSUSplitStackDirection {
 }
 
 struct AKSUSplitStack: View {
-    var content: [AKSUSplitStackItemView]
     let direction: AKSUSplitStackDirection
+    @State var totalLength: CGFloat = 0
+    @State var lengths: [(current: CGFloat, min: CGFloat, max: CGFloat)] = []
+    @State var children: [AKSUSplitStackItemView]
+    @State var startDrag: NSPoint?
 
     init(direction: AKSUSplitStackDirection = .horizontal, @AKSUSplitStackItemBuilder content: @escaping () -> [AKSUSplitStackItemView]) {
-        self.content = content()
+        self.children = content()
         self.direction = direction
     }
 
     var body: some View {
-//        if direction == .horizontal {
-//            _VariadicView.Tree(AKSUSplitHorizontalLayout(), content: content)
-//        } else {
-//            _VariadicView.Tree(AKSUSplitVerticalLayout(), content: content)
-        AKSUSplitHorizontalLayout(children: content)
-//        }
-    }
-}
-
-struct AKSUSplitVerticalLayout: _VariadicView_UnaryViewRoot {
-    @ViewBuilder
-    func body(children: _VariadicView.Children) -> some View {
-        VStack {
-            ForEach(children) { child in
-                child
-            }
-        }
-    }
-}
-
-struct AKSUSplitHorizontalLayout: View {
-    @State var totalLength: CGFloat = 0
-    @State var lengths: [(tmp: CGFloat, current: CGFloat, min: CGFloat, max: CGFloat)] = []
-    @State var children: [AKSUSplitStackItemView]
-    @State var startDrag: NSPoint?
-    @State var startChange: CGFloat = 0
-
-    var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // content
-                HStack(spacing: 0) {
-                    ForEach(Array(0 ..< children.count), id: \.self) { index in
-                        children[index]
-                            .frame(width: index < lengths.count ? lengths[index].tmp : 0.0)
-                    }
-                }.frame(maxWidth: .infinity, alignment: .leading)
+                if direction == .horizontal {
+                    // content
+                    HStack(spacing: 0) {
+                        makeContentView()
+                    }.frame(maxWidth: .infinity, alignment: .leading)
 
-                // bar
-                HStack(spacing: 0) {
-                    ForEach(Array(0 ..< lengths.count), id: \.self) { index in
-                        if index < lengths.count - 1 {
-                            AKSUSplitBar()
-                                .padding(.leading, lengths[index].0 - (index == 0 ? 5 : 10))
-                                .gesture(
-                                    DragGesture()
-                                        .onChanged { value in
-                                            if let startDrag = startDrag {
-                                                let new = NSEvent.mouseLocation
-                                                changeLength(index: index, change: new.x - startDrag.x + startChange, end: false)
-                                            } else {
-                                                startDrag = NSEvent.mouseLocation
-                                                startChange = value.location.x - value.startLocation.x
-                                                if let startDrag = startDrag {
-                                                    let new = NSEvent.mouseLocation
-                                                    changeLength(index: index, change: new.x - startDrag.x + startChange, end: false)
-                                                }
-                                            }
-                                        }
-                                        .onEnded { value in
-                                            if let startDrag = startDrag {
-                                                let new = NSEvent.mouseLocation
-                                                changeLength(index: index, change: new.x - startDrag.x + startChange, end: true)
-                                            }
-                                            startDrag = nil
-                                        }
-                                )
-                        }
-                    }
-                }.frame(maxWidth: .infinity, alignment: .leading)
+                    // bar
+                    HStack(spacing: 0) {
+                        makeBarView()
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    // content
+                    VStack(spacing: 0) {
+                        makeContentView()
+                    }.frame(maxHeight: .infinity, alignment: .top)
+
+                    // bar
+                    VStack(spacing: 0) {
+                        makeBarView()
+                    }.frame(maxHeight: .infinity, alignment: .top)
+                }
             }
             .onAppear {
-                resize(length: geometry.size.width)
+                resize(length: direction == .horizontal ? geometry.size.width : geometry.size.height)
             }
             .onChange(of: geometry.size) { _ in
-                resize(length: geometry.size.width)
+                resize(length: direction == .horizontal ? geometry.size.width : geometry.size.height)
             }
         }
     }
 
+    func makeContentView() -> some View {
+        ForEach(Array(0 ..< children.count), id: \.self) { index in
+            let length = (index < lengths.count ? lengths[index].current : 0.0)
+
+            if length == 10 {
+                ZStack {
+                    Image(systemName: "ellipsis").rotationEffect(Angle(degrees: direction == .horizontal ? 90 : 0))
+                }
+                .frame(width: direction == .horizontal ? length : nil)
+                .frame(height: direction == .vertical ? length : nil)
+                .frame(maxWidth: direction == .vertical ? .infinity : nil, maxHeight: direction == .horizontal ? .infinity : nil)
+            } else {
+                children[index]
+                    .frame(width: direction == .horizontal ? length : nil)
+                    .frame(height: direction == .vertical ? length : nil)
+            }
+        }
+    }
+
+    func makeBarView() -> some View {
+        ForEach(Array(0 ..< lengths.count), id: \.self) { index in
+            if index < lengths.count - 1 {
+                AKSUSplitBar(direction: direction)
+                    .padding(.leading, direction == .horizontal ? lengths[index].0 - (index == 0 ? 5 : 10) : 0)
+                    .padding(.top, direction == .vertical ? lengths[index].0 - (index == 0 ? 5 : 10) : 0)
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                let new = NSEvent.mouseLocation
+                                var change = 0.0
+                                var padding = 0.0
+                                if startDrag == nil {
+                                    startDrag = new
+                                    if direction == .horizontal {
+                                        padding = (value.location.x - value.startLocation.x)
+                                    } else {
+                                        padding = (value.location.y - value.startLocation.y)
+                                    }
+                                }
+
+                                if direction == .horizontal {
+                                    change = new.x - startDrag!.x
+                                } else {
+                                    change = -(new.y - startDrag!.y)
+                                }
+
+                                changeLength(index: index, change: change + padding, end: false)
+                                self.startDrag = new
+                            }
+                            .onEnded { value in
+                                if let startDrag = startDrag {
+                                    let new = NSEvent.mouseLocation
+                                    var change = 0.0
+                                    if direction == .horizontal {
+                                        change = new.x - startDrag.x
+                                    } else {
+                                        change = -(new.y - startDrag.y)
+                                    }
+                                    changeLength(index: index, change: change, end: true)
+                                    self.startDrag = new
+                                }
+                                startDrag = nil
+                            }
+                    )
+            }
+        }
+    }
+    
     func resize(length: CGFloat) {
         if lengths.count == 0 {
             // 初始化内容
-            lengths = [(CGFloat, CGFloat, CGFloat, CGFloat)](repeating: (0, 0, 0, 0), count: children.count)
+            lengths = [(CGFloat, CGFloat, CGFloat)](repeating: (0, 0, 0), count: children.count)
 
             // 先给有idea的分配idea
             for (index, item) in children.enumerated() {
                 if let idea = item.idea {
-                    lengths[index] = (idea, idea, item.min ?? 10, item.max ?? 4096000)
+                    lengths[index] = (idea, item.min ?? 10, item.max ?? 4096000)
                     totalLength += idea
                 } else if let max = item.max {
-                    lengths[index] = (max, max, item.min ?? 10, item.max ?? 4096000)
+                    lengths[index] = (max, item.min ?? 10, item.max ?? 4096000)
                     totalLength += max
                 } else if let min = item.min {
-                    lengths[index] = (min, min, item.min ?? 10, item.max ?? 4096000)
+                    lengths[index] = (min, item.min ?? 10, item.max ?? 4096000)
                     totalLength += min
                 }
             }
@@ -128,26 +152,26 @@ struct AKSUSplitHorizontalLayout: View {
             var subed = false
             let perSub = (totalLength - length) / CGFloat(children.count)
             for (index, item) in children.enumerated() {
-                let new = lengths[index].tmp - perSub
-                if lengths[index].tmp == 10 {
+                let new = lengths[index].current - perSub
+                if lengths[index].current == 10 {
                     continue
                 }
 
                 if let min = item.min, new < min {
-                    totalLength -= lengths[index].tmp - min
-                    if lengths[index].tmp != min {
+                    totalLength -= lengths[index].current - min
+                    if lengths[index].current != min {
                         subed = true
                     }
-                    lengths[index].tmp = min
+                    lengths[index].current = min
                     lengths[index].current = min
                 } else if new < 10 {
                     totalLength -= lengths[index].0 - 10
-                    lengths[index].tmp = 10
+                    lengths[index].current = 10
                     lengths[index].current = 10
                     subed = true
                 } else {
                     totalLength -= perSub
-                    lengths[index].tmp = new
+                    lengths[index].current = new
                     lengths[index].current = new
                     subed = true
                 }
@@ -186,21 +210,21 @@ struct AKSUSplitHorizontalLayout: View {
             let perAdd = (length - totalLength) / CGFloat(children.count)
             for (index, item) in children.enumerated() {
                 // 折叠的跳过
-                if lengths[index].tmp == 10 {
+                if lengths[index].current == 10 {
                     continue
                 }
 
-                let new = lengths[index].tmp + perAdd
+                let new = lengths[index].current + perAdd
                 if let max = item.max, new > max {
                     totalLength += max - lengths[index].0
-                    if lengths[index].tmp != max {
+                    if lengths[index].current != max {
                         added = true
                     }
-                    lengths[index].tmp = max
+                    lengths[index].current = max
                     lengths[index].current = max
                 } else {
                     totalLength += perAdd
-                    lengths[index].tmp = new
+                    lengths[index].current = new
                     lengths[index].current = new
                     added = true
                 }
@@ -210,19 +234,16 @@ struct AKSUSplitHorizontalLayout: View {
             }
         }
 
-        print("=============================================================")
-        for (index, item) in lengths.enumerated() {
-            print("index :\(index)    \(item.tmp) / \(item.current)")
-        }
+//        print("=============================================================")
+//        for (index, item) in lengths.enumerated() {
+//            print("index :\(index)    \(item.current) / \(item.current)")
+//        }
     }
 
     func changeLength(index: Int, change: CGFloat, end: Bool) {
         let current = lengths[index].current
-        print("=============================================================")
-        print("初始化 index:\(index) \(lengths[index].current) change:\(change)")
-        for no in 0 ..< lengths.count {
-            lengths[no].tmp = lengths[no].current
-        }
+//        print("=============================================================")
+//        print("初始化 index:\(index) \(lengths[index].current) change:\(change)")
 
         if change < 0 {
             // 缩小
@@ -236,6 +257,7 @@ struct AKSUSplitHorizontalLayout: View {
 
             if current == 10 && index != 0 {
                 // 尝试缩小前面的
+//                print("index:\(index) 自身已经无法缩减, 向前缩减")
                 changeLength(index: index - 1, change: change, end: end)
                 return
             } else if newLength == current {
@@ -257,8 +279,8 @@ struct AKSUSplitHorizontalLayout: View {
 //                print("next: \(next) 当前大小 \(lengths[next].current) 可接收的大小为 \(canUsed)")
                 let realUsed = min(canUsed, realChange)
 //                print("next: \(next) 实际接收大小为 \(realUsed)")
-                lengths[next].tmp = lengths[next].current + realUsed
-//                print("next: \(next) 实际大小变更为 \(lengths[next].tmp)")
+                lengths[next].current = lengths[next].current + realUsed
+//                print("next: \(next) 实际大小变更为 \(lengths[next].current)")
                 realChange -= realUsed
 //                print("next: \(next) 剩余待分配尺寸为 \(realChange)")
                 if realChange <= 0 {
@@ -271,7 +293,7 @@ struct AKSUSplitHorizontalLayout: View {
             if realChange > 0 {
 //                print("已经展开的视图无法接收全部的空间, 开始向后寻找可以展开接收空间的视图")
                 for next in index + 1 ..< children.count {
-                    if lengths[next].1 != 10 {
+                    if lengths[next].current != 10 {
 //                        print("next: \(next) 已经是展开状态了")
                         continue
                     }
@@ -281,15 +303,15 @@ struct AKSUSplitHorizontalLayout: View {
 //                    print("next: \(next) 的最小展开大小需要 \(minNeed)")
                     if minNeed <= realChange {
                         realChange -= minNeed
-                        lengths[next].tmp = minNeed + lengths[next].current
+                        lengths[next].current = minNeed + lengths[next].current
 //                        print("next: \(next) 展开后空间后空间仍然剩余 \(realChange), 尝试扩展")
 
-                        let canUsed = lengths[next].max - lengths[next].tmp
+                        let canUsed = lengths[next].max - lengths[next].current
 //                        print("next: \(next) 仍然可接收的大小为 \(canUsed)")
                         let realUsed = min(canUsed, realChange)
 //                        print("next: \(next) 实际接收大小为 \(realUsed)")
-                        lengths[next].tmp = lengths[next].tmp + realUsed
-//                        print("next: \(next) 实际大小变更为 \(lengths[next].tmp)")
+                        lengths[next].current = lengths[next].current + realUsed
+//                        print("next: \(next) 实际大小变更为 \(lengths[next].current)")
                         realChange -= realUsed
 //                        print("next: \(next) 剩余待分配尺寸为 \(realChange)")
                         if realChange <= 0 {
@@ -307,7 +329,7 @@ struct AKSUSplitHorizontalLayout: View {
                         } else {
 //                            print("next: \(next) 空间足够, 准备展开")
                             newLength = subNewLength
-                            lengths[next].tmp = minNeed + lengths[next].current
+                            lengths[next].current = minNeed + lengths[next].current
 //                            print("next: \(next) 尺寸已全部分配完成")
                             realChange = 0
                             break
@@ -316,12 +338,7 @@ struct AKSUSplitHorizontalLayout: View {
                 }
             }
 
-            if realChange != 0 {
-//                print("index:\(index) 剩余的空间 \(realChange) 无法缩小")
-//                changeLength(index: index - 1, change: -realChange, end: end)
-                return
-            }
-            lengths[index].0 = newLength + realChange
+            lengths[index].current = newLength + realChange
         } else {
             // 放大
 //            print("index:\(index) 放大")
@@ -353,12 +370,12 @@ struct AKSUSplitHorizontalLayout: View {
 //                print("next: \(next) 当前大小 \(lengths[next].current) 可缩减的大小为 \(canshark)")
                 let realShark = min(canshark, realChange)
 //                print("next: \(next) 实际接收大小为 \(realShark)")
-                lengths[next].tmp = lengths[next].current - realShark
-//                print("next: \(next) 实际大小变更为 \(lengths[next].tmp)")
+                lengths[next].current = lengths[next].current - realShark
+//                print("next: \(next) 实际大小变更为 \(lengths[next].current)")
                 realChange -= realShark
 //                print("next: \(next) 剩余待分配尺寸为 \(realChange)")
                 if realChange <= 0 {
-                    print("next: \(next) 尺寸已全部分配完成")
+//                    print("next: \(next) 尺寸已全部分配完成")
                     break
                 }
             }
@@ -371,12 +388,12 @@ struct AKSUSplitHorizontalLayout: View {
 //                        print("next: \(next) 折叠了无法再缩减了")
                         continue
                     }
-                    let canShark = lengths[next].tmp - 10
+                    let canShark = lengths[next].current - 10
 //                    print("next: \(next) 折叠后可再接收 \(canShark)")
 
                     if realChange >= canShark {
                         realChange -= canShark
-                        lengths[next].tmp = lengths[next].tmp - canShark
+                        lengths[next].current = lengths[next].current - canShark
 //                        print("next: \(next) 折叠空间后空间仍然剩余 \(realChange)")
                         if realChange <= 0 {
 //                            print("next: \(next) 尺寸已全部分配完成")
@@ -392,8 +409,8 @@ struct AKSUSplitHorizontalLayout: View {
                         } else {
 //                            print("next: \(next) 空间足够, 准备折叠")
                             newLength = addNewLength
-                            lengths[next].tmp = lengths[next].tmp - canShark
-                            print("next: \(next) 尺寸已全部分配完成")
+                            lengths[next].current = lengths[next].current - canShark
+//                            print("next: \(next) 尺寸已全部分配完成")
                             realChange = 0
                             break
                         }
@@ -401,41 +418,48 @@ struct AKSUSplitHorizontalLayout: View {
                 }
             }
 
-            if realChange != 0 {
-                print("index:\(index) 剩余的空间 \(realChange) 无法扩大")
-            }
+//            if realChange != 0 {
+//                print("index:\(index) 剩余的空间 \(realChange) 无法扩大")
+//            }
             lengths[index].0 = newLength - realChange
         }
-
-        if end {
-            for no in 0 ..< lengths.count {
-                lengths[no].current = lengths[no].tmp
-            }
-        }
-
-//        print("--------------------------------------")
-//        for (index, item) in lengths.enumerated() {
-//            print("index :\(index) \(item.tmp) / \(item.current)")
-//        }
     }
 }
 
 struct AKSUSplitBar: View {
     @State var hovering: Bool = false
+    let direction: AKSUSplitStackDirection
 
     var body: some View {
-        VStack {
-        }
-        .frame(width: 10)
-        .frame(maxHeight: .infinity)
-        .background(.gray.opacity(hovering ? 1.0 : 0.4))
-        .mask(Rectangle().frame(width: 2))
-        .onHover {
-            hovering = $0
-            if hovering {
-                NSCursor.resizeLeftRight.push()
-            } else {
-                NSCursor.pop()
+        if direction == .horizontal {
+            VStack {
+            }
+            .frame(width: 10)
+            .frame(maxHeight: .infinity)
+            .background(.gray.opacity(hovering ? 1.0 : 0.4))
+            .mask(Rectangle().frame(width: 2))
+            .onHover {
+                hovering = $0
+                if hovering {
+                    NSCursor.resizeLeftRight.push()
+                } else {
+                    NSCursor.pop()
+                }
+            }
+        } else {
+            VStack {
+            }
+            .frame(height: 10)
+            .frame(maxWidth: .infinity)
+            .background(.gray.opacity(hovering ? 1.0 : 0.4))
+            .mask(Rectangle().frame(height: 2))
+            .onHover {
+                hovering = $0
+                if hovering {
+                    NSCursor.resizeUpDown.push()
+                } else {
+                    NSCursor.pop()
+                }
             }
         }
     }
@@ -528,21 +552,39 @@ struct AKSUSplitStackPreviewsView: View {
     @State var edges: [Edge.Set] = []
 
     var body: some View {
-        AKSUSplitStack {
-            VStack {}
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.red)
-                .AKSUSplitItem(min: 200)
+        AKSUSplitStack(direction: .vertical) {
+            GeometryReader {
+                g in
+                VStack(alignment: .leading) {
+                    Text("高度:\(g.size.height)  宽度:\(g.size.width)")
+                    Text("min:\(200)  idea:\(300)   max:\(400)")
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.red)
+            .AKSUSplitItem(min: 200, idea: 300)
 
-            VStack {}
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.green)
-                .AKSUSplitItem(min: 200)
+            GeometryReader {
+                g in
+                VStack(alignment: .leading) {
+                    Text("高度:\(g.size.height)  宽度:\(g.size.width)")
+                    Text("min:\(200)  idea:\(300)   max:\(400)")
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.green)
+            .AKSUSplitItem(min: 200, idea: 300)
 
-            VStack {}
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.blue)
-                .AKSUSplitItem(min: 200)
+            GeometryReader {
+                g in
+                VStack(alignment: .leading) {
+                    Text("高度:\(g.size.height)  宽度:\(g.size.width)")
+                    Text("min:\(200)  idea:\(300)   max:\(400)")
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.blue)
+            .AKSUSplitItem(min: 200, idea: 300)
         }
     }
 }
