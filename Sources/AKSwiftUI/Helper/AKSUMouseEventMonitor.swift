@@ -8,13 +8,13 @@
 import AppKit
 import Foundation
 
-class AKSUMouseEventMonitor {
+public class AKSUMouseEventMonitor {
     static var eventMonitor: Any?
 
     static var cbList: [UUID: (window: NSWindow?, filter: [NSEvent.EventType], cb: (CGPoint, NSEvent) -> Bool)] = [:]
     static var sort: [UUID] = []
 
-    static func start(uuid: UUID, window: NSWindow?, filter: [NSEvent.EventType], cb: @escaping (CGPoint, NSEvent) -> Bool) {
+    public static func start(uuid: UUID, window: NSWindow?, filter: [NSEvent.EventType], cb: @escaping (CGPoint, NSEvent) -> Bool) {
         // 插入列队
         cbList[uuid] = (window, filter, cb)
         sort.insert(uuid, at: 0) // (uuid)
@@ -43,11 +43,11 @@ class AKSUMouseEventMonitor {
         }
     }
 
-    static func stop(uuid: UUID) {
+    public static func stop(uuid: UUID) {
         cbList.removeValue(forKey: uuid)
     }
 
-    static func filpLocationPoint(event: NSEvent?) -> CGPoint? {
+    public static func filpLocationPoint(event: NSEvent?) -> CGPoint? {
         guard let event = event else { return nil }
         guard let height = event.window?.contentView?.frame.height else { return nil }
         let locationInWindow = event.locationInWindow

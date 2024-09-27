@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum AKSUToastLocation {
+public enum AKSUToastLocation {
     case leftTop
     case top
     case rightTop
@@ -19,7 +19,7 @@ enum AKSUToastLocation {
     case rightBottom
 }
 
-class AKSUToastItemStorage: Identifiable, ObservableObject {
+public class AKSUToastItemStorage: Identifiable, ObservableObject {
     var parent: NSWindow
     var window: NSWindow
     @Published var colorScheme: ColorScheme = .light
@@ -34,7 +34,7 @@ class AKSUToastItemStorage: Identifiable, ObservableObject {
     @Published var bottom: [AKSUToastItemView] = []
     @Published var rightBottom: [AKSUToastItemView] = []
 
-    init(parent: NSWindow, colorScheme: ColorScheme) {
+    public init(parent: NSWindow, colorScheme: ColorScheme) {
         self.colorScheme = colorScheme
         self.parent = parent
         self.window = NSWindow(
@@ -96,11 +96,11 @@ class AKSUToastItemStorage: Identifiable, ObservableObject {
     }
 }
 
-class AKSUToast {
+public class AKSUToast {
     static var colorScheme: ColorScheme = .light
     static var timer: Timer? = nil
     static var windowsList: [Int: AKSUToastItemStorage] = [:]
-    static func showToast(window: NSWindow, location: AKSUToastLocation, title: String?, message: String, headerColor: Color? = nil, color: Color = .aksuText, bgColor: Color = .aksuTextBackground, width: CGFloat = 250, height: CGFloat = 60, maxHeight: CGFloat = 400, timeout: Int? = 5, click: ((Any?) -> Void)? = nil, param: Any? = nil) {
+    public static func showToast(window: NSWindow, location: AKSUToastLocation, title: String?, message: String, headerColor: Color? = nil, color: Color = .aksuText, bgColor: Color = .aksuTextBackground, width: CGFloat = 250, height: CGFloat = 60, maxHeight: CGFloat = 400, timeout: Int? = 5, click: ((Any?) -> Void)? = nil, param: Any? = nil) {
         let view = AKSUToastItemView(location: location, title: title, message: message, headerColor: headerColor, color: color, bgColor: bgColor, width: width, height: height, maxHeight: maxHeight, timeout: timeout, click: click, param: param)
 
         if let object = windowsList.first(where: { key, _ in key == window.windowNumber }) {
@@ -116,7 +116,7 @@ class AKSUToast {
         }
     }
 
-    static func showToast(window: NSWindow, location: AKSUToastLocation, timeout: Int? = 5, @ViewBuilder content: (_ windowNumber: Int, _ location: AKSUToastLocation, _ toastID: UUID) -> some View) {
+    public static func showToast(window: NSWindow, location: AKSUToastLocation, timeout: Int? = 5, @ViewBuilder content: (_ windowNumber: Int, _ location: AKSUToastLocation, _ toastID: UUID) -> some View) {
         let id = UUID()
         let view = AKSUToastItemView(location: location, timeout: timeout, id: id, contentView: AnyView(content(window.windowNumber, location, id)))
 
@@ -128,30 +128,30 @@ class AKSUToast {
             windowsList[window.windowNumber] = object
         }
     }
-    
-    static func closeToast(window: NSWindow, location: AKSUToastLocation, id: UUID) {
+
+    public static func closeToast(window: NSWindow, location: AKSUToastLocation, id: UUID) {
         if let storage = windowsList[window.windowNumber] {
             storage.remove(location: location, id: id)
         }
     }
 
-    static func closeToast(windowNumber: Int, location: AKSUToastLocation, id: UUID) {
+    public static func closeToast(windowNumber: Int, location: AKSUToastLocation, id: UUID) {
         if let storage = windowsList[windowNumber] {
             storage.remove(location: location, id: id)
         }
     }
 
-    static func setColorScheme(_ colorScheme: ColorScheme) {
+    public static func setColorScheme(_ colorScheme: ColorScheme) {
         AKSUToast.colorScheme = colorScheme
     }
 
-    static func changeColorScheme(_ colorScheme: ColorScheme) {
+    public static func changeColorScheme(_ colorScheme: ColorScheme) {
         for item in windowsList {
             item.value.colorScheme = colorScheme
         }
     }
 
-    static func changeColorScheme(window: NSWindow, _ colorScheme: ColorScheme) {
+    public static func changeColorScheme(window: NSWindow, _ colorScheme: ColorScheme) {
         if let storage = windowsList[window.windowNumber] {
             storage.colorScheme = colorScheme
         }
@@ -271,7 +271,7 @@ struct AKSUToastWindowView: View {
     }
 }
 
-struct AKSUToastItemView: View, Identifiable {
+public struct AKSUToastItemView: View, Identifiable {
     @EnvironmentObject var storage: AKSUToastItemStorage
     let title: String?
     let message: String
@@ -299,9 +299,9 @@ struct AKSUToastItemView: View, Identifiable {
     @State var timeCount: CGFloat = 5
 
     @Environment(\.self) var environment
-    let id: UUID
+    public let id: UUID
 
-    init(location: AKSUToastLocation, title: String?, message: String, headerColor: Color? = nil, color: Color = .aksuText, bgColor: Color = .aksuTextBackground, width: CGFloat = 250, height: CGFloat = 60, maxHeight: CGFloat? = 400, timeout: Int? = 5, click: ((Any) -> Void)? = nil, param: Any? = nil) {
+    public init(location: AKSUToastLocation, title: String?, message: String, headerColor: Color? = nil, color: Color = .aksuText, bgColor: Color = .aksuTextBackground, width: CGFloat = 250, height: CGFloat = 60, maxHeight: CGFloat? = 400, timeout: Int? = 5, click: ((Any) -> Void)? = nil, param: Any? = nil) {
         self.title = title
         self.message = message
         self.width = width
@@ -318,7 +318,7 @@ struct AKSUToastItemView: View, Identifiable {
         self.id = UUID()
     }
 
-    init(location: AKSUToastLocation, timeout: Int? = 5, id: UUID, contentView: AnyView) {
+    public init(location: AKSUToastLocation, timeout: Int? = 5, id: UUID, contentView: AnyView) {
         self.title = nil
         self.message = ""
         self.width = 0
@@ -335,7 +335,7 @@ struct AKSUToastItemView: View, Identifiable {
         self.id = id
     }
 
-    var body: some View {
+    public var body: some View {
         if let contentView = contentView {
             contentView
                 .cornerRadius(4)

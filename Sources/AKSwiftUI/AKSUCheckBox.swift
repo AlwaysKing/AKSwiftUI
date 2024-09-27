@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUCheckBox: View {
+public struct AKSUCheckBox: View {
     @Environment(\.self) var environment
     @Environment(\.isEnabled) private var isEnabled
     @Binding var checked: Bool
@@ -18,7 +18,7 @@ struct AKSUCheckBox: View {
 
     @State var realChecked: Bool
 
-    init(label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
+    public init(label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
         self.label = label
         self.color = color
         self.actionColor = actionColor
@@ -27,7 +27,7 @@ struct AKSUCheckBox: View {
         self.realChecked = false
     }
 
-    init(checked: Bool, label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
+    public init(checked: Bool, label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
         self._checked = .constant(false)
         self.label = label
         self.color = color
@@ -36,7 +36,7 @@ struct AKSUCheckBox: View {
         self.realChecked = checked
     }
 
-    init(checked: Binding<Bool>, label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
+    public init(checked: Binding<Bool>, label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
         self._checked = checked
         self.label = label
         self.color = color
@@ -45,7 +45,7 @@ struct AKSUCheckBox: View {
         self.realChecked = checked.wrappedValue
     }
 
-    var body: some View {
+    public var body: some View {
         HStack {
             ZStack {
                 if realChecked {

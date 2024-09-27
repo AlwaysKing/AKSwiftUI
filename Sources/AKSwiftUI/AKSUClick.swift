@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUClick<T: View>: View {
+public struct AKSUClick<T: View>: View {
     @Environment(\.self) var environment
     @Environment(\.isEnabled) private var isEnabled
 
@@ -19,14 +19,14 @@ struct AKSUClick<T: View>: View {
     @State var hovering: Bool = false
     @State var mouseDown: Bool = false
 
-    init(color: Color = Color.primary, actionColor: Color = AKSUColor.primary, content: @escaping () -> T, action: @escaping () -> Void) {
+    public init(color: Color = Color.primary, actionColor: Color = AKSUColor.primary, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = color
         self.actionColor = actionColor
         self.content = content
         self.action = action
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             content()
                 .foregroundColor(hovering || mouseDown ? actionColor.opacity(mouseDown ? 0.6 : 1.0) : isEnabled ? color : color.merge(up: AKSUColor.dyGrayMask, mode: environment))
@@ -52,7 +52,7 @@ struct AKSUClick<T: View>: View {
     }
 }
 
-extension AKSUClick where T == Text {
+public extension AKSUClick where T == Text {
     init<S>(_ title: S, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.actionColor = actionColor

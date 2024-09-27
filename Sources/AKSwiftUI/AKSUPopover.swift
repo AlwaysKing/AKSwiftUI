@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum AKSUPopoverAligment {
+public enum AKSUPopoverAligment {
     case upLeading
     case upTrailling
     case upCenter
@@ -25,8 +25,8 @@ enum AKSUPopoverAligment {
     case rightCenter
 }
 
-class AKSUPopover: AKSUPopWnd {
-    func show(rect: CGRect, size: CGSize, padding: CGFloat = 10, alignment: AKSUPopoverAligment, autoRePosition: Bool = false, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil, rePosition: ((_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment)? = nil) {
+public class AKSUPopover: AKSUPopWnd {
+    public func show(rect: CGRect, size: CGSize, padding: CGFloat = 10, alignment: AKSUPopoverAligment, autoRePosition: Bool = false, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil, rePosition: ((_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment)? = nil) {
         var newAligment = alignment
         var point = getPoint(rect: rect, size: size, padding: padding, alignment: alignment)
 
@@ -62,7 +62,7 @@ class AKSUPopover: AKSUPopWnd {
         show(point: point, width: size.width, height: size.height, autoHidden: autoHidden, parent: parent, view: view)
     }
 
-    func autoRePosition(_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment {
+    public func autoRePosition(_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment {
         if edge.contains(.top) {
             if edge.contains(.left) {
                 // 左上冲突了
@@ -113,7 +113,7 @@ class AKSUPopover: AKSUPopWnd {
         return alignment
     }
 
-    func getPoint(rect: CGRect, size: CGSize, padding: CGFloat, alignment: AKSUPopoverAligment) -> CGPoint {
+    public func getPoint(rect: CGRect, size: CGSize, padding: CGFloat, alignment: AKSUPopoverAligment) -> CGPoint {
         var point = CGPoint.zero
         // 封装常用计算逻辑
         let top: () -> CGFloat = { rect.minY - size.height - padding }

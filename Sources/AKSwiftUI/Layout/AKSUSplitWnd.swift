@@ -8,7 +8,7 @@
 import SwiftUI
 
 @available(macOS 14.0, *)
-struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
+public struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
     let leftView: LeftView
     let mainView: MainView
     let rightView: AnyView
@@ -27,7 +27,7 @@ struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
     var rightLayout: (min: CGFloat?, ideal: CGFloat, max: CGFloat?) = (nil, 200, nil)
     var rightImage: AnyView? = nil
 
-    init(leftToolBar: Bool = true, showLeft: Binding<Bool>, @ViewBuilder mainView: () -> MainView, @ViewBuilder leftView: () -> LeftView) {
+    public init(leftToolBar: Bool = true, showLeft: Binding<Bool>, @ViewBuilder mainView: () -> MainView, @ViewBuilder leftView: () -> LeftView) {
         self.leftView = leftView()
         self.mainView = mainView()
         self.rightView = AnyView(ZStack {})
@@ -41,7 +41,7 @@ struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
         self._showRight = .constant(false)
     }
 
-    init<RightView: View>(leftToolBar: Bool = true, showLeft: Binding<Bool>, rightToolBar: Bool = true, showRight: Binding<Bool>, @ViewBuilder mainView: () -> MainView, @ViewBuilder leftView: () -> LeftView, @ViewBuilder rightView: () -> RightView) {
+    public init<RightView: View>(leftToolBar: Bool = true, showLeft: Binding<Bool>, rightToolBar: Bool = true, showRight: Binding<Bool>, @ViewBuilder mainView: () -> MainView, @ViewBuilder leftView: () -> LeftView, @ViewBuilder rightView: () -> RightView) {
         self.leftView = leftView()
         self.mainView = mainView()
         self.rightView = AnyView(rightView())
@@ -55,7 +55,7 @@ struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
         self._showRight = showRight
     }
 
-    var body: some View {
+    public var body: some View {
         HStack {
             NavigationSplitView(columnVisibility: $realShowLeft) {
                 leftView
@@ -123,43 +123,43 @@ struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
         }
     }
 
-    func mainWndSize(min: CGFloat?, ideal: CGFloat, max: CGFloat?) -> Self {
+    public func mainWndSize(min: CGFloat?, ideal: CGFloat, max: CGFloat?) -> Self {
         var tmp = self
         tmp.mainLayout = (min: min, ideal: ideal, max: max)
         return tmp
     }
 
-    func leftWndSize(min: CGFloat?, ideal: CGFloat, max: CGFloat?) -> Self {
+    public func leftWndSize(min: CGFloat?, ideal: CGFloat, max: CGFloat?) -> Self {
         var tmp = self
         tmp.leftLayout = (min: min, ideal: ideal, max: max)
         return tmp
     }
 
-    func showLeftToolButton(show: Bool) -> Self {
+    public func showLeftToolButton(show: Bool) -> Self {
         var tmp = self
         tmp.leftButton = show
         return tmp
     }
 
-    func setLeftToolButton<V: View>(@ViewBuilder view: () -> V) -> Self {
+    public func setLeftToolButton<V: View>(@ViewBuilder view: () -> V) -> Self {
         var tmp = self
         tmp.leftImage = AnyView(view())
         return tmp
     }
 
-    func rightWndSize(min: CGFloat?, ideal: CGFloat, max: CGFloat?) -> Self {
+    public func rightWndSize(min: CGFloat?, ideal: CGFloat, max: CGFloat?) -> Self {
         var tmp = self
         tmp.rightLayout = (min: min, ideal: ideal, max: max)
         return tmp
     }
 
-    func showRightToolButton(show: Bool) -> Self {
+    public func showRightToolButton(show: Bool) -> Self {
         var tmp = self
         tmp.rightButton = show
         return tmp
     }
 
-    func setRightToolButton<V: View>(@ViewBuilder view: () -> V) -> Self {
+    public func setRightToolButton<V: View>(@ViewBuilder view: () -> V) -> Self {
         var tmp = self
         tmp.rightImage = AnyView(view())
         return tmp

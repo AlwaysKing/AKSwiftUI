@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUGrid<V: View>: View {
+public struct AKSUGrid<V: View>: View {
     let columns: [GridItem]
     let alignment: HorizontalAlignment
     let spacing: CGFloat?
@@ -15,7 +15,7 @@ struct AKSUGrid<V: View>: View {
 
     @ViewBuilder let content: () -> V
 
-    init(count: Int? = nil, fixed: CGFloat? = nil, min: CGFloat = 10, max: CGFloat = .infinity, itemSpacing: CGFloat? = nil, itemAligment: Alignment? = nil, alignment: HorizontalAlignment = .center, spacing: CGFloat? = nil, pinnedViews: PinnedScrollableViews = .init(), @ViewBuilder content: @escaping () -> V)
+    public init(count: Int? = nil, fixed: CGFloat? = nil, min: CGFloat = 10, max: CGFloat = .infinity, itemSpacing: CGFloat? = nil, itemAligment: Alignment? = nil, alignment: HorizontalAlignment = .center, spacing: CGFloat? = nil, pinnedViews: PinnedScrollableViews = .init(), @ViewBuilder content: @escaping () -> V)
     {
         self.alignment = alignment
         self.spacing = spacing
@@ -33,7 +33,7 @@ struct AKSUGrid<V: View>: View {
         }
     }
 
-    var body: some View {
+    public var body: some View {
         LazyVGrid(columns: columns, alignment: alignment, spacing: spacing, pinnedViews: pinnedViews) {
             content()
         }

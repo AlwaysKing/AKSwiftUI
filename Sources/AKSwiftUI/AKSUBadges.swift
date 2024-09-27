@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUBadges<T: View>: View {
+public struct AKSUBadges<T: View>: View {
     @Environment(\.isEnabled) private var isEnabled
     @ViewBuilder let content: () -> T
     let color: Color
@@ -18,7 +18,7 @@ struct AKSUBadges<T: View>: View {
     let circle: Bool
     @State var size: CGFloat = 0.0
 
-    init(color: Color = .white, bgColor: Color = AKSUColor.primary, circle: Bool = false, radius: CGFloat = 8, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
+    public init(color: Color = .white, bgColor: Color = AKSUColor.primary, circle: Bool = false, radius: CGFloat = 8, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = color
         self.bgColor = bgColor
         self.content = content
@@ -28,7 +28,7 @@ struct AKSUBadges<T: View>: View {
         self.circle = circle
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             content()
                 .foregroundColor(color)
@@ -56,7 +56,7 @@ struct AKSUBadges<T: View>: View {
     }
 }
 
-extension AKSUBadges where T == Text {
+public extension AKSUBadges where T == Text {
     init<S>(_ title: S, color: Color = .white, bgColor: Color = AKSUColor.primary, circle: Bool = false, radius: CGFloat = 8, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.bgColor = bgColor

@@ -8,25 +8,25 @@
 import SwiftUI
 
 // 定义枚举 Edge
-enum AKSUScreenEdge {
+public enum AKSUScreenEdge {
     case top
     case bottom
     case left
     case right
 }
 
-class AKSUScreen {
-    static func mainScreen(rect: CGRect) -> [AKSUScreenEdge] {
+public class AKSUScreen {
+    public static func mainScreen(rect: CGRect) -> [AKSUScreenEdge] {
         guard let screen = NSScreen.main?.frame else { return [] }
         return edgesOutOfBounds(outerRect: screen, innerRect: rect)
     }
 
-    static func window(window: NSWindow, rect: CGRect) -> [AKSUScreenEdge] {
+    public static func window(window: NSWindow, rect: CGRect) -> [AKSUScreenEdge] {
         return edgesOutOfBounds(outerRect: window.frame, innerRect: rect)
     }
 
     // 函数判断第二个 CGRect 超出第一个 CGRect 的边
-    static func edgesOutOfBounds(outerRect: CGRect, innerRect: CGRect) -> [AKSUScreenEdge] {
+    public static func edgesOutOfBounds(outerRect: CGRect, innerRect: CGRect) -> [AKSUScreenEdge] {
         var edges: [AKSUScreenEdge] = []
 
         // 检查顶部边是否超出

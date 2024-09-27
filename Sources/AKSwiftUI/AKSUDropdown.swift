@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-enum AKSUDropdownStyle {
+public enum AKSUDropdownStyle {
     case select
     case selectBtn
 }
 
 // AKSUDropdown 本体定义
-struct AKSUDropdown<K: Hashable>: View {
+public struct AKSUDropdown<K: Hashable>: View {
     @Environment(\.isEnabled) private var isEnabled
 
     var style: AKSUDropdownStyle
@@ -32,7 +32,7 @@ struct AKSUDropdown<K: Hashable>: View {
     @State var dropHeight: CGFloat = 0.0
     @State var selectedRealHeight: CGFloat = 0.0
     // 显示内容
-    @State private var showDrop: Bool = false
+    @State var showDrop: Bool = false
     // hover
     @State var hoveringAll: Bool = false
     @State var hoveringContent: Bool = false
@@ -41,7 +41,7 @@ struct AKSUDropdown<K: Hashable>: View {
     @State var location: CGRect = CGRect.zero
     @State var mouseEvent: NSEvent? = nil
 
-    init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, dropHeight: CGFloat? = nil, noPadding: Bool = false, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
+    public init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, dropHeight: CGFloat? = nil, noPadding: Bool = false, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
         self._selected = selected
         for item in content() {
             self.content[item.index] = AKSUDropdownItem(index: item.index, height: item.height, noPadding: item.noPadding ?? noPadding, color: bgColor, content: item.content, action: item.action)
@@ -56,7 +56,7 @@ struct AKSUDropdown<K: Hashable>: View {
         self.noPadding = noPadding
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: 0) {
             // 文本
             ZStack {
@@ -211,7 +211,7 @@ public struct AKSUDropdownItem<K: Hashable>: View {
     @State private var hovering: Bool = false
     private var selected: Bool = false
 
-    init(index: K, height: CGFloat = 20, noPadding: Bool? = nil, @AKSUAnyViewArrayBuilder content: () -> [AnyView], action: (() -> Void)? = nil) {
+    public init(index: K, height: CGFloat = 20, noPadding: Bool? = nil, @AKSUAnyViewArrayBuilder content: () -> [AnyView], action: (() -> Void)? = nil) {
         self.index = index
         self.content = content()
         self.action = action
@@ -219,7 +219,7 @@ public struct AKSUDropdownItem<K: Hashable>: View {
         self.noPadding = noPadding
     }
 
-    init(index: K, height: CGFloat = 20, noPadding: Bool? = nil, color: Color, content: [AnyView], action: (() -> Void)?) {
+    public init(index: K, height: CGFloat = 20, noPadding: Bool? = nil, color: Color, content: [AnyView], action: (() -> Void)?) {
         self.index = index
         self.hoverColor = color
         self.content = content
@@ -267,7 +267,7 @@ public struct AKSUDropdownItem<K: Hashable>: View {
 }
 
 // AKSUDropdown Content Item 修饰函数定义
-extension View {
+public extension View {
     func AKSUDropdownTag<K: Hashable>(index: K, height: CGFloat = 20, noPadding: Bool? = nil, action: (() -> Void)? = nil) -> AKSUDropdownItem<K> {
         AKSUDropdownItem(index: index, height: height, noPadding: noPadding, content: { self }, action: action)
     }

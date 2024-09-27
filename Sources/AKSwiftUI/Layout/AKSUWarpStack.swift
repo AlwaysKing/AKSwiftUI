@@ -7,17 +7,21 @@
 
 import SwiftUI
 
-class AKSUWarpStackReader: ObservableObject {
-    @Published var local: CGRect? = nil
-    @Published var global: CGRect? = nil
-    @Published var window: NSWindow? = nil
+public class AKSUWarpStackReader: ObservableObject {
+    @Published public var local: CGRect? = nil
+    @Published public var global: CGRect? = nil
+    @Published public var window: NSWindow? = nil
 }
 
-struct AKSUWarpStack<view: View>: View {
-    @ViewBuilder let content: (_ reader: AKSUWarpStackReader) -> view
+public struct AKSUWarpStack<view: View>: View {
+    @ViewBuilder public let content: (_ reader: AKSUWarpStackReader) -> view
     @State var reader: AKSUWarpStackReader = AKSUWarpStackReader()
 
-    var body: some View {
+    public init(content: @escaping (_: AKSUWarpStackReader) -> view) {
+        self.content = content
+    }
+
+    public var body: some View {
         ZStack {
             content(reader)
         }.background {

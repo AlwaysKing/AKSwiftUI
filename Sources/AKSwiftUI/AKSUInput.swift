@@ -7,28 +7,28 @@
 
 import SwiftUI
 
-enum AKSUInputStyle {
+public enum AKSUInputStyle {
     case line
     case box
 }
 
-struct AKSUInput: View {
+public struct AKSUInput: View {
     @Environment(\.isEnabled) private var isEnabled
 
     // 输入框样式
-    var style: AKSUInputStyle = .box
+    var style: AKSUInputStyle
     // 需要显示的 label
     var label: String
     // 禁止 action leable
-    var disableActionLabel: Bool = false
+    var disableActionLabel: Bool
     // 主要颜色
     let actionColor: Color = AKSUColor.primary
     // 是否显示清空按钮
-    var clearButton: Bool = true
+    var clearButton: Bool
     // 密码模式
-    var password: Bool = false
+    var password: Bool
     // 接收输入的内容
-    @Binding var text: String
+    @Binding public var text: String
     // 回车事件触发
     var submit: (() -> Void)? = nil
     // 是否获得焦点
@@ -39,8 +39,22 @@ struct AKSUInput: View {
     @State private var actionLabelSize: CGFloat = 0.0
     // clear 按钮 hover 状态
     @State private var clearHovering: Bool = false
+    
+    public init(style: AKSUInputStyle = .box, label: String, disableActionLabel: Bool = false, clearButton: Bool = true, password: Bool = false, text: Binding<String>, submit: (() -> Void)? = nil) {
+        self.style = style
+        self.label = label
+        self.disableActionLabel = disableActionLabel
+        self.clearButton = clearButton
+        self.password = password
+        self._text = text
+        self.submit = submit
+        self.focused = focused
+        self.labelActionActivate = labelActionActivate
+        self.actionLabelSize = actionLabelSize
+        self.clearHovering = clearHovering
+    }
 
-    var body: some View {
+    public var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
                 if !disableActionLabel {

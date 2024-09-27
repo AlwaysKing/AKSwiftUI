@@ -7,18 +7,24 @@
 
 import SwiftUI
 
-struct AKSUCircleProgress: View {
+public struct AKSUCircleProgress: View {
     @Environment(\.self) var environment
     @Environment(\.isEnabled) private var isEnabled
     var progress: CGFloat
+    let actionColor: Color
+    let bgColor: Color
+    var size: CGFloat
+    var lineWidth: CGFloat
 
-    let actionColor: Color = AKSUColor.primary
-    let bgColor: Color = AKSUColor.dyGrayBG
+    public init(progress: CGFloat, size: CGFloat = 60.0, lineWidth: CGFloat = 10.0, actionColor: Color = AKSUColor.primary, bgColor: Color = AKSUColor.dyGrayBG) {
+        self.progress = progress
+        self.size = size
+        self.lineWidth = lineWidth
+        self.actionColor = actionColor
+        self.bgColor = bgColor
+    }
 
-    var size: CGFloat = 60.0
-    var lineWidth: CGFloat = 10.0
-
-    var body: some View {
+    public var body: some View {
         ZStack {
             AKSUCircleRingShape(progress: 1.0, lineWidth: lineWidth)
                 .fill(bgColor)

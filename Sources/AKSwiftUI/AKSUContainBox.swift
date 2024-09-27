@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUContainBox<T: Equatable>: View {
+public struct AKSUContainBox<T: Equatable>: View {
     var label: String
     var key: T
     @Binding var list: [T]
@@ -18,7 +18,7 @@ struct AKSUContainBox<T: Equatable>: View {
     private var color: Color
     private var actionColor: Color
 
-    init(label: String, key: T, list: Binding<[T]>, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool, T) -> Void)? = nil) {
+    public init(label: String, key: T, list: Binding<[T]>, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool, T) -> Void)? = nil) {
         self.key = key
         self._list = list
         self.contain = list.wrappedValue.contains(where: { key == $0 })
@@ -28,7 +28,7 @@ struct AKSUContainBox<T: Equatable>: View {
         self.actionColor = actionColor
     }
 
-    var body: some View {
+    public var body: some View {
         AKSUCheckBox(checked: contain, label: label, color: color, actionColor: actionColor) {
             checked in
             if checked {

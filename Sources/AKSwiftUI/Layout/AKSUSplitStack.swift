@@ -7,24 +7,24 @@
 
 import SwiftUI
 
-enum AKSUSplitStackDirection {
+public enum AKSUSplitStackDirection {
     case vertical
     case horizontal
 }
 
-struct AKSUSplitStack: View {
+public struct AKSUSplitStack: View {
     let direction: AKSUSplitStackDirection
     @State var totalLength: CGFloat = 0
     @State var lengths: [(current: CGFloat, min: CGFloat, max: CGFloat)] = []
     @State var children: [AKSUSplitStackItemView]
     @State var startDrag: NSPoint?
 
-    init(direction: AKSUSplitStackDirection = .horizontal, @AKSUSplitStackItemBuilder content: @escaping () -> [AKSUSplitStackItemView]) {
+    public init(direction: AKSUSplitStackDirection = .horizontal, @AKSUSplitStackItemBuilder content: @escaping () -> [AKSUSplitStackItemView]) {
         self.children = content()
         self.direction = direction
     }
 
-    var body: some View {
+    public var body: some View {
         GeometryReader { geometry in
             ZStack {
                 if direction == .horizontal {
@@ -529,7 +529,7 @@ public struct AKSUSplitStackItemView: View {
     }
 }
 
-extension View {
+public extension View {
     func AKSUSplitItem(min: CGFloat? = nil, idea: CGFloat? = nil, max: CGFloat? = nil, growth: Bool = true) -> AKSUSplitStackItemView {
         AKSUSplitStackItemView(min: min, idea: idea, max: max, growth: growth, content: { self })
     }

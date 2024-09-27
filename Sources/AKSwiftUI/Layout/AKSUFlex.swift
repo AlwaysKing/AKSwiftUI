@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUFlexStack<Content: View>: View {
+public struct AKSUFlexStack<Content: View>: View {
     @ViewBuilder var content: () -> Content
 
     let isLeftToRight: Bool
@@ -15,7 +15,7 @@ struct AKSUFlexStack<Content: View>: View {
     let horizontal: Bool
     let edges: Edge.Set
 
-    init(isLeftToRight: Bool = true, isTopToBottom: Bool = true, horizontal: Bool = true, edges: Edge.Set = [.trailing, .bottom], @ViewBuilder content: @escaping () -> Content) {
+    public init(isLeftToRight: Bool = true, isTopToBottom: Bool = true, horizontal: Bool = true, edges: Edge.Set = [.trailing, .bottom], @ViewBuilder content: @escaping () -> Content) {
         self.content = content
         self.isLeftToRight = isLeftToRight
         self.isTopToBottom = isTopToBottom
@@ -23,7 +23,7 @@ struct AKSUFlexStack<Content: View>: View {
         self.edges = edges
     }
 
-    var body: some View {
+    public var body: some View {
         _VariadicView.Tree(AKSUFlexStackLayout(left: isLeftToRight, top: isTopToBottom, horizontal: horizontal, edges: edges), content: content)
     }
 }

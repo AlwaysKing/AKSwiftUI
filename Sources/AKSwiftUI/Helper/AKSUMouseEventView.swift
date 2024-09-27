@@ -7,9 +7,7 @@
 
 import SwiftUI
 
-
-
-struct AKSUMouseEventView<V: View>: View {
+public struct AKSUMouseEventView<V: View>: View {
     @State var rect: CGRect = CGRect.zero
 
     let filter: [NSEvent.EventType]
@@ -20,7 +18,7 @@ struct AKSUMouseEventView<V: View>: View {
     @State var uuid: UUID = UUID()
     @State var window: NSWindow? = nil
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             content()
             if window == nil {
@@ -64,7 +62,7 @@ struct AKSUMouseEventView<V: View>: View {
     }
 }
 
-extension View {
+public extension View {
     func onMouseEvent(event: [NSEvent.EventType], click: ((CGPoint, NSEvent?) -> Bool)? = nil, side: ((Bool) -> Void)? = nil) -> some View {
         return AKSUMouseEventView(filter: event, content: { self }, mouseEventCB: click, outsideClick: side)
     }

@@ -12,19 +12,19 @@ import SwiftUI
 //    case box
 // }
 
-struct AKSUInputGroup: View {
+public struct AKSUInputGroup: View {
     @Environment(\.isEnabled) private var isEnabled
 
     // 需要显示的 label
-    var label: String
+    public var label: String
     // 主要颜色
-    let actionColor: Color = AKSUColor.primary
+    public let actionColor: Color
     // 接收输入的内容
-    @Binding var text: String
+    @Binding public var text: String
     // 密码模式
-    var password: Bool = false
+    public var password: Bool
     // 回车事件触发
-    var submit: (() -> Void)? = nil
+    public var submit: (() -> Void)?
     // 是否获得焦点
     @FocusState private var focused: Bool
     // clear 按钮 hover 状态
@@ -37,7 +37,15 @@ struct AKSUInputGroup: View {
     var leadingView: [AnyView] = []
     var trailingView: [AnyView] = []
 
-    var body: some View {
+    public init(label: String, text: Binding<String>, password: Bool = false, actionColor: Color = AKSUColor.primary, submit: (() -> Void)? = nil) {
+        self.label = label
+        self._text = text
+        self.password = password
+        self.actionColor = actionColor
+        self.submit = submit
+    }
+
+    public var body: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
@@ -225,13 +233,13 @@ struct AKSUInputGroup: View {
         }
     }
 
-    func addLeading<V: View>(@ViewBuilder builder: () -> V) -> Self {
+    public func addLeading<V: View>(@ViewBuilder builder: () -> V) -> Self {
         var tmp = self
         tmp.leadingView.append(AnyView(builder()))
         return tmp
     }
 
-    func addTrailling<V: View>(@ViewBuilder builder: () -> V) -> Self {
+    public func addTrailling<V: View>(@ViewBuilder builder: () -> V) -> Self {
         var tmp = self
         tmp.trailingView.append(AnyView(builder()))
         return tmp

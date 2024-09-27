@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-class AKSUPopWnd: NSObject {
+public class AKSUPopWnd: NSObject {
     var window: NSWindow
     var parent: NSWindow? = nil
-    var menuContent: AnyView? = nil
-    var hiddenEvent: (() -> Void)? = nil
+    public var menuContent: AnyView? = nil
+    public var hiddenEvent: (() -> Void)? = nil
     var monitor: Bool = false
     var uuid: UUID
 
-    override init() {
+    public  override init() {
         uuid = UUID()
         window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 0, height: 0),
@@ -30,7 +30,7 @@ class AKSUPopWnd: NSObject {
         super.init()
     }
 
-    func show(point: CGPoint, width: CGFloat, height: CGFloat, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil) {
+    public func show(point: CGPoint, width: CGFloat, height: CGFloat, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil) {
         if let view = view {
             window.contentView = NSHostingView(rootView: AKSUPopWndView(width: width, height: height, content: view))
         } else if let menuContent = menuContent {
@@ -76,7 +76,7 @@ class AKSUPopWnd: NSObject {
         }
     }
 
-    func close() {
+    public func close() {
         monitor = false
         self.window.close()
         NotificationCenter.default.removeObserver(self, name: NSWindow.didResignKeyNotification, object: parent)

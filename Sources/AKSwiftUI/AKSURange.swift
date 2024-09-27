@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-enum AKSURangeStyle {
+public enum AKSURangeStyle {
     case fat
     case slim
 }
 
-struct AKSURange: View {
+public struct AKSURange: View {
     @Environment(\.self) var environment
     @Environment(\.isEnabled) private var isEnabled
 
@@ -29,7 +29,7 @@ struct AKSURange: View {
     @Binding private var progress: CGFloat
     @State private var width: CGFloat = 0.0
 
-    init(style: AKSURangeStyle = .fat, step: CGFloat? = nil, min: CGFloat = 0, max: CGFloat = 100, progress: Binding<CGFloat>, color: Color = .white, actionColor: Color = AKSUColor.primary, height: CGFloat = 20.0) {
+    public init(style: AKSURangeStyle = .fat, step: CGFloat? = nil, min: CGFloat = 0, max: CGFloat = 100, progress: Binding<CGFloat>, color: Color = .white, actionColor: Color = AKSUColor.primary, height: CGFloat = 20.0) {
         if let step = step {
             if step >= 0 {
                 self.step = Swift.min(step, max - min)
@@ -51,7 +51,7 @@ struct AKSURange: View {
         }
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack(alignment: .leading) {
             RoundedRectangle(cornerSize: CGSize(width: height, height: height))
                 .fill(AKSUColor.dyGrayBG)

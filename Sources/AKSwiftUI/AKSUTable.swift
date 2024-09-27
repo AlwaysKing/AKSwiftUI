@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUTable<Value: Identifiable & Equatable>: View {
+public struct AKSUTable<Value: Identifiable & Equatable>: View {
     @Binding var data: [Value]
     @State var _initColumns: [AKSUTableColumnItem<Value>]
 
@@ -42,7 +42,7 @@ struct AKSUTable<Value: Identifiable & Equatable>: View {
     @State var backgroundRowCount: Int = 0
     @State var backgroundRowTotalHeight: CGFloat = 0.0
 
-    init(data: Binding<[Value]>, rowHeight: CGFloat = 25, headerBgColor: Color = .aksuTextBackground, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, multSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value) -> CGFloat?)? = nil)
+    public init(data: Binding<[Value]>, rowHeight: CGFloat = 25, headerBgColor: Color = .aksuTextBackground, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, multSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value) -> CGFloat?)? = nil)
     {
         self._data = data
         self._initColumns = columns().map { AKSUTableColumnItem(builder: $0) }
@@ -56,7 +56,7 @@ struct AKSUTable<Value: Identifiable & Equatable>: View {
         self.getRowHeight = getRowHeight
     }
 
-    var body: some View {
+    public var body: some View {
         // 为了主动刷新界面
         if refreshUI || !refreshUI {}
         VStack(spacing: 0) {
@@ -762,7 +762,7 @@ public struct AKSUTableColumn<V>: Identifiable {
     public let ideaWidth: CGFloat?
     public let maxWidth: CGFloat?
 
-    init(_ key: String, minWidth: CGFloat = 20, ideaWidth: CGFloat? = nil, maxWidth: CGFloat? = nil, @AKSUAnyViewArrayBuilder headerBuilder: @escaping () -> [AnyView], @AKSUAnyViewArrayBuilder itemBuilder: @escaping (V) -> [AnyView]) {
+    public init(_ key: String, minWidth: CGFloat = 20, ideaWidth: CGFloat? = nil, maxWidth: CGFloat? = nil, @AKSUAnyViewArrayBuilder headerBuilder: @escaping () -> [AnyView], @AKSUAnyViewArrayBuilder itemBuilder: @escaping (V) -> [AnyView]) {
         self.key = key
         self.headerBuilder = headerBuilder
         self.itemBuilder = itemBuilder

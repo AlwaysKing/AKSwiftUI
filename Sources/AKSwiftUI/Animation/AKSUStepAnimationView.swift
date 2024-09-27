@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUStepAnimationView<V: View, K: VectorArithmetic>: View {
+public struct AKSUStepAnimationView<V: View, K: VectorArithmetic>: View {
     var from: K
     var to: K
     @Binding var play: Bool
@@ -15,14 +15,14 @@ struct AKSUStepAnimationView<V: View, K: VectorArithmetic>: View {
     @State var playing: Bool = false
     @State var continuePlaying: Bool = false
 
-    init(play: Binding<Bool>, from: K, to: K, content: @escaping (K) -> V) {
+    public init(play: Binding<Bool>, from: K, to: K, content: @escaping (K) -> V) {
         self.from = from
         self.to = to
         self.content = content
         self._play = play
     }
 
-    var body: some View {
+    public var body: some View {
         VStack {
             AKSUStepAnimation(playing ? to : from, content: content) {
                 DispatchQueue.main.async {
@@ -42,19 +42,19 @@ struct AKSUStepAnimationView<V: View, K: VectorArithmetic>: View {
     }
 }
 
-struct AKSUStepAnimation<V: View, K: VectorArithmetic>: Animatable, View {
+public struct AKSUStepAnimation<V: View, K: VectorArithmetic>: Animatable, View {
     var value: K
 
     @ViewBuilder let content: (K) -> V
     let finish: () -> Void
 
-    init(_ value: K, content: @escaping (K) -> V, finish: @escaping () -> Void) {
+    public init(_ value: K, content: @escaping (K) -> V, finish: @escaping () -> Void) {
         self.value = value
         self.content = content
         self.finish = finish
     }
 
-    var animatableData: K {
+    public var animatableData: K {
         get {
             return value
         }
@@ -66,7 +66,7 @@ struct AKSUStepAnimation<V: View, K: VectorArithmetic>: Animatable, View {
         }
     }
 
-    var body: some View {
+    public var body: some View {
         content(value)
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUCollapse<K: Equatable, V: View>: View {
+public struct AKSUCollapse<K: Equatable, V: View>: View {
     @Binding var index: K
     let key: K
 
@@ -21,7 +21,7 @@ struct AKSUCollapse<K: Equatable, V: View>: View {
     @State var isExpaned: Bool = false
     @State private var size: CGSize = CGSize(width: 0, height: 0)
 
-    init(index: Binding<K>, key: K, vertical: Bool = true, horizontal: Bool = false, maxWidth: Bool = false, maxHeight: Bool = false, @ViewBuilder content: @escaping () -> V) {
+    public init(index: Binding<K>, key: K, vertical: Bool = true, horizontal: Bool = false, maxWidth: Bool = false, maxHeight: Bool = false, @ViewBuilder content: @escaping () -> V) {
         self._index = index
         self.key = key
         self.content = content
@@ -31,7 +31,7 @@ struct AKSUCollapse<K: Equatable, V: View>: View {
         self.maxHeight = maxHeight
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             content()
                 .overlay {
@@ -57,7 +57,7 @@ struct AKSUCollapse<K: Equatable, V: View>: View {
     }
 }
 
-extension AKSUCollapse where K == Bool {
+public extension AKSUCollapse where K == Bool {
     init(isExpaned: Binding<Bool>, vertical: Bool = true, horizontal: Bool = false, maxWidth: Bool = false, maxHeight: Bool = false, @ViewBuilder content: @escaping () -> V) {
         self._index = isExpaned
         self.key = true

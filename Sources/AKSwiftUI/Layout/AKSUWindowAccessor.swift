@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct AKSUWindowAccessor: NSViewRepresentable {
+public struct AKSUWindowAccessor: NSViewRepresentable {
     let getWindow: (NSWindow) -> Void
 
-    func makeNSView(context: Context) -> NSView {
+    public func makeNSView(context: Context) -> NSView {
         let nsView = NSView()
 
         // 此时可以通过添加一个延迟操作来确保视图层级已经建立，从而获取 NSWindow 对象
@@ -24,7 +24,7 @@ struct AKSUWindowAccessor: NSViewRepresentable {
         return nsView
     }
 
-    func updateNSView(_ nsView: NSView, context: Context) {
+    public func updateNSView(_ nsView: NSView, context: Context) {
         // 不需要在这里做任何事情
     }
 }

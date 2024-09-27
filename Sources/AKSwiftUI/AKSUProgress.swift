@@ -7,21 +7,30 @@
 
 import SwiftUI
 
-struct AKSUProgress: View {
+public struct AKSUProgress: View {
     @Environment(\.self) var environment
     @Environment(\.isEnabled) private var isEnabled
 
-    var progress: CGFloat
+    public var progress: CGFloat
 
-    let color: Color = .white
-    let actionColor: Color = AKSUColor.primary
+    public let color: Color
+    public let actionColor: Color
 
-    var hiddenLabel: Bool = false
-    var height: CGFloat = 20.0
+    public var hiddenLabel: Bool
+    public var height: CGFloat
 
     @State private var width: CGFloat = 0.0
     @State private var titleWidth: CGFloat = 0.0
-    var body: some View {
+
+    public init(progress: CGFloat, color: Color = .white, actionColor: Color = AKSUColor.primary, hiddenLabel: Bool = false, height: CGFloat = 20.0) {
+        self.progress = progress
+        self.color = color
+        self.actionColor = actionColor
+        self.hiddenLabel = hiddenLabel
+        self.height = height
+    }
+
+    public var body: some View {
         GeometryReader { geometry in
             ZStack {
                 HStack {

@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-enum AKSUSegmentStyle {
+public enum AKSUSegmentStyle {
     case fat
     case slim
 }
 
 // AKSUSegment 本体定义
-struct AKSUSegment<K: Hashable>: View {
+public struct AKSUSegment<K: Hashable>: View {
     @Environment(\.self) var environment
     @Environment(\.isEnabled) private var isEnabled
 
@@ -27,7 +27,7 @@ struct AKSUSegment<K: Hashable>: View {
     @Namespace var animation
     @State var realHeight: CGFloat = 0.0
 
-    init(selected: Binding<K>, style: AKSUSegmentStyle = .fat, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, horizontal: Bool = false, @AKSUSegmentBuilder<K> content: () -> [AKSUSegmentItem<K>]) {
+    public init(selected: Binding<K>, style: AKSUSegmentStyle = .fat, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, horizontal: Bool = false, @AKSUSegmentBuilder<K> content: () -> [AKSUSegmentItem<K>]) {
         self._selected = selected
         for item in content() {
             self.content[item.index] = AKSUSegmentItem(index: item.index, selected: selected, style: style, color: color, bgColor: bgColor, content: item.content)
@@ -39,7 +39,7 @@ struct AKSUSegment<K: Hashable>: View {
         self.style = style
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: 0) {
             ForEach(self.sort, id: \.self) { index in
                 self.content[index]
@@ -105,13 +105,13 @@ public struct AKSUSegmentItem<K: Hashable>: View {
     private var style: AKSUSegmentStyle = .fat
     @State private var hovering: Bool = false
 
-    init(index: K, @AKSUAnyViewArrayBuilder content: () -> [AnyView]) {
+    public init(index: K, @AKSUAnyViewArrayBuilder content: () -> [AnyView]) {
         self.index = index
         self.content = content()
         self._selected = .constant(index)
     }
 
-    init(index: K, selected: Binding<K>, style: AKSUSegmentStyle, color: Color, bgColor: Color, content: [AnyView]) {
+    public init(index: K, selected: Binding<K>, style: AKSUSegmentStyle, color: Color, bgColor: Color, content: [AnyView]) {
         self.index = index
         self.color = color
         self.hoverColor = bgColor
@@ -137,8 +137,8 @@ public struct AKSUSegmentItem<K: Hashable>: View {
 }
 
 // AKSUSegment Content Item 修饰函数定义
-extension View {
-    func AKSUSegmentTag<K: Hashable>(index: K) -> AKSUSegmentItem<K> {
+public extension View {
+    public func AKSUSegmentTag<K: Hashable>(index: K) -> AKSUSegmentItem<K> {
         AKSUSegmentItem(index: index, content: { self })
     }
 }

@@ -9,18 +9,18 @@ import Foundation
 import SwiftUI
 
 // MARK: - 颜色定义
-class AKSUColor {
-    static let blue = Color(red: 6 / 255, green: 82 / 255, blue: 237 / 255)
-    static let lightBlue = Color(red: 76 / 255, green: 172 / 255, blue: 248 / 255)
+public class AKSUColor {
+    public static let blue = Color(red: 6 / 255, green: 82 / 255, blue: 237 / 255)
+    public static let lightBlue = Color(red: 76 / 255, green: 172 / 255, blue: 248 / 255)
 
-    static let black = Color.black
-    static let white = Color.white
-    static let gray = Color.gray
+    public static let black = Color.black
+    public static let white = Color.white
+    public static let gray = Color.gray
 
-    static let textBackground = Color(NSColor.textBackgroundColor)
-    static let textForeground = Color.primary
+    public static let textBackground = Color(NSColor.textBackgroundColor)
+    public static let textForeground = Color.primary
 
-    static let title = Color(nsColor: NSColor(name: nil) { appearance in
+    public static let title = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case .darkAqua:
             return NSColor(red: 240 / 255, green: 240 / 255, blue: 240 / 255, alpha: 1.0)
@@ -29,7 +29,7 @@ class AKSUColor {
         }
     })
 
-    static let text = Color(nsColor: NSColor(name: nil) { appearance in
+    public static let text = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case .darkAqua:
             return NSColor(red: 220 / 255, green: 220 / 255, blue: 220 / 255, alpha: 1.0)
@@ -38,7 +38,7 @@ class AKSUColor {
         }
     })
 
-    static let secondaryText = Color(nsColor: NSColor(name: nil) { appearance in
+    public static let secondaryText = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case .darkAqua:
             return NSColor(red: 160 / 255, green: 160 / 255, blue: 160 / 255, alpha: 1.0)
@@ -47,7 +47,7 @@ class AKSUColor {
         }
     })
 
-    static let lessText = Color(nsColor: NSColor(name: nil) { appearance in
+    public static let lessText = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case .darkAqua:
             return NSColor(red: 130 / 255, green: 130 / 255, blue: 130 / 255, alpha: 1.0)
@@ -56,7 +56,7 @@ class AKSUColor {
         }
     })
 
-    static let dyGrayBG = Color(nsColor: NSColor(name: nil) { appearance in
+    public static let dyGrayBG = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case .darkAqua:
             return NSColor(red: 63 / 255, green: 63 / 255, blue: 63 / 255, alpha: 1.0)
@@ -65,15 +65,15 @@ class AKSUColor {
         }
     })
 
-    static let dyGrayMask = dyGrayBG.opacity(0.4)
+    public static let dyGrayMask = dyGrayBG.opacity(0.4)
 
-    static let primary = Color(red: 59 / 255, green: 113 / 255, blue: 202 / 255)
-    static let success = Color(red: 20 / 255, green: 164 / 255, blue: 77 / 255)
-    static let warning = Color(red: 228 / 255, green: 161 / 255, blue: 28 / 255)
-    static let danger = Color(red: 249 / 255, green: 49 / 255, blue: 84 / 255)
+    public static let primary = Color(red: 59 / 255, green: 113 / 255, blue: 202 / 255)
+    public static let success = Color(red: 20 / 255, green: 164 / 255, blue: 77 / 255)
+    public static let warning = Color(red: 228 / 255, green: 161 / 255, blue: 28 / 255)
+    public static let danger = Color(red: 249 / 255, green: 49 / 255, blue: 84 / 255)
 }
 
-extension Color {
+public extension Color {
     static let aksuBlue = AKSUColor.blue
     static let aksuLightBlue = AKSUColor.lightBlue
 
@@ -98,7 +98,7 @@ extension Color {
     static let aksuDanger = AKSUColor.danger
 }
 
-extension ShapeStyle where Self == Color {
+public extension ShapeStyle where Self == Color {
     static var aksublue: Color { return AKSUColor.blue }
     static var aksuLightBlue: Color { return AKSUColor.lightBlue }
 
@@ -123,7 +123,7 @@ extension ShapeStyle where Self == Color {
     static var aksuDanger: Color { return AKSUColor.danger }
 }
 
-extension AKSUColor {
+public extension AKSUColor {
     static func merge(up: Color, down: Color, mode: EnvironmentValues) -> Color {
         let upComponents = up.getRGB(mode)
         let downComponents = down.getRGB(mode)
@@ -153,7 +153,7 @@ extension AKSUColor {
     }
 }
 
-extension Color {
+public extension Color {
     func getRGB(_ mode: EnvironmentValues) -> (red: CGFloat, green: CGFloat, blue: CGFloat, opacity: CGFloat) {
         if #available(macOS 14, *) {
             let components = self.resolve(in: mode)

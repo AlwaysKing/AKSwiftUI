@@ -7,17 +7,25 @@
 
 import SwiftUI
 
-struct AKSURadio<V: Equatable>: View {
+public struct AKSURadio<V: Equatable>: View {
     @Environment(\.self) var environment
     @Environment(\.isEnabled) private var isEnabled
 
     var label: String
     let key: V
     @Binding var checked: V
-    var color: Color = Color.primary
-    var actionColor: Color = AKSUColor.primary
+    var color: Color
+    var actionColor: Color
 
-    var body: some View {
+    public init(label: String, key: V, checked: Binding<V>, color: Color = Color.primary, actionColor: Color = AKSUColor.primary) {
+        self.label = label
+        self.key = key
+        self._checked = checked
+        self.color = color
+        self.actionColor = actionColor
+    }
+
+    public var body: some View {
         HStack {
             ZStack {
                 if key == checked {

@@ -7,21 +7,19 @@
 
 import SwiftUI
 
-var AKSUButtonPadding: CGFloat = 10
-
-enum AKSUButtonStyle {
+public enum AKSUButtonStyle {
     case normal
     case plain
     case circle
 }
 
-enum AKSUButtonClickAnimation {
+public enum AKSUButtonClickAnimation {
     case none
     case center
     case offset
 }
 
-struct AKSUButton<T: View>: View {
+public struct AKSUButton<T: View>: View {
     @Environment(\.isEnabled) private var isEnabled
     @ViewBuilder let content: () -> T
 
@@ -42,7 +40,7 @@ struct AKSUButton<T: View>: View {
     @State var animationCircleOffset: (x: CGFloat, y: CGFloat) = (0, 0)
     @State var animationCircleSize: CGFloat = 100.0
 
-    init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
+    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = color
         self.bgColor = bgColor
         self.content = content
@@ -54,7 +52,7 @@ struct AKSUButton<T: View>: View {
         self.clickStyke = clickStyke
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             content()
                 .foregroundColor(color)
@@ -126,7 +124,7 @@ struct AKSUButton<T: View>: View {
     }
 }
 
-extension AKSUButton where T == Text {
+public extension AKSUButton where T == Text {
     init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.bgColor = bgColor

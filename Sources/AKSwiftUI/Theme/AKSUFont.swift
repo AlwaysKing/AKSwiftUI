@@ -8,33 +8,33 @@
 import SwiftUI
 
 // MARK: - 字体的定义
-class AKSUFont {
-    static let titleInt = 36.0
-    static let title2Int = 30.0
-    static let title3Int = 24.0
-    static let title4Int = 20.0
-    static let textInt = 16.0
-    static let secondaryTextInt = 12.0
-    static let lessTextInt = 10.0
+public class AKSUFont {
+    public static let titleInt = 36.0
+    public static let title2Int = 30.0
+    public static let title3Int = 24.0
+    public static let title4Int = 20.0
+    public static let textInt = 16.0
+    public static let secondaryTextInt = 12.0
+    public static let lessTextInt = 10.0
     // 大小的定义
-    static let title = Font.system(size: titleInt)
-    static let title2 = Font.system(size: title2Int)
-    static let title3 = Font.system(size: title3Int)
-    static let title4 = Font.system(size: title4Int)
-    static let text = Font.system(size: textInt)
-    static let secondaryText = Font.system(size: secondaryTextInt)
-    static let lessText = Font.system(size: lessTextInt)
+    public static let title = Font.system(size: titleInt)
+    public static let title2 = Font.system(size: title2Int)
+    public static let title3 = Font.system(size: title3Int)
+    public  static let title4 = Font.system(size: title4Int)
+    public static let text = Font.system(size: textInt)
+    public static let secondaryText = Font.system(size: secondaryTextInt)
+    public static let lessText = Font.system(size: lessTextInt)
 
     // 字重的定义 - 宽度
-    static let ultraLight = Font.Weight.ultraLight
-    static let thin = Font.Weight.thin
-    static let light = Font.Weight.light
-    static let regular = Font.Weight.regular
-    static let medium = Font.Weight.medium
-    static let semibold = Font.Weight.semibold
-    static let bold = Font.Weight.bold
-    static let heavy = Font.Weight.heavy
-    static let black = Font.Weight.black
+    public static let ultraLight = Font.Weight.ultraLight
+    public static let thin = Font.Weight.thin
+    public static let light = Font.Weight.light
+    public static let regular = Font.Weight.regular
+    public static let medium = Font.Weight.medium
+    public static let semibold = Font.Weight.semibold
+    public static let bold = Font.Weight.bold
+    public static let heavy = Font.Weight.heavy
+    public static let black = Font.Weight.black
 
 //    static func register() -> Bool {
 //        guard let robotoURL = Bundle.main.url(forResource: "Roboto", withExtension: "bundle") else { return false }
@@ -54,7 +54,7 @@ class AKSUFont {
 //    }
 }
 
-extension Font {
+public extension Font {
     static let aksuTitle = AKSUFont.title
     static let aksuTitle2 = AKSUFont.title2
     static let aksuTitle3 = AKSUFont.title3
@@ -64,7 +64,7 @@ extension Font {
     static let aksuLessText = AKSUFont.lessText
 }
 
-extension Font.Weight {
+public extension Font.Weight {
     static let aksuUltraLight = Font.Weight.ultraLight
     static let aksuThin = Font.Weight.thin
     static let aksuLight = Font.Weight.light

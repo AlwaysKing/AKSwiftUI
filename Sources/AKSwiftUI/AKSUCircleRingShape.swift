@@ -7,12 +7,17 @@
 
 import SwiftUI
 
-struct AKSUCircleRingShape: Shape, Animatable {
-    var progress: Double = 0.0
-    var lineWidth: CGFloat = 8
+public struct AKSUCircleRingShape: Shape, Animatable {
+    var progress: Double
+    var lineWidth: CGFloat
+
+    public init(progress: Double = 0.0, lineWidth: CGFloat = 8) {
+        self.progress = progress
+        self.lineWidth = lineWidth
+    }
 
     // 所有动画的中间值都会通过这个变量的set传递进来
-    var animatableData: Double {
+    public var animatableData: Double {
         get {
             return progress
         }
@@ -21,7 +26,7 @@ struct AKSUCircleRingShape: Shape, Animatable {
         }
     }
 
-    func path(in rect: CGRect) -> Path {
+    public func path(in rect: CGRect) -> Path {
         var path = Path()
         // 设置图形
         path.addArc(center: CGPoint(x: rect.width / 2.0, y: rect.height / 2.0), radius: min(rect.width, rect.height) / 2.0, startAngle: .degrees(-90.0), endAngle: .degrees(360 * progress - 90.0), clockwise: false)
