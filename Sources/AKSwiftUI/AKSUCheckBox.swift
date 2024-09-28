@@ -73,6 +73,9 @@ public struct AKSUCheckBox: View {
                 .padding(.trailing)
         }
         .background(.white.opacity(0.01))
+        .onChange(of: checked) { _ in
+            realChecked = checked
+        }
         .onTapGesture {
             realChecked.toggle()
             checked = realChecked
@@ -108,6 +111,12 @@ struct AKSUCheckBoxPreviewsView: View {
                     checked in
                     print("check2 = \(checked)")
                 }
+                
+                AKSUCheckBox(checked: $checked, label: "c") {
+                    checked in
+                    print("check3 = \(checked)")
+                }
+                .disabled(true)
             }
         }
     }

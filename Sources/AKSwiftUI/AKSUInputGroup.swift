@@ -21,8 +21,14 @@ public struct AKSUInputGroup: View {
     public let actionColor: Color
     // 接收输入的内容
     @Binding public var text: String
+    // 是否显示清空按钮
+    var clearButton: AKSUInputButtonShowMode
     // 密码模式
-    public var password: Bool
+    var password: Bool
+    // 是否显示清空按钮
+    var passwordButton: AKSUInputButtonShowMode
+    // 文本对齐方式
+    var alignment: TextAlignment
     // 回车事件触发
     public var submit: (() -> Void)?
     // 是否获得焦点
@@ -33,22 +39,27 @@ public struct AKSUInputGroup: View {
     @State private var leadingWidth: CGFloat = 0.0
     @State private var trailingWidth: CGFloat = 0.0
     @State private var dropHeight: CGFloat = 0.0
+    @State private var hovering: Bool = false
+    @State var showPassword: Bool = false
 
     var leadingView: [AnyView] = []
     var trailingView: [AnyView] = []
 
-    public init(label: String, text: Binding<String>, password: Bool = false, actionColor: Color = AKSUColor.primary, submit: (() -> Void)? = nil) {
+    public init(label: String, alignment: TextAlignment = .leading, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, actionColor: Color = AKSUColor.primary, submit: (() -> Void)? = nil) {
         self.label = label
         self._text = text
         self.password = password
         self.actionColor = actionColor
         self.submit = submit
+        self.clearButton = clearButton
+        self.passwordButton = passwordButton
+        self.alignment = alignment
     }
 
     public var body: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
-                HStack {
+                HStack(spacing: 0) {
                     if leadingView.count != 0 {
                         HStack(spacing: 0) {
                             ForEach(Array(0 ..< leadingView.count), id: \.self) {
@@ -103,30 +114,53 @@ public struct AKSUInputGroup: View {
                     }
 
                     // 输入框
-                    ZStack {
-                        if password {
-                            SecureField(label, text: $text)
-                        } else {
-                            TextField(label, text: $text)
+                    HStack(spacing: 0) {
+                        ZStack {
+                            if password {
+                                SecureField(label, text: $text)
+                            } else {
+                                TextField(label, text: $text)
+                            }
                         }
-                    }
-                    .textFieldStyle(.plain)
-                    .font(.title2)
-                    .padding([.top, .bottom], 8)
-                    .padding([.leading, .trailing], 16)
-                    .focused($focused)
-                    .onSubmit {
-                        if let submit = submit {
-                            submit()
+                        .multilineTextAlignment(alignment)
+                        .textFieldStyle(.plain)
+                        .font(.title2)
+                        .padding([.top, .bottom], 8)
+                        .padding([.leading, .trailing], 16)
+                        .focused($focused)
+                        .onHover { hovering = $0 }
+                        .onSubmit {
+                            if let submit = submit {
+                                submit()
+                            }
+                        }
+
+                        if showClearButton() {
+                            ZStack {
+                                Image(systemName: "x.circle").foregroundColor(AKSUColor.gray)
+                            }
+                            .frame(width: 20, height: 20)
+                            .padding(.trailing, showPasswordButton() ? 0 : 5)
+                            .onHover {
+                                clearHovering = $0
+                                if clearHovering {
+                                    NSCursor.pointingHand.push()
+                                } else {
+                                    NSCursor.pop()
+                                }
+                            }
+                            .onTapGesture {
+                                text.removeAll()
+                            }
                         }
                     }
 
-                    // 删除按钮
-                    if !text.isEmpty && focused {
+                    if showPasswordButton() {
                         ZStack {
-                            Image(systemName: "x.circle").foregroundColor(AKSUColor.gray)
+                            Image(systemName: showPassword ? "eye" : "eye.slash").foregroundColor(AKSUColor.gray)
                         }
-                        .frame(width: 30, height: 30)
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing, 5)
                         .onHover {
                             clearHovering = $0
                             if clearHovering {
@@ -136,7 +170,13 @@ public struct AKSUInputGroup: View {
                             }
                         }
                         .onTapGesture {
-                            text.removeAll()
+                            showPassword.toggle()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.0001) {
+                                focused = true
+                            }
+                        }
+                        .onChange(of: focused) { _ in
+                            print(focused)
                         }
                     }
 
@@ -244,6 +284,31 @@ public struct AKSUInputGroup: View {
         tmp.trailingView.append(AnyView(builder()))
         return tmp
     }
+
+    func showPasswordButton() -> Bool {
+        if !password {
+            return false
+        }
+        if passwordButton == .none {
+            return false
+        } else if passwordButton == .show {
+            return true
+        } else if focused || hovering {
+            return true
+        }
+        return false
+    }
+
+    func showClearButton() -> Bool {
+        if clearButton == .none {
+            return false
+        } else if clearButton == .show {
+            return true
+        } else if text.isEmpty == false && (focused || hovering) {
+            return true
+        }
+        return false
+    }
 }
 
 struct AKSUInputGroup_Previews: PreviewProvider {
@@ -256,20 +321,62 @@ struct AKSUInputGroup_Previews: PreviewProvider {
 }
 
 struct AKSUInputGroupPreviewsView: View {
-    @State var input: String = ""
+    @State var input: String = "asdasdadasdasdasdasdasdasdasdasd"
     let height: CGFloat = 40
+    @State var password: Bool = false
+    @State var clearButton: AKSUInputButtonShowMode = .none
+    @State var passwordButton: AKSUInputButtonShowMode = .none
+    @State var alignment: TextAlignment = .leading
 
     var body: some View {
         VStack {
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("对齐方式:")
+                    AKSUSegment(selected: $alignment) {
+                        Text("左").AKSUSegmentTag(index: .leading)
+                        Text("中").AKSUSegmentTag(index: .center)
+                        Text("右").AKSUSegmentTag(index: .trailing)
+                    }.frame(width: 200)
+                }
+
+                HStack {
+                    Text("清除按钮:")
+                    AKSUSegment(selected: $clearButton) {
+                        Text("禁用").AKSUSegmentTag(index: .none)
+                        Text("自动").AKSUSegmentTag(index: .auto)
+                        Text("显示").AKSUSegmentTag(index: .show)
+                    }.frame(width: 200)
+                }
+
+                HStack {
+                    Text("文本类型:")
+                    AKSUSegment(selected: $password) {
+                        Text("明文").AKSUSegmentTag(index: false)
+                        Text("密码").AKSUSegmentTag(index: true)
+                    }.frame(width: 200)
+                }
+
+                HStack {
+                    Text("密码按钮:")
+                    AKSUSegment(selected: $passwordButton) {
+                        Text("禁用").AKSUSegmentTag(index: .none)
+                        Text("自动").AKSUSegmentTag(index: .auto)
+                        Text("显示").AKSUSegmentTag(index: .show)
+                    }.frame(width: 200)
+                        .disabled(!password)
+                }
+            }.padding()
+
             Text("text")
             HStack {
                 VStack {
-                    AKSUInputGroup(label: "用户名", text: $input)
+                    AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                         .frame(width: 150)
                 }
 
                 VStack {
-                    AKSUInputGroup(label: "用户名", text: $input)
+                    AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                         .addLeading {
                             Text("1")
                         }
@@ -277,7 +384,7 @@ struct AKSUInputGroupPreviewsView: View {
                 }
 
                 VStack {
-                    AKSUInputGroup(label: "用户名", text: $input)
+                    AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                         .addLeading {
                             Text("1")
                         }
@@ -288,7 +395,7 @@ struct AKSUInputGroupPreviewsView: View {
                 }
 
                 VStack {
-                    AKSUInputGroup(label: "用户名", text: $input)
+                    AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                         .addTrailling {
                             Text("1")
                         }
@@ -298,7 +405,7 @@ struct AKSUInputGroupPreviewsView: View {
             Text("button")
             HStack(alignment: .top) {
                 VStack {
-                    AKSUInputGroup(label: "用户名", text: $input)
+                    AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                         .addTrailling {
                             AKSUButton(style: .plain, height: height) {
                                 Text("确定")
@@ -312,7 +419,7 @@ struct AKSUInputGroupPreviewsView: View {
                         }
                         .frame(width: 400)
 
-                    AKSUInputGroup(label: "用户名", text: $input)
+                    AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                         .addLeading {
                             AKSUButton(style: .plain, height: height) {
                                 Text("确定")
@@ -326,7 +433,7 @@ struct AKSUInputGroupPreviewsView: View {
                         }
                         .frame(width: 400)
 
-                    AKSUInputGroup(label: "用户名", text: $input)
+                    AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                         .addLeading {
                             AKSUButton(style: .plain, height: height) {
                                 Text("确定")
@@ -354,7 +461,7 @@ struct AKSUInputGroupPreviewsView: View {
                 }
 
                 VStack {
-                    AKSUInputGroup(label: "用户名", text: $input)
+                    AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                         .addTrailling {
                             AKSUDropdown(selected: $input, plain: true, height: height) {
                                 Text("primary")
@@ -371,7 +478,7 @@ struct AKSUInputGroupPreviewsView: View {
                         .frame(width: 400)
                         .zIndex(4)
 
-                    AKSUInputGroup(label: "用户名", text: $input)
+                    AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                         .addLeading {
                             AKSUDropdown(selected: $input, plain: true, height: height) {
                                 Text("primary")
@@ -388,7 +495,7 @@ struct AKSUInputGroupPreviewsView: View {
                         .frame(width: 400)
                         .zIndex(3)
 
-                    AKSUInputGroup(label: "用户名", text: $input)
+                    AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                         .addLeading {
                             AKSUDropdown(selected: $input, plain: true, height: height) {
                                 Text("primary")
@@ -422,7 +529,7 @@ struct AKSUInputGroupPreviewsView: View {
 
             Text("多个")
             HStack {
-                AKSUInputGroup(label: "用户名", text: $input)
+                AKSUInputGroup(label: "用户名", alignment: alignment, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
                     .addLeading {
                         AKSUButton(style: .plain, height: height) {
                             Text("确定")

@@ -10,6 +10,13 @@ import SwiftUI
 public enum AKSUInputStyle {
     case line
     case box
+    case plain
+}
+
+public enum AKSUInputButtonShowMode {
+    case none
+    case auto
+    case show
 }
 
 public struct AKSUInput: View {
@@ -24,30 +31,40 @@ public struct AKSUInput: View {
     // 主要颜色
     let actionColor: Color = AKSUColor.primary
     // 是否显示清空按钮
-    var clearButton: Bool
+    var clearButton: AKSUInputButtonShowMode
     // 密码模式
     var password: Bool
+    // 是否显示清空按钮
+    var passwordButton: AKSUInputButtonShowMode
+    // 文本对齐方式
+    var textAlignment: TextAlignment
     // 接收输入的内容
     @Binding public var text: String
     // 回车事件触发
     var submit: (() -> Void)? = nil
     // 是否获得焦点
     @FocusState private var focused: Bool
+    // 显示秘密啊
+    @State var showPassword: Bool = false
     // 是否激活 action label
     @State private var labelActionActivate: Bool = false
     // action label 的宽度
     @State private var actionLabelSize: CGFloat = 0.0
     // clear 按钮 hover 状态
     @State private var clearHovering: Bool = false
-    
-    public init(style: AKSUInputStyle = .box, label: String, disableActionLabel: Bool = false, clearButton: Bool = true, password: Bool = false, text: Binding<String>, submit: (() -> Void)? = nil) {
+    // 鼠标
+    @State private var hovering: Bool = false
+
+    public init(style: AKSUInputStyle = .box, label: String, alignment: TextAlignment = .leading, disableActionLabel: Bool = false, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, submit: (() -> Void)? = nil) {
         self.style = style
         self.label = label
         self.disableActionLabel = disableActionLabel
         self.clearButton = clearButton
         self.password = password
+        self.passwordButton = passwordButton
         self._text = text
         self.submit = submit
+        self.textAlignment = alignment
         self.focused = focused
         self.labelActionActivate = labelActionActivate
         self.actionLabelSize = actionLabelSize
@@ -57,7 +74,7 @@ public struct AKSUInput: View {
     public var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
-                if !disableActionLabel {
+                if !disableActionLabel && style != .plain {
                     Text(label)
                         .foregroundStyle(focused ? actionColor : AKSUColor.gray.opacity(0.6))
                         .background(
@@ -73,27 +90,34 @@ public struct AKSUInput: View {
                         .scaleEffect(labelActionActivate ? 0.8 : 1.0, anchor: .leading)
                         .offset(y: labelActionActivate ? 0 : 20)
                         .padding(0)
-                        .padding(.leading, style == .line ? 4 : 15)
+                        .padding(.leading, (style == .line || style == .plain) ? 4 : 15)
                         .frame(height: 15)
                         .allowsHitTesting(false)
+
                 } else {
-                    VStack {}
-                        .frame(height: 15)
+                    if style != .plain {
+                        VStack {}
+                            .frame(height: 15)
+                    }
                 }
 
                 HStack(spacing: 0) {
                     ZStack {
-                        if password {
-                            SecureField(disableActionLabel ? label : "", text: $text)
+                        if password && !showPassword {
+                            SecureField((disableActionLabel || style == .plain) ? label : "", text: $text)
+                                .padding(.top, 0.3)
+                                .padding(.bottom, 1.2)
+                                .offset(y: focused ? 1.5 : 0) // .plain 模式下会有偏移
                         } else {
-                            TextField(disableActionLabel ? label : "", text: $text)
+                            TextField((disableActionLabel || style == .plain) ? label : "", text: $text)
                         }
                     }
+                    .multilineTextAlignment(textAlignment)
                     .textFieldStyle(.plain)
                     .font(.title2)
                     .padding([.top, .bottom], 8)
-                    .padding(.leading, style == .line ? 4 : 16)
-                    .padding(.trailing, text.isEmpty || !focused || !clearButton ? (style == .line ? 4 : 16) : 0)
+                    .padding(.leading, (style == .line || style == .plain) ? 4 : 16)
+                    .padding(.trailing, !(showClearButton() || showPasswordButton()) ? ((style == .line || style == .plain) ? 4 : 16) : 2)
                     .focused($focused)
                     .onChange(of: focused) { _ in
                         withAnimation {
@@ -111,11 +135,13 @@ public struct AKSUInput: View {
                         }
                     }
 
-                    if !text.isEmpty && focused && clearButton {
+                    if showClearButton() {
                         ZStack {
                             Image(systemName: "x.circle").foregroundColor(AKSUColor.gray)
                         }
-                        .frame(width: 30, height: 30)
+                        .frame(width: 20, height: 20)
+                        .padding(.leading, 5)
+                        .padding(.trailing, showPasswordButton() ? 0 : 5)
                         .onHover {
                             clearHovering = $0
                             if clearHovering {
@@ -126,6 +152,32 @@ public struct AKSUInput: View {
                         }
                         .onTapGesture {
                             text.removeAll()
+                        }
+                    }
+
+                    if showPasswordButton() {
+                        ZStack {
+                            Image(systemName: showPassword ? "eye" : "eye.slash").foregroundColor(AKSUColor.gray)
+                        }
+                        .frame(width: 20, height: 20)
+                        .padding(.trailing, 5)
+                        .padding(.leading, showClearButton() ? 0 : 5)
+                        .onHover {
+                            clearHovering = $0
+                            if clearHovering {
+                                NSCursor.pointingHand.push()
+                            } else {
+                                NSCursor.pop()
+                            }
+                        }
+                        .onTapGesture {
+                            showPassword.toggle()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.0001) {
+                                focused = true
+                            }
+                        }
+                        .onChange(of: focused) { _ in
+                            print(focused)
                         }
                     }
                 }
@@ -152,7 +204,8 @@ public struct AKSUInput: View {
                         }
                     }
                 )
-                .padding(.top, -6)
+                .padding(.top, style == .plain ? 0 : -6)
+
                 if style == .line && isEnabled {
                     VStack {}
                         .frame(maxWidth: .infinity)
@@ -163,6 +216,7 @@ public struct AKSUInput: View {
                 }
             }
         }
+        .onHover { hovering = $0 }
         .onOutsideClick { inside in
             DispatchQueue.main.async {
                 if inside == false {
@@ -170,6 +224,31 @@ public struct AKSUInput: View {
                 }
             }
         }
+    }
+
+    func showPasswordButton() -> Bool {
+        if !password {
+            return false
+        }
+        if passwordButton == .none {
+            return false
+        } else if passwordButton == .show {
+            return true
+        } else if focused || hovering {
+            return true
+        }
+        return false
+    }
+
+    func showClearButton() -> Bool {
+        if clearButton == .none {
+            return false
+        } else if clearButton == .show {
+            return true
+        } else if text.isEmpty == false && (focused || hovering) {
+            return true
+        }
+        return false
     }
 }
 
@@ -184,28 +263,73 @@ struct AKSUInput_Previews: PreviewProvider {
 
 struct AKSUInputPreviewsView: View {
     @State var input: String = ""
+    @State var style: AKSUInputStyle = .box
+    @State var disableActionLabel: Bool = false
+    @State var password: Bool = false
+    @State var clearButton: AKSUInputButtonShowMode = .none
+    @State var passwordButton: AKSUInputButtonShowMode = .none
+
+    @State var alignment: TextAlignment = .leading
+
     var body: some View {
         VStack {
-            HStack {
-                AKSUInput(style: .box, label: "请输入用户名1", text: $input)
-                    .frame(width: 150)
-                AKSUInput(style: .box, label: "请输入用户名1", clearButton: false, text: $input)
-                    .frame(width: 150)
-            }
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("显示样式:")
+                    AKSUSegment(selected: $style) {
+                        Text("box").AKSUSegmentTag(index: .box)
+                        Text("line").AKSUSegmentTag(index: .line)
+                        Text("plain").AKSUSegmentTag(index: .plain)
+                    }.frame(width: 200)
+                }
+
+                HStack {
+                    Text("对齐方式:")
+                    AKSUSegment(selected: $alignment) {
+                        Text("左").AKSUSegmentTag(index: .leading)
+                        Text("中").AKSUSegmentTag(index: .center)
+                        Text("右").AKSUSegmentTag(index: .trailing)
+                    }.frame(width: 200)
+                }
+
+                HStack {
+                    Text("动态标签:")
+                    AKSUSegment(selected: $disableActionLabel) {
+                        Text("禁用").AKSUSegmentTag(index: true)
+                        Text("启用").AKSUSegmentTag(index: false)
+                    }.frame(width: 200)
+                }
+                HStack {
+                    Text("清除按钮:")
+                    AKSUSegment(selected: $clearButton) {
+                        Text("禁用").AKSUSegmentTag(index: .none)
+                        Text("自动").AKSUSegmentTag(index: .auto)
+                        Text("显示").AKSUSegmentTag(index: .show)
+                    }.frame(width: 200)
+                }
+
+                HStack {
+                    Text("文本类型:")
+                    AKSUSegment(selected: $password) {
+                        Text("明文").AKSUSegmentTag(index: false)
+                        Text("密码").AKSUSegmentTag(index: true)
+                    }.frame(width: 200)
+                }
+
+                HStack {
+                    Text("密码按钮:")
+                    AKSUSegment(selected: $passwordButton) {
+                        Text("禁用").AKSUSegmentTag(index: .none)
+                        Text("自动").AKSUSegmentTag(index: .auto)
+                        Text("显示").AKSUSegmentTag(index: .show)
+                    }.frame(width: 200)
+                        .disabled(!password)
+                }
+            }.padding()
 
             HStack {
-                AKSUInput(style: .box, label: "请输入用户名2", disableActionLabel: true, text: $input)
-                    .frame(width: 150)
-                AKSUInput(style: .box, label: "请输入用户名2", disableActionLabel: true, clearButton: false, text: $input)
-                    .frame(width: 150)
-            }
-
-            HStack {
-                AKSUInput(style: .line, label: "密码3", password: true, text: $input)
-                    .frame(width: 150)
-
-                AKSUInput(style: .line, label: "密码3", clearButton: false, password: true, text: $input)
-                    .frame(width: 150)
+                AKSUInput(style: style, label: "请 输 入 用 户 名", alignment: alignment, disableActionLabel: disableActionLabel, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
+                    .frame(width: 250)
             }
         }
     }
