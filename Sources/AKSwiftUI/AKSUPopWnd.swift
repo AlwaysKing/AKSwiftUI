@@ -10,12 +10,13 @@ import SwiftUI
 public class AKSUPopWnd: NSObject {
     var window: NSWindow
     var parent: NSWindow? = nil
+    var pointRect: CGRect = CGRect.zero
     public var menuContent: AnyView? = nil
     public var hiddenEvent: (() -> Void)? = nil
     var monitor: Bool = false
     var uuid: UUID
 
-    public  override init() {
+    override public init() {
         uuid = UUID()
         window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 0, height: 0),
@@ -30,13 +31,23 @@ public class AKSUPopWnd: NSObject {
         super.init()
     }
 
-    public func show(point: CGPoint, width: CGFloat, height: CGFloat, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil) {
+    public func show(point: CGPoint, pointRect: CGRect? = nil, toggle: Bool = false, width: CGFloat, height: CGFloat, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil) {
         if let view = view {
             window.contentView = NSHostingView(rootView: AKSUPopWndView(width: width, height: height, content: view))
         } else if let menuContent = menuContent {
             window.contentView = NSHostingView(rootView: AKSUPopWndView(width: width, height: height, content: menuContent))
         } else {
             return
+        }
+
+        // 如果窗口当前是显示的
+        if window.isVisible && toggle {
+            // 如果都没变化，这直接关闭
+            if self.parent == parent && self.pointRect == pointRect {
+                self.close()
+                self.hiddenEvent?()
+                return
+            }
         }
 
         // 将windowMenu添加到父亲窗口
@@ -52,7 +63,8 @@ public class AKSUPopWnd: NSObject {
         // 获取window的位置
         let parentRect = parent.frame
         self.parent = parent
-        
+        self.pointRect = pointRect ?? CGRect.zero
+
         // 边缘测试
         window.setFrame(NSRect(x: point.x + parentRect.minX - 4, y: parentRect.maxY - point.y - height + 4, width: width, height: height), display: true)
         if !autoHidden {
@@ -67,7 +79,13 @@ public class AKSUPopWnd: NSObject {
 
             // 监听窗口为点击
             AKSUMouseEventMonitor.start(uuid: uuid, window: nil, filter: [.leftMouseDown, .rightMouseDown]) { _, event in
-                if event.window != self.window {
+                if event.window == self.parent {
+                    let point = AKSUMouseEventMonitor.filpLocationPoint(event: event)!
+                    if !self.pointRect.contains(point) {
+                        self.close()
+                        self.hiddenEvent?()
+                    }
+                } else if event.window != self.window {
                     self.close()
                     self.hiddenEvent?()
                 }

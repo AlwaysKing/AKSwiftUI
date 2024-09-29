@@ -39,6 +39,7 @@ public struct AKSUDropdown<K: Hashable>: View {
     @State var hoveringToggle: Bool = false
 
     @State var location: CGRect = CGRect.zero
+    @State var dropBtnSize: CGSize = CGSize.zero
     @State var mouseEvent: NSEvent? = nil
 
     public init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, dropHeight: CGFloat? = nil, noPadding: Bool = false, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
@@ -103,6 +104,17 @@ public struct AKSUDropdown<K: Hashable>: View {
             .frame(height: self.selectedRealHeight)
             .padding([.leading, .top, .bottom], 10)
             .background(self.hoveringToggle && self.style == .selectBtn ? .black.opacity(0.1) : .clear)
+            .background {
+                GeometryReader { g in
+                    Color.clear
+                        .onAppear {
+                            dropBtnSize = g.size
+                        }
+                        .onChange(of: g.size) { _ in
+                            dropBtnSize = g.size
+                        }
+                }
+            }
             .onHover {
                 self.hoveringToggle = $0
             }
@@ -151,13 +163,20 @@ public struct AKSUDropdown<K: Hashable>: View {
             }
             self.dropHeight = dropHeight
 
+            var pointRect = location
+            if style == .selectBtn {
+                // 就是一小部分
+                pointRect = CGRect(x: location.maxX - dropBtnSize.width, y: location.origin.y, width: dropBtnSize.width, height: location.size.height)
+            }
+
             menu.menuContent = AnyView(menuContent())
             menu.hiddenEvent = {
                 withAnimation {
                     showDrop = false
                 }
             }
-            menu.show(point: CGPoint(x: location.minX, y: location.maxY + 4), width: location.width, height: dropHeight, parent: mouseEvent.window!)
+
+            menu.show(point: CGPoint(x: location.minX, y: location.maxY + 4), pointRect: pointRect, width: location.width, height: dropHeight, parent: mouseEvent.window!)
         } else {
             menu.close()
         }

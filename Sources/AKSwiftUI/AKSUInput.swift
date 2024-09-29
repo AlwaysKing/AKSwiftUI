@@ -95,7 +95,7 @@ public struct AKSUInput: View {
                         .allowsHitTesting(false)
 
                 } else {
-                    if style != .plain {
+                    if style != .plain && disableActionLabel == false {
                         VStack {}
                             .frame(height: 15)
                     }
@@ -204,7 +204,7 @@ public struct AKSUInput: View {
                         }
                     }
                 )
-                .padding(.top, style == .plain ? 0 : -6)
+                .padding(.top, style == .plain || disableActionLabel == true ? 0 : -6)
 
                 if style == .line && isEnabled {
                     VStack {}
