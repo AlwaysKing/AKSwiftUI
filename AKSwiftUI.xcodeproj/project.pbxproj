@@ -11,6 +11,7 @@
 		3919F7352C83157000E63624 /* SplitWndContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7342C83157000E63624 /* SplitWndContentView.swift */; };
 		3919F7372C83157100E63624 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3919F7362C83157100E63624 /* Assets.xcassets */; };
 		3919F73A2C83157100E63624 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3919F7392C83157100E63624 /* Preview Assets.xcassets */; };
+		9339A1AD2CA99EEC00EC9A7A /* AKSUWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9339A1AC2CA99EEC00EC9A7A /* AKSUWindow.swift */; };
 		9350172D2CA93A7900E44CB4 /* AKSUAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9350172C2CA93A7900E44CB4 /* AKSUAppearance.swift */; };
 		93509D652C88A7BC00CA3645 /* SplitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93509D642C88A7BC00CA3645 /* SplitContentView.swift */; };
 		9355A0742CA519F600CA164C /* AKSUStepAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A04E2CA519F600CA164C /* AKSUStepAnimationView.swift */; };
@@ -54,6 +55,7 @@
 		3919F7342C83157000E63624 /* SplitWndContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitWndContentView.swift; sourceTree = "<group>"; };
 		3919F7362C83157100E63624 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3919F7392C83157100E63624 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		9339A1AC2CA99EEC00EC9A7A /* AKSUWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUWindow.swift; sourceTree = "<group>"; };
 		9350172C2CA93A7900E44CB4 /* AKSUAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUAppearance.swift; sourceTree = "<group>"; };
 		93509D642C88A7BC00CA3645 /* SplitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitContentView.swift; sourceTree = "<group>"; };
 		9355A04E2CA519F600CA164C /* AKSUStepAnimationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUStepAnimationView.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				9355A0522CA519F600CA164C /* AKSUMouseEventMonitor.swift */,
 				9355A0532CA519F600CA164C /* AKSUMouseEventView.swift */,
 				9355A0542CA519F600CA164C /* AKSUScreen.swift */,
+				9339A1AC2CA99EEC00EC9A7A /* AKSUWindow.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -309,6 +312,7 @@
 				9355A0902CA519F600CA164C /* AKSURadio.swift in Sources */,
 				9355A07A2CA519F600CA164C /* AKSUFlex.swift in Sources */,
 				9355A0782CA519F600CA164C /* AKSUMouseEventView.swift in Sources */,
+				9339A1AD2CA99EEC00EC9A7A /* AKSUWindow.swift in Sources */,
 				9355A0832CA519F600CA164C /* AKSUButton.swift in Sources */,
 				9355A07F2CA519F600CA164C /* AKSUWindowAccessor.swift in Sources */,
 				9355A0922CA519F600CA164C /* AKSUSegment.swift in Sources */,
