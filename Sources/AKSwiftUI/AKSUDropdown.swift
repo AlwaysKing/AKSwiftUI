@@ -114,7 +114,7 @@ public struct AKSUDropdown<K: Hashable>: View {
         .background(!self.isEnabled ? AKSUColor.dyGrayMask : .clear)
         .background(self.hoveringAll && self.style != .selectBtn ? .black.opacity(0.1) : .clear)
         .background(self.bgColor)
-        .cornerRadius(self.plain ? 0 : 4)
+        .cornerRadius(self.plain ? 0 : AKSUAppearance.cornerRadius)
         .onHover {
             self.hoveringAll = $0
         }

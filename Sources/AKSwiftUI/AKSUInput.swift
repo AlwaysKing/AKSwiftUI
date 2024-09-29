@@ -184,7 +184,7 @@ public struct AKSUInput: View {
                 .background(
                     ZStack {
                         VStack {
-                            RoundedRectangle(cornerRadius: 10)
+                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                 .stroke(style == .box ? (focused ? actionColor : AKSUColor.gray) : .clear, lineWidth: focused ? 2 : 1)
                                 .padding(1)
                         }
@@ -199,7 +199,7 @@ public struct AKSUInput: View {
                         }
 
                         if !isEnabled {
-                            RoundedRectangle(cornerRadius: 10)
+                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                 .fill(AKSUColor.dyGrayMask)
                         }
                     }
@@ -211,7 +211,7 @@ public struct AKSUInput: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: 2)
                         .background(focused ? actionColor : AKSUColor.gray.opacity(0.5))
-                        .cornerRadius(2)
+                        .cornerRadius(4)
                         .padding(0)
                 }
             }

@@ -102,7 +102,7 @@ public struct AKSUInputGroup: View {
                         .mask {
                             ZStack {
                                 Rectangle().padding(.leading, 8)
-                                RoundedRectangle(cornerRadius: 4)
+                                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                             }.overlay {
                                 GeometryReader { g in
                                     Rectangle()
@@ -221,7 +221,7 @@ public struct AKSUInputGroup: View {
                         .mask {
                             ZStack {
                                 Rectangle().padding(.trailing, 8)
-                                RoundedRectangle(cornerRadius: 4)
+                                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                             }.overlay {
                                 GeometryReader { g in
                                     Rectangle()
@@ -236,13 +236,13 @@ public struct AKSUInputGroup: View {
                     // 边框
                     ZStack {
                         VStack {
-                            RoundedRectangle(cornerRadius: 4)
+                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                 .stroke(AKSUColor.gray, lineWidth: 1)
                                 .padding(1)
                         }
 
                         if focused {
-                            RoundedRectangle(cornerRadius: 4)
+                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                 .stroke(actionColor, lineWidth: 2)
                                 .padding(1)
                                 .mask {
@@ -254,7 +254,7 @@ public struct AKSUInputGroup: View {
 
                         // 禁用时候的背景色
                         if !isEnabled {
-                            RoundedRectangle(cornerRadius: 4)
+                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                 .fill(AKSUColor.dyGrayMask)
                         }
                     }

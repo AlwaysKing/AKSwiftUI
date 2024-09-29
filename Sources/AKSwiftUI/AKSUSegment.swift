@@ -70,7 +70,7 @@ public struct AKSUSegment<K: Hashable>: View {
         .background(self.style == .slim ? .clear : self.bgColor)
         .overlay {
             GeometryReader { g in
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                     .stroke(self.style == .slim ? AKSUColor.gray : .clear, lineWidth: 2)
                     .padding(1)
                     .onAppear {
@@ -81,13 +81,13 @@ public struct AKSUSegment<K: Hashable>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .overlay {
             if !self.isEnabled {
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                     .fill(AKSUColor.dyGrayMask)
                     .padding(1)
             }
         }
         .mask {
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                 .padding(1)
         }
     }

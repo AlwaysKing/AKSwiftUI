@@ -92,7 +92,7 @@ public struct AKSUButton<T: View>: View {
         .background(hovering ? .black.opacity(0.1) : .clear)
         .background(isEnabled ? .clear : AKSUColor.dyGrayMask)
         .background(bgColor)
-        .cornerRadius(style == .plain ? 0 : 4)
+        .cornerRadius(style == .plain ? 0 : AKSUAppearance.cornerRadius)
         .onHover {
             hovering = $0
             if hovering {

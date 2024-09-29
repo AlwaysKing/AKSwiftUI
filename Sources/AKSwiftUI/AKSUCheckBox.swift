@@ -57,12 +57,12 @@ public struct AKSUCheckBox: View {
             .background(realChecked ? actionColor : nil)
             .cornerRadius(4.0)
             .overlay {
-                RoundedRectangle(cornerRadius: 4)
+                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                     .stroke(realChecked ? actionColor : AKSUColor.gray)
             }
             .overlay {
                 if !isEnabled {
-                    RoundedRectangle(cornerRadius: 4)
+                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                         .fill(AKSUColor.dyGrayMask)
                 }
             }

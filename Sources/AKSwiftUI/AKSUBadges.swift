@@ -45,7 +45,7 @@ public struct AKSUBadges<T: View>: View {
         }
         .frame(width: !circle || size == 0 ? nil : size, height: !circle || size == 0 ? nil : size)
         .background(bgColor)
-        .cornerRadius(radius)
+        .cornerRadius(AKSUAppearance.cornerRadius)
         .mask {
             if circle {
                 Circle()

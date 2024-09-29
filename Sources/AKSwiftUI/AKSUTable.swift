@@ -125,7 +125,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                             let selected = rowStorage.isSelected(id: item.value.id)
                             // 添加背景色
                             if item.light {
-                                RoundedRectangle(cornerRadius: 4)
+                                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                     .fill(.gray.opacity(0.1))
                             }
                             else {
@@ -135,7 +135,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                 if multSelection {
                                     if item.index == rowStorage.selectionFirst {
                                         ZStack {
-                                            RoundedRectangle(cornerRadius: 6)
+                                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                                 .fill(selectionColor)
                                                 .padding(.horizontal, 2)
                                             if item.index != rowStorage.selectionLast {
@@ -151,7 +151,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                     }
                                     else if item.index == rowStorage.selectionLast {
                                         ZStack {
-                                            RoundedRectangle(cornerRadius: 6)
+                                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                                 .fill(selectionColor)
                                                 .padding(.horizontal, 2)
                                             VStack {
@@ -170,14 +170,14 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                     }
                                 }
                                 else {
-                                    RoundedRectangle(cornerRadius: 6)
+                                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                         .fill(selectionColor)
                                         .padding(.horizontal, 2)
                                 }
                             }
 
                             if item.rightSelected {
-                                RoundedRectangle(cornerRadius: 6)
+                                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                     .stroke(selected ? .white : selectionColor, lineWidth: 1.5)
                                     .padding(.horizontal, selected ? 4 : 2)
                                     .padding(.vertical, selected ? 2 : 1)

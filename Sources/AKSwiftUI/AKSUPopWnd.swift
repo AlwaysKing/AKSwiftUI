@@ -93,10 +93,10 @@ struct AKSUPopWndView: View {
 
     var body: some View {
         VStack {
-            content.cornerRadius(4)
+            content.cornerRadius(AKSUAppearance.cornerRadius)
         }
         .frame(width: width, height: height, alignment: .top)
-        .cornerRadius(4)
+        .cornerRadius(AKSUAppearance.cornerRadius)
         .shadow(radius: 2)
         .padding(4)
     }

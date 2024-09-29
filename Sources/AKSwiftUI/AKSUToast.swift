@@ -338,7 +338,7 @@ public struct AKSUToastItemView: View, Identifiable {
     public var body: some View {
         if let contentView = contentView {
             contentView
-                .cornerRadius(4)
+                .cornerRadius(AKSUAppearance.cornerRadius)
                 .shadow(radius: 2)
                 .onHover { hovering = $0 }
                 .onAppear {
@@ -442,7 +442,7 @@ public struct AKSUToastItemView: View, Identifiable {
         }
         .foregroundColor(color)
         .background(bgColor)
-        .cornerRadius(4)
+        .cornerRadius(AKSUAppearance.cornerRadius)
         .shadow(radius: 2)
         .opacity(timeCount >= 1 ? 1.0 : timeCount)
         .onTapGesture {

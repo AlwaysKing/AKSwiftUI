@@ -238,7 +238,7 @@ struct AKSUColorPreviewsView: View {
                     key in
                     HStack {
                         Text(key).frame(width: 100, alignment: .leading)
-                        RoundedRectangle(cornerRadius: 4)
+                        RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                             .fill(color[key]!)
                     }
                     .frame(height: 40)
