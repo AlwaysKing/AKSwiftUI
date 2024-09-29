@@ -50,10 +50,13 @@ public struct AKSUInput: View {
     @State private var labelActionActivate: Bool = false
     // action label 的宽度
     @State private var actionLabelSize: CGFloat = 0.0
+    @State private var actionOriginalLabelSize: CGFloat = 0.0
     // clear 按钮 hover 状态
     @State private var clearHovering: Bool = false
     // 鼠标
     @State private var hovering: Bool = false
+    // 大小
+    @State private var size: CGSize = CGSize.zero
 
     public init(style: AKSUInputStyle = .box, label: String, alignment: TextAlignment = .leading, disableActionLabel: Bool = false, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, submit: (() -> Void)? = nil) {
         self.style = style
@@ -67,7 +70,6 @@ public struct AKSUInput: View {
         self.textAlignment = alignment
         self.focused = focused
         self.labelActionActivate = labelActionActivate
-        self.actionLabelSize = actionLabelSize
         self.clearHovering = clearHovering
     }
 
@@ -83,14 +85,16 @@ public struct AKSUInput: View {
                                     .onAppear {
                                         // 因为有缩放，所以这里要将缩放取消
                                         actionLabelSize = geometry.size.width / 1.2
+                                        actionOriginalLabelSize = geometry.size.width
                                     }
                             }
                         )
                         .font(.title2)
                         .scaleEffect(labelActionActivate ? 0.8 : 1.0, anchor: .leading)
                         .offset(y: labelActionActivate ? 0 : 20)
+                        .offset(x: labelActionActivate ? 0 : actionLabelXOffset())
                         .padding(0)
-                        .padding(.leading, (style == .line || style == .plain) ? 4 : 15)
+                        .padding(.leading, style != .box ? 4 : 15)
                         .frame(height: 15)
                         .allowsHitTesting(false)
 
@@ -101,7 +105,7 @@ public struct AKSUInput: View {
                     }
                 }
 
-                HStack(spacing: 0) {
+                ZStack {
                     ZStack {
                         if password && !showPassword {
                             SecureField((disableActionLabel || style == .plain) ? label : "", text: $text)
@@ -117,7 +121,7 @@ public struct AKSUInput: View {
                     .font(.title2)
                     .padding([.top, .bottom], 8)
                     .padding(.leading, (style == .line || style == .plain) ? 4 : 16)
-                    .padding(.trailing, !(showClearButton() || showPasswordButton()) ? ((style == .line || style == .plain) ? 4 : 16) : 2)
+                    .padding(.trailing, inputTraillingPadding())
                     .focused($focused)
                     .onChange(of: focused) { _ in
                         withAnimation {
@@ -135,49 +139,52 @@ public struct AKSUInput: View {
                         }
                     }
 
-                    if showClearButton() {
-                        ZStack {
-                            Image(systemName: "x.circle").foregroundColor(AKSUColor.gray)
-                        }
-                        .frame(width: 20, height: 20)
-                        .padding(.leading, 5)
-                        .padding(.trailing, showPasswordButton() ? 0 : 5)
-                        .onHover {
-                            clearHovering = $0
-                            if clearHovering {
-                                NSCursor.pointingHand.push()
-                            } else {
-                                NSCursor.pop()
+                    HStack {
+                        Spacer()
+                        if showClearButton() {
+                            ZStack {
+                                Image(systemName: "x.circle").foregroundColor(AKSUColor.gray)
+                            }
+                            .frame(width: 20, height: 20)
+                            .padding(.leading, 5)
+                            .padding(.trailing, showPasswordButton() ? 0 : 5)
+                            .onHover {
+                                clearHovering = $0
+                                if clearHovering {
+                                    NSCursor.pointingHand.push()
+                                } else {
+                                    NSCursor.pop()
+                                }
+                            }
+                            .onTapGesture {
+                                text.removeAll()
                             }
                         }
-                        .onTapGesture {
-                            text.removeAll()
-                        }
-                    }
 
-                    if showPasswordButton() {
-                        ZStack {
-                            Image(systemName: showPassword ? "eye" : "eye.slash").foregroundColor(AKSUColor.gray)
-                        }
-                        .frame(width: 20, height: 20)
-                        .padding(.trailing, 5)
-                        .padding(.leading, showClearButton() ? 0 : 5)
-                        .onHover {
-                            clearHovering = $0
-                            if clearHovering {
-                                NSCursor.pointingHand.push()
-                            } else {
-                                NSCursor.pop()
+                        if showPasswordButton() {
+                            ZStack {
+                                Image(systemName: showPassword ? "eye" : "eye.slash").foregroundColor(AKSUColor.gray)
                             }
-                        }
-                        .onTapGesture {
-                            showPassword.toggle()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.0001) {
-                                focused = true
+                            .frame(width: 20, height: 20)
+                            .padding(.trailing, 5)
+                            .padding(.leading, showClearButton() ? 0 : 5)
+                            .onHover {
+                                clearHovering = $0
+                                if clearHovering {
+                                    NSCursor.pointingHand.push()
+                                } else {
+                                    NSCursor.pop()
+                                }
                             }
-                        }
-                        .onChange(of: focused) { _ in
-                            print(focused)
+                            .onTapGesture {
+                                showPassword.toggle()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.0001) {
+                                    focused = true
+                                }
+                            }
+                            .onChange(of: focused) { _ in
+                                print(focused)
+                            }
                         }
                     }
                 }
@@ -217,6 +224,18 @@ public struct AKSUInput: View {
             }
         }
         .onHover { hovering = $0 }
+        .background {
+            GeometryReader {
+                g in
+                Color.clear
+                    .onAppear {
+                        size = g.size
+                    }
+                    .onChange(of: g.size) { _ in
+                        size = g.size
+                    }
+            }
+        }
         .onOutsideClick { inside in
             DispatchQueue.main.async {
                 if inside == false {
@@ -249,6 +268,35 @@ public struct AKSUInput: View {
             return true
         }
         return false
+    }
+
+    func inputTraillingPadding() -> CGFloat {
+        if textAlignment == .center {
+            return style == .box ? 16 : 4
+        }
+
+        var padding = 0.0
+        if showClearButton() && showPasswordButton() {
+            padding = 57
+        } else if showClearButton() || showPasswordButton() {
+            padding = 32
+        }
+
+        if padding == 0 {
+            padding = style == .box ? 16 : 4
+        }
+
+        return padding
+    }
+
+    func actionLabelXOffset() -> CGFloat {
+        if textAlignment == .leading {
+            return 0
+        } else if textAlignment == .center {
+            return (size.width - actionOriginalLabelSize) / 2 - (style != .box ? 4 : 15)
+        } else {
+            return (size.width - actionOriginalLabelSize)  - (style != .box ? 4 : 15) * 2
+        }
     }
 }
 
