@@ -24,7 +24,10 @@ public struct AKSUMouseEventView<V: View>: View {
             if window == nil {
                 VStack {
                     AKSUWindowAccessor {
-                        window = $0
+                        if window != $0 {
+                            window = $0
+                        }
+
                     }.frame(width: 0, height: 0)
                 }.frame(width: 0, height: 0)
             }
