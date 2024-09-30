@@ -30,7 +30,9 @@ public struct AKSUWarpStack<view: View>: View {
                 ZStack {
                     AKSUWindowAccessor {
                         window in
-                        reader.window = window
+                        if reader.window != window {
+                            reader.window = window
+                        }
                     }
                     Color.clear.onAppear {
                         reader.global = g.frame(in: .global)
