@@ -16,6 +16,8 @@ struct AKSUStep: View {
     @Binding var step: Int
     @State var width: CGFloat = 0.0
     @State var hovering: Bool = false
+    
+    @Environment(\.isEnabled) private var isEnabled
 
     init(count: Int, label: [String]? = nil, color: Color = .gray.opacity(0.7), actionColor: Color = .aksuPrimary, size: CGFloat = 30, step: Binding<Int>) {
         self.count = count
@@ -59,6 +61,9 @@ struct AKSUStep: View {
                     }
                 }
                 .onTapGesture {
+                    if !isEnabled {
+                        return
+                    }
                     step = index
                 }
 

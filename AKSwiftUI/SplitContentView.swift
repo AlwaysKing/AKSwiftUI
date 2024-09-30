@@ -23,8 +23,8 @@ struct SplitContentView: View {
 
     let menu: [String: [String]] = [
         "主题": ["Color", "Font"],
-        "布局": ["Flex", "Grid"],
-        "组件": ["Button", "Click", "Input", "InputGroup", "Dropdown", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "CircleProgress", "Collapse", "Segment"]
+        "布局": ["Flex", "Grid", "Split"],
+        "组件": ["Button", "Click", "Input", "InputGroup", "PinInput", "Dropdown", "PopWnd", "Popover", "Toast", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "step", "CircleProgress", "Collapse", "Segment", "Table"]
     ]
 
     var body: some View {
@@ -59,19 +59,26 @@ struct SplitContentView: View {
                     case "Font": AKSUFontPreviewsView()
                     case "Flex": AKSUFlexPreviewsView()
                     case "Grid": AKSUGridPreviewsView()
+                    case "Split": AKSUSplitStackPreviewsView()
                     case "Button": AKSUButtonPreviewsView()
                     case "Click": AKSUClickPreviewsView()
                     case "Input": AKSUInputPreviewsView()
                     case "InputGroup": AKSUInputGroupPreviewsView()
+                    case "PinInput": AKSUInputPinPreviewsView()
                     case "Dropdown": AKSUDropdownPreviewsView()
+                    case "PopWnd": AKSUPopWndPreviewsView()
+                    case "Popover": AKSUPopoverPreviewsView()
+                    case "Toast": AKSUToastPreviewsView()
                     case "CheckBox": AKSUCheckBoxPreviewsView()
                     case "ContainBox": AKSUContainBoxPreviewsView()
                     case "Radio": AKSURadioPreviewsView()
                     case "Range": AKSURangePreviewsView()
                     case "Progress": AKSUProgressPreviewsView()
+                    case "step": AKSUStepPreviewsView()
                     case "CircleProgress": AKSUCircleProgressPreviewsView()
                     case "Collapse": AKSUCollapsePreviewsView()
                     case "Segment": AKSUSegmentPreviewsView()
+                    case "Table": AKSUTablePreviewsView()
                     default: VStack {}
                     }
                 }

@@ -27,6 +27,8 @@ struct AKSUInputPin: View {
 
     @State var selected: Int
 
+    @Environment(\.isEnabled) private var isEnabled
+
     init(count: Int, onlyNumber: Bool = false, color: Color = .primary, actionColor: Color = .aksuPrimary, bgColor: Color = .gray.opacity(0.2), width: CGFloat = 40, height: CGFloat = 40, spacing: CGFloat? = nil, fontSize: CGFloat = 28, finish: @escaping (_ pin: String) -> Void) {
         self.count = count
         self.code = [String](repeating: "", count: count)
@@ -53,6 +55,9 @@ struct AKSUInputPin: View {
                         .foregroundColor(color)
 
                     AKSUKeyPressMonitor { event in
+                        if !isEnabled {
+                            return
+                        }
                         if let input = inputVaild(event) {
                             code[index] = input
                             focusedField = index + 1
