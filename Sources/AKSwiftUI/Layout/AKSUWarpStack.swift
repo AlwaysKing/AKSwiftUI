@@ -30,8 +30,10 @@ public struct AKSUWarpStack<view: View>: View {
                 ZStack {
                     AKSUWindowAccessor {
                         window in
-                        if reader.window != window {
-                            reader.window = window
+                        DispatchQueue.main.async {
+                            if reader.window != window {
+                                reader.window = window
+                            }
                         }
                     }
                     Color.clear.onAppear {

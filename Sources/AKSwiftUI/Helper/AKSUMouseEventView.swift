@@ -23,11 +23,12 @@ public struct AKSUMouseEventView<V: View>: View {
             content()
             if window == nil {
                 VStack {
-                    AKSUWindowAccessor {
-                        if window != $0 {
-                            window = $0
+                    AKSUWindowAccessor { new in
+                        DispatchQueue.main.async {
+                            if window != new {
+                                window = new
+                            }
                         }
-
                     }.frame(width: 0, height: 0)
                 }.frame(width: 0, height: 0)
             }
