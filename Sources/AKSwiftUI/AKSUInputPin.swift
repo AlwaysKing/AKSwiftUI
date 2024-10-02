@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUInputPin: View {
+public struct AKSUInputPin: View {
     let count: Int
     let width: CGFloat
     let height: CGFloat
@@ -29,7 +29,7 @@ struct AKSUInputPin: View {
 
     @Environment(\.isEnabled) private var isEnabled
 
-    init(count: Int, onlyNumber: Bool = false, color: Color = .primary, actionColor: Color = .aksuPrimary, bgColor: Color = .gray.opacity(0.2), width: CGFloat = 40, height: CGFloat = 40, spacing: CGFloat? = nil, fontSize: CGFloat = 28, finish: @escaping (_ pin: String) -> Void) {
+    public init(count: Int, onlyNumber: Bool = false, color: Color = .primary, actionColor: Color = .aksuPrimary, bgColor: Color = .gray.opacity(0.2), width: CGFloat = 40, height: CGFloat = 40, spacing: CGFloat? = nil, fontSize: CGFloat = 28, finish: @escaping (_ pin: String) -> Void) {
         self.count = count
         self.code = [String](repeating: "", count: count)
         self.width = width
@@ -45,7 +45,7 @@ struct AKSUInputPin: View {
         self.focusedField = 0
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: spacing) {
             ForEach(0 ..< 6, id: \.self) { index in
 

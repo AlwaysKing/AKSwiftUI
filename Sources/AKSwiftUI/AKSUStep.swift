@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AKSUStep: View {
+public struct AKSUStep: View {
     let count: Int
     let size: CGFloat
     let label: [String]?
@@ -19,7 +19,7 @@ struct AKSUStep: View {
     
     @Environment(\.isEnabled) private var isEnabled
 
-    init(count: Int, label: [String]? = nil, color: Color = .gray.opacity(0.7), actionColor: Color = .aksuPrimary, size: CGFloat = 30, step: Binding<Int>) {
+    public init(count: Int, label: [String]? = nil, color: Color = .gray.opacity(0.7), actionColor: Color = .aksuPrimary, size: CGFloat = 30, step: Binding<Int>) {
         self.count = count
         self._step = step
         self.size = size
@@ -28,7 +28,7 @@ struct AKSUStep: View {
         self.actionColor = actionColor
     }
 
-    var body: some View {
+    public var body: some View {
         HStack {
             ForEach(0 ..< count, id: \.self) {
                 index in
