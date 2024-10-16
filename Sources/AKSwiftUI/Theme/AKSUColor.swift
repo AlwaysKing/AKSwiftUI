@@ -22,7 +22,7 @@ public class AKSUColor {
 
     public static let title = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
-        case .darkAqua:
+        case NSAppearance.Name.darkAqua:
             return NSColor(red: 240 / 255, green: 240 / 255, blue: 240 / 255, alpha: 1.0)
         default:
             return NSColor(red: 24 / 255, green: 42 / 255, blue: 56 / 255, alpha: 1.0)
@@ -31,7 +31,7 @@ public class AKSUColor {
 
     public static let text = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
-        case .darkAqua:
+        case NSAppearance.Name.darkAqua:
             return NSColor(red: 220 / 255, green: 220 / 255, blue: 220 / 255, alpha: 1.0)
         default:
             return NSColor(red: 80 / 255, green: 80 / 255, blue: 80 / 255, alpha: 1.0)
@@ -40,7 +40,7 @@ public class AKSUColor {
 
     public static let secondaryText = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
-        case .darkAqua:
+        case NSAppearance.Name.darkAqua:
             return NSColor(red: 160 / 255, green: 160 / 255, blue: 160 / 255, alpha: 1.0)
         default:
             return NSColor(red: 120 / 255, green: 120 / 255, blue: 120 / 255, alpha: 1.0)
@@ -49,7 +49,7 @@ public class AKSUColor {
 
     public static let lessText = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
-        case .darkAqua:
+        case NSAppearance.Name.darkAqua:
             return NSColor(red: 130 / 255, green: 130 / 255, blue: 130 / 255, alpha: 1.0)
         default:
             return NSColor(red: 180 / 255, green: 180 / 255, blue: 180 / 255, alpha: 1.0)
@@ -58,7 +58,7 @@ public class AKSUColor {
 
     public static let dyGrayBG = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
-        case .darkAqua:
+        case NSAppearance.Name.darkAqua:
             return NSColor(red: 63 / 255, green: 63 / 255, blue: 63 / 255, alpha: 1.0)
         default:
             return NSColor(red: 220 / 255, green: 220 / 255, blue: 220 / 255, alpha: 1.0)

@@ -13,7 +13,7 @@ public struct AKSUContainBox<T: Equatable>: View {
     @Binding var list: [T]
     var change: ((Bool, T) -> Void)?
 
-    @State private var contain: Bool
+    @State private var contain: Bool = false
 
     private var color: Color
     private var actionColor: Color
@@ -21,11 +21,11 @@ public struct AKSUContainBox<T: Equatable>: View {
     public init(label: String, key: T, list: Binding<[T]>, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool, T) -> Void)? = nil) {
         self.key = key
         self._list = list
-        self.contain = list.wrappedValue.contains(where: { key == $0 })
         self.label = label
         self.change = change
         self.color = color
         self.actionColor = actionColor
+        self.contain = list.wrappedValue.contains(where: { key == $0 })
     }
 
     public var body: some View {

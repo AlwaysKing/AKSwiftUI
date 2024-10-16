@@ -33,12 +33,12 @@ public struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
         self.rightView = AnyView(ZStack {})
 
         self.leftButton = leftToolBar
-        self.realShowLeft = showLeft.wrappedValue ? .all : .detailOnly
         self._showLeft = showLeft
-
-        self.rightButton = false
-        self.realShowRight = false
         self._showRight = .constant(false)
+        self.rightButton = false
+        self.realShowLeft = showLeft.wrappedValue ? .all : .detailOnly
+       
+        self.realShowRight = false
     }
 
     public init<RightView: View>(leftToolBar: Bool = true, showLeft: Binding<Bool>, rightToolBar: Bool = true, showRight: Binding<Bool>, @ViewBuilder mainView: () -> MainView, @ViewBuilder leftView: () -> LeftView, @ViewBuilder rightView: () -> RightView) {
@@ -47,12 +47,12 @@ public struct AKSUSplitWnd<LeftView: View, MainView: View>: View {
         self.rightView = AnyView(rightView())
 
         self.leftButton = leftToolBar
-        self.realShowLeft = showLeft.wrappedValue ? .all : .detailOnly
         self._showLeft = showLeft
 
         self.rightButton = rightToolBar
-        self.realShowRight = showRight.wrappedValue
         self._showRight = showRight
+        self.realShowLeft = showLeft.wrappedValue ? .all : .detailOnly
+        self.realShowRight = showRight.wrappedValue
     }
 
     public var body: some View {

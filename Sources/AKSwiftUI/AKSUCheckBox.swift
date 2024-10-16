@@ -16,8 +16,8 @@ public struct AKSUCheckBox: View {
     var actionColor: Color
     var change: ((Bool) -> Void)?
 
-    @State var realChecked: Bool
-
+    @State var realChecked: Bool = false
+    
     public init(label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
         self.label = label
         self.color = color
