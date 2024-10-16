@@ -159,12 +159,14 @@ public extension Color {
             let components = self.resolve(in: mode)
             return (CGFloat(components.red), CGFloat(components.green), CGFloat(components.blue), CGFloat(components.opacity))
         } else {
-            var red: CGFloat = 0
-            var green: CGFloat = 0
-            var blue: CGFloat = 0
-            var opacity: CGFloat = 0
-            NSColor(self).getRed(&red, green: &green, blue: &blue, alpha: &opacity)
-            return (red, green, blue, opacity)
+            if let components = NSColor(self).cgColor.components, components.count >= 3 {
+                let red = components[0]
+                let green = components[1]
+                let blue = components[2]
+                let opacity = components.count > 3 ? components[3] : 1.0
+                return (red, green, blue, opacity)
+            }
+            return (0, 0, 0, 0)
         }
     }
 
