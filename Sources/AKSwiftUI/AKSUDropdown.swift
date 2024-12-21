@@ -23,6 +23,7 @@ public struct AKSUDropdown<K: Hashable>: View {
     var bgColor: Color
     var height: CGFloat?
     var dropMaxHeight: CGFloat?
+    var hiddenTriangle: Bool
     var content: [K: AKSUDropdownItem<K>] = [:]
     var sort: [K] = []
     let menu = AKSUPopWnd()
@@ -42,7 +43,7 @@ public struct AKSUDropdown<K: Hashable>: View {
     @State var dropBtnSize: CGSize = CGSize.zero
     @State var mouseEvent: NSEvent? = nil
 
-    public init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, dropHeight: CGFloat? = nil, noPadding: Bool = false, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
+    public init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, dropHeight: CGFloat? = nil, noPadding: Bool = false, hiddenTriangle: Bool = false, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
         self._selected = selected
         for item in content() {
             self.content[item.index] = AKSUDropdownItem(index: item.index, height: item.height, noPadding: item.noPadding ?? noPadding, color: bgColor, content: item.content, action: item.action)
@@ -55,6 +56,7 @@ public struct AKSUDropdown<K: Hashable>: View {
         self.dropMaxHeight = dropHeight
         self.style = style
         self.noPadding = noPadding
+        self.hiddenTriangle = hiddenTriangle
     }
 
     public var body: some View {
@@ -94,32 +96,34 @@ public struct AKSUDropdown<K: Hashable>: View {
             }
 
             // 下拉按钮
-            VStack(spacing: 0) {
-                Image(systemName: "triangleshape.fill")
-                    .font(.system(size: 10))
-                    .foregroundColor(self.color)
-                    .rotationEffect(Angle(degrees: self.showDrop ? -180 : -90))
-                    .padding(.trailing, 10)
-            }
-            .frame(height: self.selectedRealHeight)
-            .padding([.leading, .top, .bottom], 10)
-            .background(self.hoveringToggle && self.style == .selectBtn ? .black.opacity(0.1) : .clear)
-            .background {
-                GeometryReader { g in
-                    Color.clear
-                        .onAppear {
-                            dropBtnSize = g.size
-                        }
-                        .onChange(of: g.size) { _ in
-                            dropBtnSize = g.size
-                        }
+            if !hiddenTriangle {
+                VStack(spacing: 0) {
+                    Image(systemName: "triangleshape.fill")
+                        .font(.system(size: 10))
+                        .foregroundColor(self.color)
+                        .rotationEffect(Angle(degrees: self.showDrop ? -180 : -90))
+                        .padding(.trailing, 10)
                 }
-            }
-            .onHover {
-                self.hoveringToggle = $0
-            }
-            .onTapGesture {
-                ToggleDropMenu()
+                .frame(height: self.selectedRealHeight)
+                .padding([.leading, .top, .bottom], 10)
+                .background(self.hoveringToggle && self.style == .selectBtn ? .black.opacity(0.1) : .clear)
+                .background {
+                    GeometryReader { g in
+                        Color.clear
+                            .onAppear {
+                                dropBtnSize = g.size
+                            }
+                            .onChange(of: g.size) { _ in
+                                dropBtnSize = g.size
+                            }
+                    }
+                }
+                .onHover {
+                    self.hoveringToggle = $0
+                }
+                .onTapGesture {
+                    ToggleDropMenu()
+                }
             }
         }
         .frame(maxWidth: .infinity)
@@ -370,6 +374,21 @@ struct AKSUDropdownPreviewsView: View {
             .frame(width: 200)
 
             AKSUDropdown(selected: self.$color, bgColor: self.color) {
+                Text("primary")
+                    .AKSUDropdownTag(index: AKSUColor.primary)
+
+                Text("success")
+                    .AKSUDropdownTag(index: AKSUColor.success)
+
+                Text("warning")
+                    .AKSUDropdownTag(index: AKSUColor.warning)
+
+                Text("danger")
+                    .AKSUDropdownTag(index: AKSUColor.danger)
+            }
+            .frame(width: 200)
+
+            AKSUDropdown(selected: self.$color, bgColor: self.color, hiddenTriangle: true) {
                 Text("primary")
                     .AKSUDropdownTag(index: AKSUColor.primary)
 

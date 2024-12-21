@@ -12,20 +12,22 @@ public enum AKSUGroupStyle {
 }
 
 public struct AKSUGroup: View {
-    var style: AKSUGroupStyle = .vertical
-    var disableFocus: Bool = false
-    var hiddenDivider: Bool = false
-    var hiddenBoard: Bool = false
-    
+    var style: AKSUGroupStyle
+    var disableFocus: Bool
+    var hiddenDivider: Bool
+    var hiddenBoard: Bool
+    var actionColor: Color
+
     private var itemView: [AnyView] = []
     @State private var fouced: Int?
     @State private var itemSize: [Int: CGSize] = [:]
-    
-    public init(style: AKSUGroupStyle = .horizontal, disableFocus: Bool = false, hiddenDivider: Bool = false, hiddenBoard: Bool = false) {
+
+    public init(style: AKSUGroupStyle = .horizontal, actionColor: Color = AKSUColor.primary, disableFocus: Bool = false, hiddenDivider: Bool = false, hiddenBoard: Bool = false) {
         self.style = style
         self.disableFocus = disableFocus
         self.hiddenDivider = hiddenDivider
         self.hiddenBoard = hiddenBoard
+        self.actionColor = actionColor
     }
 
     public var body: some View {
@@ -52,7 +54,7 @@ public struct AKSUGroup: View {
                                 Divider()
                                     .frame(width: style == .vertical ? maxWidth() : (!disableFocus && (fouced == index || fouced == index + 1) ? 2 : 1),
                                            height: style == .horizontal ? maxHeight() : (!disableFocus && (fouced == index || fouced == index + 1) ? 2 : 1))
-                                    .background(!disableFocus && (fouced == index || fouced == index + 1) ? AKSUColor.primary : Color.gray)
+                                    .background(!disableFocus && (fouced == index || fouced == index + 1) ? actionColor : Color.gray)
                             }
                             .frame(width: style == .horizontal ? 2 : nil)
                             .frame(height: style == .vertical ? 2 : nil)
@@ -68,7 +70,7 @@ public struct AKSUGroup: View {
 
                             if fouced != nil && !disableFocus {
                                 RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                    .stroke(AKSUColor.primary, lineWidth: 2)
+                                    .stroke(actionColor, lineWidth: 2)
                                     .padding(1)
                                     .mask {
                                         Color.black
@@ -225,11 +227,10 @@ struct AKSUGroupPreviewsView: View {
     @State var hiddenBoard: Bool = false
     @State var disableFocus: Bool = false
 
-    
     @State var http: String = "http"
     @State var addr: String = ""
     @State var port: String = ""
-    
+
     var body: some View {
         VStack {
             HStack {
@@ -314,8 +315,7 @@ struct AKSUGroupPreviewsView: View {
                 .addView {
                     Text("xxx").frame(width: 100, height: 40)
                 }
-            
-            
+
             AKSUGroup()
                 .addView {
                     AKSUInput(style: .plain, label: "协议", text: $input)
