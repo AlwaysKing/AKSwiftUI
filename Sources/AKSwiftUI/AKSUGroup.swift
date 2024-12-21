@@ -21,7 +21,7 @@ public struct AKSUGroup: View {
     @State private var fouced: Int?
     @State private var itemSize: [Int: CGSize] = [:]
     
-    public init(style: AKSUGroupStyle = .vertical, disableFocus: Bool = false, hiddenDivider: Bool = false, hiddenBoard: Bool = false) {
+    public init(style: AKSUGroupStyle = .horizontal, disableFocus: Bool = false, hiddenDivider: Bool = false, hiddenBoard: Bool = false) {
         self.style = style
         self.disableFocus = disableFocus
         self.hiddenDivider = hiddenDivider
