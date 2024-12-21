@@ -44,6 +44,8 @@ public struct AKSUInput: View {
     var submit: (() -> Void)? = nil
     // 是否获得焦点
     @FocusState private var focused: Bool
+    // 焦点变化事件
+    var focuseNotify: ((_ fouced: Bool) -> Void)? = nil
     // 显示秘密啊
     @State var showPassword: Bool = false
     // 是否激活 action label
@@ -127,6 +129,8 @@ public struct AKSUInput: View {
                         withAnimation {
                             labelActionActivate = !text.isEmpty || focused
                         }
+                        // 焦点变化通知
+                        focuseNotify?(focused)
                     }
                     .onChange(of: text) { _ in
                         withAnimation {
@@ -295,8 +299,14 @@ public struct AKSUInput: View {
         } else if textAlignment == .center {
             return (size.width - actionOriginalLabelSize) / 2 - (style != .box ? 4 : 15)
         } else {
-            return (size.width - actionOriginalLabelSize)  - (style != .box ? 4 : 15) * 2
+            return (size.width - actionOriginalLabelSize) - (style != .box ? 4 : 15) * 2
         }
+    }
+
+    func focuesEvent(event: @escaping (_ event: Bool) -> Void) -> Self {
+        var tmp = self
+        tmp.focuseNotify = event
+        return tmp
     }
 }
 

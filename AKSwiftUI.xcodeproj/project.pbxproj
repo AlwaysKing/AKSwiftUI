@@ -11,6 +11,8 @@
 		3919F7352C83157000E63624 /* SplitWndContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7342C83157000E63624 /* SplitWndContentView.swift */; };
 		3919F7372C83157100E63624 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3919F7362C83157100E63624 /* Assets.xcassets */; };
 		3919F73A2C83157100E63624 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3919F7392C83157100E63624 /* Preview Assets.xcassets */; };
+		395A48E32D1572CC0095E299 /* AKSUGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395A48E22D1572BD0095E299 /* AKSUGroup.swift */; };
+		395A48E52D15A2FE0095E299 /* AKSUStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395A48E42D15A2FE0095E299 /* AKSUStackView.swift */; };
 		9339A1AD2CA99EEC00EC9A7A /* AKSUWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9339A1AC2CA99EEC00EC9A7A /* AKSUWindow.swift */; };
 		9339A1AF2CAACEA900EC9A7A /* AKSUInputPin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9339A1AE2CAACEA900EC9A7A /* AKSUInputPin.swift */; };
 		9339A1B12CAACEB800EC9A7A /* AKSUStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9339A1B02CAACEB800EC9A7A /* AKSUStep.swift */; };
@@ -58,6 +60,8 @@
 		3919F7342C83157000E63624 /* SplitWndContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitWndContentView.swift; sourceTree = "<group>"; };
 		3919F7362C83157100E63624 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3919F7392C83157100E63624 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		395A48E22D1572BD0095E299 /* AKSUGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUGroup.swift; sourceTree = "<group>"; };
+		395A48E42D15A2FE0095E299 /* AKSUStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUStackView.swift; sourceTree = "<group>"; };
 		9339A1AC2CA99EEC00EC9A7A /* AKSUWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUWindow.swift; sourceTree = "<group>"; };
 		9339A1AE2CAACEA900EC9A7A /* AKSUInputPin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUInputPin.swift; sourceTree = "<group>"; };
 		9339A1B02CAACEB800EC9A7A /* AKSUStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUStep.swift; sourceTree = "<group>"; };
@@ -186,6 +190,7 @@
 				9355A0592CA519F600CA164C /* AKSUSplitWnd.swift */,
 				9355A05A2CA519F600CA164C /* AKSUWarpStack.swift */,
 				9355A05B2CA519F600CA164C /* AKSUWindowAccessor.swift */,
+				395A48E42D15A2FE0095E299 /* AKSUStackView.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -216,6 +221,7 @@
 				9355A0662CA519F600CA164C /* AKSUCollapse.swift */,
 				9355A0672CA519F600CA164C /* AKSUContainBox.swift */,
 				9355A0682CA519F600CA164C /* AKSUDropdown.swift */,
+				395A48E22D1572BD0095E299 /* AKSUGroup.swift */,
 				9355A0692CA519F600CA164C /* AKSUInput.swift */,
 				9355A06A2CA519F600CA164C /* AKSUInputGroup.swift */,
 				9355A06B2CA519F600CA164C /* AKSUPopover.swift */,
@@ -326,6 +332,7 @@
 				9339A1AD2CA99EEC00EC9A7A /* AKSUWindow.swift in Sources */,
 				9355A0832CA519F600CA164C /* AKSUButton.swift in Sources */,
 				9355A07F2CA519F600CA164C /* AKSUWindowAccessor.swift in Sources */,
+				395A48E32D1572CC0095E299 /* AKSUGroup.swift in Sources */,
 				9355A0922CA519F600CA164C /* AKSUSegment.swift in Sources */,
 				9355A08C2CA519F600CA164C /* AKSUInputGroup.swift in Sources */,
 				9355A08F2CA519F600CA164C /* AKSUProgress.swift in Sources */,
@@ -336,6 +343,7 @@
 				9355A07C2CA519F600CA164C /* AKSUSplitStack.swift in Sources */,
 				9355A0842CA519F600CA164C /* AKSUCheckBox.swift in Sources */,
 				9355A08E2CA519F600CA164C /* AKSUPopWnd.swift in Sources */,
+				395A48E52D15A2FE0095E299 /* AKSUStackView.swift in Sources */,
 				9355A0802CA519F600CA164C /* AKSUColor.swift in Sources */,
 				9339A1B12CAACEB800EC9A7A /* AKSUStep.swift in Sources */,
 				9355A0882CA519F600CA164C /* AKSUCollapse.swift in Sources */,
