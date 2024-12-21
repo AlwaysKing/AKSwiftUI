@@ -104,10 +104,10 @@ public struct AKSUGroup: View {
         // 理论上同一个元素 不是 @State 的变化应该会重新生成元素的，但是不知道为 style 有点问题，所以不能直接用过style 判断排列顺序
         // 所以直接通过试探判断出是那种方式
         var style: AKSUGroupStyle = .vertical
-        if let first = itemSize.first {
-            if point.x > first.value.width {
+        if let first = itemSize[0] {
+            if point.x > first.width {
                 style = .horizontal
-            } else if point.y > first.value.height {
+            } else if point.y > first.height {
                 style = .vertical
             } else {
                 fouced = 0
@@ -225,6 +225,11 @@ struct AKSUGroupPreviewsView: View {
     @State var hiddenBoard: Bool = false
     @State var disableFocus: Bool = false
 
+    
+    @State var http: String = "http"
+    @State var addr: String = ""
+    @State var port: String = ""
+    
     var body: some View {
         VStack {
             HStack {
@@ -308,6 +313,24 @@ struct AKSUGroupPreviewsView: View {
                 }
                 .addView {
                     Text("xxx").frame(width: 100, height: 40)
+                }
+            
+            
+            AKSUGroup()
+                .addView {
+                    AKSUInput(style: .plain, label: "协议", text: $input)
+                        .frame(width: 80, height: 40)
+                }
+                .addView {
+                    AKSUInput(style: .plain, label: "管理端地址", text: $input)
+                        .frame(width: 200, height: 40)
+                }
+                .addView {
+                    HStack {
+                        Text(":")
+                        AKSUInput(style: .plain, label: "端口号", text: $input)
+                            .frame(width: 80, height: 40)
+                    }
                 }
         }
     }
