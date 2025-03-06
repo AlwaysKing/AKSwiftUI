@@ -13,6 +13,7 @@
 		3919F73A2C83157100E63624 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3919F7392C83157100E63624 /* Preview Assets.xcassets */; };
 		395A48E32D1572CC0095E299 /* AKSUGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395A48E22D1572BD0095E299 /* AKSUGroup.swift */; };
 		395A48E52D15A2FE0095E299 /* AKSUStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395A48E42D15A2FE0095E299 /* AKSUStackView.swift */; };
+		39EDCBD22D7871CA00DD6B0C /* AKSUStepScrollview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39EDCBD12D7871CA00DD6B0C /* AKSUStepScrollview.swift */; };
 		9339A1AD2CA99EEC00EC9A7A /* AKSUWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9339A1AC2CA99EEC00EC9A7A /* AKSUWindow.swift */; };
 		9339A1AF2CAACEA900EC9A7A /* AKSUInputPin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9339A1AE2CAACEA900EC9A7A /* AKSUInputPin.swift */; };
 		9339A1B12CAACEB800EC9A7A /* AKSUStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9339A1B02CAACEB800EC9A7A /* AKSUStep.swift */; };
@@ -62,6 +63,7 @@
 		3919F7392C83157100E63624 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		395A48E22D1572BD0095E299 /* AKSUGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUGroup.swift; sourceTree = "<group>"; };
 		395A48E42D15A2FE0095E299 /* AKSUStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUStackView.swift; sourceTree = "<group>"; };
+		39EDCBD12D7871CA00DD6B0C /* AKSUStepScrollview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUStepScrollview.swift; sourceTree = "<group>"; };
 		9339A1AC2CA99EEC00EC9A7A /* AKSUWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUWindow.swift; sourceTree = "<group>"; };
 		9339A1AE2CAACEA900EC9A7A /* AKSUInputPin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUInputPin.swift; sourceTree = "<group>"; };
 		9339A1B02CAACEB800EC9A7A /* AKSUStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUStep.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				9355A0722CA519F600CA164C /* AKSUToast.swift */,
 				9339A1AE2CAACEA900EC9A7A /* AKSUInputPin.swift */,
 				9339A1B02CAACEB800EC9A7A /* AKSUStep.swift */,
+				39EDCBD12D7871CA00DD6B0C /* AKSUStepScrollview.swift */,
 			);
 			name = AKSwiftUI;
 			path = Sources/AKSwiftUI;
@@ -330,6 +333,7 @@
 				9355A07A2CA519F600CA164C /* AKSUFlex.swift in Sources */,
 				9355A0782CA519F600CA164C /* AKSUMouseEventView.swift in Sources */,
 				9339A1AD2CA99EEC00EC9A7A /* AKSUWindow.swift in Sources */,
+				39EDCBD22D7871CA00DD6B0C /* AKSUStepScrollview.swift in Sources */,
 				9355A0832CA519F600CA164C /* AKSUButton.swift in Sources */,
 				9355A07F2CA519F600CA164C /* AKSUWindowAccessor.swift in Sources */,
 				395A48E32D1572CC0095E299 /* AKSUGroup.swift in Sources */,

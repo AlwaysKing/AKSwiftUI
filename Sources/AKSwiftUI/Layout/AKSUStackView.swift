@@ -40,6 +40,33 @@ struct AKSUStackView<view: View>: View {
     }
 }
 
+struct AKSULazyStackView<view: View>: View {
+    var stack: AKSUStackStyle = .zstack
+    var vAlignment: HorizontalAlignment = .center
+    var hAlignment: VerticalAlignment = .center
+    var zAlignment: Alignment = .center
+    var spacing: CGFloat? = nil
+
+    @ViewBuilder
+    var content: () -> view
+
+    var body: some View {
+        if stack == .vstack {
+            LazyVStack(alignment: vAlignment, spacing: spacing) {
+                content()
+            }
+        } else if stack == .hstack {
+            LazyHStack(alignment: hAlignment, spacing: spacing) {
+                content()
+            }
+        } else if stack == .zstack {
+            ZStack(alignment: zAlignment) {
+                content()
+            }
+        }
+    }
+}
+
 struct AKSUStack_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {

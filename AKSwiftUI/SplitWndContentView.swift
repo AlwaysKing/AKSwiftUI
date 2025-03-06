@@ -25,7 +25,7 @@ struct SplitWndContentView: View {
     let menu: [String: [String]] = [
         "主题": ["Color", "Font"],
         "布局": ["Flex", "Grid", "Split"],
-        "组件": ["Button", "Click", "Group", "Input", "InputGroup", "PinInput", "Dropdown", "PopWnd", "Popover", "Toast", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "step", "CircleProgress", "Collapse", "Segment", "Table"]
+        "组件": ["Button", "Click", "Group", "Input", "InputGroup", "PinInput", "Dropdown", "PopWnd", "Popover", "Toast", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "step", "CircleProgress", "Collapse", "SetpScrollView", "Segment", "Table"]
     ]
 
     var body: some View {
@@ -56,6 +56,7 @@ struct SplitWndContentView: View {
                     case "step": AKSUStepPreviewsView()
                     case "CircleProgress": AKSUCircleProgressPreviewsView()
                     case "Collapse": AKSUCollapsePreviewsView()
+                    case "SetpScrollView": AKSUStepScrollviewPreviewsView()
                     case "Segment": AKSUSegmentPreviewsView()
                     case "Table": AKSUTablePreviewsView()
                     default: VStack {}
