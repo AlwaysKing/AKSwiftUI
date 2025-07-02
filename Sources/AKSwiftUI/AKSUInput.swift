@@ -34,6 +34,18 @@ public struct AKSUInput: View {
     var clearButton: AKSUInputButtonShowMode
     // 密码模式
     var password: Bool
+    // 数字模式
+    var onlyNumber: Bool
+    // 小数点位数
+    var decimalCount: Int?
+    // 数字模式是否显示步长
+    var numberStep: Float?
+    // 数字模式的最大值
+    var numberMax: Float?
+    // 数字模式的最小值
+    var numberMin: Float?
+    // 后缀单位
+    var unit: String?
     // 是否显示清空按钮
     var passwordButton: AKSUInputButtonShowMode
     // 文本对齐方式
@@ -49,7 +61,7 @@ public struct AKSUInput: View {
     // 显示秘密啊
     @State var showPassword: Bool = false
     // 是否激活 action label
-    @State private var labelActionActivate: Bool = false
+    @State private var labelActionActivate: Bool
     // action label 的宽度
     @State private var actionLabelSize: CGFloat = 0.0
     @State private var actionOriginalLabelSize: CGFloat = 0.0
@@ -60,19 +72,25 @@ public struct AKSUInput: View {
     // 大小
     @State private var size: CGSize = CGSize.zero
 
-    public init(style: AKSUInputStyle = .box, label: String, alignment: TextAlignment = .leading, disableActionLabel: Bool = false, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, submit: (() -> Void)? = nil) {
+    public init(style: AKSUInputStyle = .box, label: String, alignment: TextAlignment = .leading, disableActionLabel: Bool = false, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, onlyNumber: Bool = false, decimalCount: Int? = nil, numberStep: Float? = nil, numberMax: Float? = nil, numberMin: Float? = nil, unit: String? = nil, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, submit: (() -> Void)? = nil)
+    {
         self.style = style
         self.label = label
         self.disableActionLabel = disableActionLabel
         self.clearButton = clearButton
         self.password = password
+        self.onlyNumber = onlyNumber
+        self.decimalCount = decimalCount
+        self.numberStep = numberStep
+        self.numberMax = numberMax
+        self.numberMin = numberMin
+        self.unit = unit
         self.passwordButton = passwordButton
         self._text = text
         self.submit = submit
         self.textAlignment = alignment
-        self.focused = focused
-        self.labelActionActivate = labelActionActivate
-        self.clearHovering = clearHovering
+        self.labelActionActivate = !text.wrappedValue.isEmpty
+        formatInput()
     }
 
     public var body: some View {
@@ -107,7 +125,7 @@ public struct AKSUInput: View {
                     }
                 }
 
-                ZStack {
+                HStack {
                     ZStack {
                         if password && !showPassword {
                             SecureField((disableActionLabel || style == .plain) ? label : "", text: $text)
@@ -132,10 +150,12 @@ public struct AKSUInput: View {
                         // 焦点变化通知
                         focuseNotify?(focused)
                     }
+                    // 内容绑定
                     .onChange(of: text) { _ in
                         withAnimation {
                             labelActionActivate = !text.isEmpty || focused
                         }
+                        formatInput()
                     }
                     .onSubmit {
                         if let submit = submit {
@@ -143,15 +163,20 @@ public struct AKSUInput: View {
                         }
                     }
 
-                    HStack {
-                        Spacer()
+                    HStack(spacing: 0) {
+                        if onlyNumber, let numberStep = numberStep {
+                            VStack(spacing: 2) {
+                                Stepper("", onIncrement: { stepperNumber(numberStep) }, onDecrement: { stepperNumber(-numberStep) })
+                            }
+                            .padding(.trailing, 5)
+                        }
+
                         if showClearButton() {
                             ZStack {
                                 Image(systemName: "x.circle").foregroundColor(AKSUColor.gray)
                             }
                             .frame(width: 20, height: 20)
-                            .padding(.leading, 5)
-                            .padding(.trailing, showPasswordButton() ? 0 : 5)
+                            .padding(.trailing, showPasswordButton() || showUnit() ? 0 : 5)
                             .onHover {
                                 clearHovering = $0
                                 if clearHovering {
@@ -170,8 +195,7 @@ public struct AKSUInput: View {
                                 Image(systemName: showPassword ? "eye" : "eye.slash").foregroundColor(AKSUColor.gray)
                             }
                             .frame(width: 20, height: 20)
-                            .padding(.trailing, 5)
-                            .padding(.leading, showClearButton() ? 0 : 5)
+                            .padding(.trailing, showUnit() ? 0 : 5)
                             .onHover {
                                 clearHovering = $0
                                 if clearHovering {
@@ -186,9 +210,15 @@ public struct AKSUInput: View {
                                     focused = true
                                 }
                             }
-                            .onChange(of: focused) { _ in
-                                print(focused)
+                        }
+
+                        if showUnit() {
+                            ZStack {
+                                Text(unit!).foregroundColor(AKSUColor.gray)
                             }
+                            .frame(width: 20, height: 20)
+                            .padding(.leading, showClearButton() || showPasswordButton() ? 8 : 0)
+                            .padding(.trailing, 5)
                         }
                     }
                 }
@@ -249,6 +279,94 @@ public struct AKSUInput: View {
         }
     }
 
+    func formatInput() {
+        // 如果不是仅允许数字输入，直接返回
+        if !onlyNumber || password { return }
+
+        // 定义允许的字符集合：数字、小数点（如果允许）和负号
+        var allowedCharacters = "0123456789"
+        let decimal = decimalCount != 0
+        if decimal {
+            allowedCharacters += "."
+        }
+        allowedCharacters += "-"
+
+        // 过滤掉不允许的字符
+        let filtered = text.filter { allowedCharacters.contains($0) }
+
+        // 检查用户是否想输入负数（包含任何位置的负号）
+        let isNegative = filtered.contains("-")
+
+        // 移除所有负号（后面会根据需要重新添加）
+        let withoutMinus = filtered.replacingOccurrences(of: "-", with: "")
+
+        // 处理小数部分
+        let components = withoutMinus.components(separatedBy: ".")
+        var result: String
+
+        if components.count > 1 && decimal {
+            // 合并整数部分和第一个小数点后的内容
+            let integerPart = components[0]
+            let decimalPart = components[1...].joined()
+            result = "\(integerPart).\(decimalPart)"
+        } else {
+            result = withoutMinus
+        }
+
+        // 处理小数位数限制
+        if decimal, let maxPlaces = decimalCount, let dotIndex = result.firstIndex(of: ".") {
+            let decimalPart = result[result.index(dotIndex, offsetBy: 1)...]
+            if decimalPart.count > maxPlaces {
+                // 截断超出限制的小数部分
+                let endIndex = result.index(dotIndex, offsetBy: maxPlaces + 1)
+                result = String(result[..<endIndex])
+            }
+        }
+
+        // 特殊情况：当用户刚输入负号但还没输入数字时，保留单独的负号
+        if isNegative && result.isEmpty {
+            result = "-"
+        }
+        // 正常情况：如果有内容且需要负号，在开头添加负号
+        else if isNegative && !result.isEmpty {
+            result = "-" + result
+        }
+
+        // 在主线程更新文本
+        DispatchQueue.main.async {
+            text = result
+            stepperNumber(0)
+        }
+    }
+
+    func stepperNumber(_ increment: Float) {
+        if !onlyNumber || password {
+            return
+        }
+        if text == "-" && increment == 0 {
+            return
+        }
+        let number = Decimal(string: text) ?? Decimal(0)
+        let stepValue = Decimal(string: String(increment)) ?? 0
+
+        // 2. 根据 increment 决定增减
+        var newNumber = number + stepValue
+
+        if let numberMin = numberMin {
+            let minDec = Decimal(string: String(numberMin)) ?? 0
+            newNumber = max(minDec, newNumber)
+        }
+        if let numberMax = numberMax {
+            let maxDec = Decimal(string: String(numberMax)) ?? 0
+            newNumber = min(maxDec, newNumber)
+        }
+        // 4. 转换为字符串（自动处理末尾的 .0）
+        let newText = NSDecimalNumber(decimal: newNumber).stringValue
+        if !(newText == "0" && text.isEmpty) {
+            text = newText
+        }
+    }
+
     func showPasswordButton() -> Bool {
         if !password {
             return false
@@ -274,23 +392,23 @@ public struct AKSUInput: View {
         return false
     }
 
+    func showUnit() -> Bool {
+        if let unit = unit {
+            return !unit.isEmpty
+        }
+        return false
+    }
+
     func inputTraillingPadding() -> CGFloat {
         if textAlignment == .center {
             return style == .box ? 16 : 4
         }
 
-        var padding = 0.0
-        if showClearButton() && showPasswordButton() {
-            padding = 57
-        } else if showClearButton() || showPasswordButton() {
-            padding = 32
+        if showClearButton() || showPasswordButton() || showUnit() {
+            return 0
         }
 
-        if padding == 0 {
-            padding = style == .box ? 16 : 4
-        }
-
-        return padding
+        return style == .box ? 16 : 4
     }
 
     func actionLabelXOffset() -> CGFloat {
@@ -326,8 +444,15 @@ struct AKSUInputPreviewsView: View {
     @State var password: Bool = false
     @State var clearButton: AKSUInputButtonShowMode = .none
     @State var passwordButton: AKSUInputButtonShowMode = .none
+    @State var unit: String? = nil
 
     @State var alignment: TextAlignment = .leading
+
+    @State var numberMode: Bool = false
+    @State var number: Int = 0
+    @State var numberFloat: Float = 0
+    @State var decimalCount: Int? = nil
+    @State var numberStep: Float? = nil
 
     var body: some View {
         VStack {
@@ -383,11 +508,47 @@ struct AKSUInputPreviewsView: View {
                     }.frame(width: 200)
                         .disabled(!password)
                 }
+
+                HStack {
+                    Text("数字模式:")
+                    AKSUSegment(selected: $numberMode) {
+                        Text("文本").AKSUSegmentTag(index: false)
+                        Text("整数").AKSUSegmentTag(index: true)
+                    }.frame(width: 200)
+                }
+
+                HStack {
+                    Text("末尾单位:")
+                    AKSUSegment(selected: $unit) {
+                        Text("不使用").AKSUSegmentTag(index: nil)
+                        Text("使用").AKSUSegmentTag(index: "GB")
+                    }.frame(width: 200)
+                }
+
+                HStack {
+                    Text("小数位数:")
+                    AKSUSegment(selected: $decimalCount) {
+                        Text("不限制").AKSUSegmentTag(index: nil)
+                        Text("不允许小数").AKSUSegmentTag(index: 0)
+                        Text("2位小数").AKSUSegmentTag(index: 2)
+                    }.frame(width: 200)
+                        .disabled(!numberMode)
+                }
+
+                HStack {
+                    Text("启用step:")
+                    AKSUSegment(selected: $numberStep) {
+                        Text("不启用").AKSUSegmentTag(index: nil)
+                        Text("启用").AKSUSegmentTag(index: 5)
+                    }.frame(width: 200)
+                        .disabled(!numberMode)
+                }
             }.padding()
 
+            Text("输入内容: \(input)")
             HStack {
-                AKSUInput(style: style, label: "请 输 入 用 户 名", alignment: alignment, disableActionLabel: disableActionLabel, clearButton: clearButton, password: password, passwordButton: passwordButton, text: $input)
-                    .frame(width: 250)
+                AKSUInput(style: style, label: "请 输 入 文 本", alignment: alignment, disableActionLabel: disableActionLabel, clearButton: clearButton, password: password, onlyNumber: numberMode, decimalCount: decimalCount, numberStep: numberStep, numberMax: numberStep == nil ? nil : 100, numberMin: numberStep == nil ? nil : -100, unit: unit, passwordButton: passwordButton, text: $input)
+                    .frame(width: 200)
             }
         }
     }

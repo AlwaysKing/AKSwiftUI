@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-// enum AKSUInputGroupStyle {
-//    case line
-//    case box
-// }
-
 public struct AKSUInputGroup: View {
     @Environment(\.isEnabled) private var isEnabled
 

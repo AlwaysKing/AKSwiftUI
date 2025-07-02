@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3909E0392E151BE9003AB2B1 /* MainThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3909E0382E151BE5003AB2B1 /* MainThread.swift */; };
 		3919F7332C83157000E63624 /* AKSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7322C83157000E63624 /* AKSwiftUIApp.swift */; };
 		3919F7352C83157000E63624 /* SplitWndContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3919F7342C83157000E63624 /* SplitWndContentView.swift */; };
 		3919F7372C83157100E63624 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3919F7362C83157100E63624 /* Assets.xcassets */; };
@@ -56,6 +57,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3909E0382E151BE5003AB2B1 /* MainThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainThread.swift; sourceTree = "<group>"; };
 		3919F72F2C83157000E63624 /* AKSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AKSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3919F7322C83157000E63624 /* AKSwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSwiftUIApp.swift; sourceTree = "<group>"; };
 		3919F7342C83157000E63624 /* SplitWndContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitWndContentView.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 		9355A0552CA519F600CA164C /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				3909E0382E151BE5003AB2B1 /* MainThread.swift */,
 				9355A0502CA519F600CA164C /* AKSUAnyViewArrayBuilder.swift */,
 				9355A0512CA519F600CA164C /* AKSUClickGesture.swift */,
 				9355A0522CA519F600CA164C /* AKSUMouseEventMonitor.swift */,
@@ -337,6 +340,7 @@
 				9355A0832CA519F600CA164C /* AKSUButton.swift in Sources */,
 				9355A07F2CA519F600CA164C /* AKSUWindowAccessor.swift in Sources */,
 				395A48E32D1572CC0095E299 /* AKSUGroup.swift in Sources */,
+				3909E0392E151BE9003AB2B1 /* MainThread.swift in Sources */,
 				9355A0922CA519F600CA164C /* AKSUSegment.swift in Sources */,
 				9355A08C2CA519F600CA164C /* AKSUInputGroup.swift in Sources */,
 				9355A08F2CA519F600CA164C /* AKSUProgress.swift in Sources */,
