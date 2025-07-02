@@ -108,7 +108,7 @@ public struct AKSUButton<T: View>: View {
                 Rectangle()
             }
         }
-        .shadow(color: bgColor != .white ? bgColor : .black, radius: style == .plain ? 0 : (hovering ? 4 : 2))
+        .shadow(color: bgColor != .white && bgColor != .aksuTextBackground ? bgColor : .black.opacity(0.3), radius: style == .plain ? 0 : (hovering ? 4 : 2))
         .onTapGestureLocation { location in
             if isEnabled {
                 animationCircleOffset = (location.x, location.y)
@@ -144,7 +144,7 @@ struct AKSUButton_Previews: PreviewProvider {
             AKSUButtonPreviewsView()
         }
 
-        .frame(width: 600, height: 600)
+        .frame(width: 700, height: 600)
     }
 }
 
@@ -203,6 +203,41 @@ struct AKSUButtonPreviewsView: View {
                 AKSUButton(style: .circle, autoPadding: false) {
                     Image(systemName: "folder").imageScale(.large)
                 } action: {
+                }
+            }
+
+            HStack {
+                AKSUButton("文本", color: .aksuTextForeground, bgColor: .aksuTextBackground) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuGray) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuText) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuTitle) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuLessText) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuSecondaryText) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuTextForeground) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuBlack) {
+                }
+            }
+
+            HStack {
+                AKSUButton("文本", color: .white, bgColor: .aksuBlue) {
+                }
+
+                AKSUButton("文本", color: .aksuTextForeground, bgColor: .aksuWhite) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuDanger) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuSuccess) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuWarning) {
+                }
+                AKSUButton("文本", color: .white, bgColor: .aksuLightBlue) {
                 }
             }
         }
