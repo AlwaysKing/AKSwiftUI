@@ -15,7 +15,13 @@ public class AKSUPopWnd: NSObject {
     public var hiddenEvent: (() -> Void)? = nil
     var monitor: Bool = false
     var uuid: UUID
+    
+    static var colorScheme: ColorScheme = .light
 
+    public static func setColorScheme(_ colorScheme: ColorScheme) {
+        AKSUPopWnd.colorScheme = colorScheme
+    }
+    
     override public init() {
         uuid = UUID()
         window = NSWindow(
@@ -31,11 +37,16 @@ public class AKSUPopWnd: NSObject {
         super.init()
     }
 
-    public func show(point: CGPoint, pointRect: CGRect? = nil, toggle: Bool = false, width: CGFloat, height: CGFloat, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil) {
+    public func show(point: CGPoint, pointRect: CGRect? = nil, toggle: Bool = false, width: CGFloat, height: CGFloat, darkTheme: Bool? = nil, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil) {
+        var scheme = AKSUPopWnd.colorScheme
+        if let darkTheme = darkTheme {
+            scheme = darkTheme ? .dark : .light
+        }
+        
         if let view = view {
-            window.contentView = NSHostingView(rootView: AKSUPopWndView(width: width, height: height, content: view))
+            window.contentView = NSHostingView(rootView: AKSUPopWndView(width: width, height: height, colorScheme: scheme, content: view))
         } else if let menuContent = menuContent {
-            window.contentView = NSHostingView(rootView: AKSUPopWndView(width: width, height: height, content: menuContent))
+            window.contentView = NSHostingView(rootView: AKSUPopWndView(width: width, height: height, colorScheme: scheme, content: menuContent))
         } else {
             return
         }
@@ -105,6 +116,7 @@ public class AKSUPopWnd: NSObject {
 struct AKSUPopWndView: View {
     let width: CGFloat
     let height: CGFloat
+    var colorScheme: ColorScheme
     @State var contentHeight: CGFloat = 0
 
     var content: AnyView
@@ -117,6 +129,7 @@ struct AKSUPopWndView: View {
         .cornerRadius(AKSUAppearance.cornerRadius)
         .shadow(radius: 2)
         .padding(4)
+        .preferredColorScheme(colorScheme)
     }
 }
 

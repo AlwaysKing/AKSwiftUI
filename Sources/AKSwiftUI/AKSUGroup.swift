@@ -22,7 +22,7 @@ public struct AKSUGroup: View {
     @State private var fouced: Int?
     @State private var itemSize: [Int: CGSize] = [:]
 
-    public init(style: AKSUGroupStyle = .horizontal, actionColor: Color = AKSUColor.primary, disableFocus: Bool = false, hiddenDivider: Bool = false, hiddenBoard: Bool = false) {
+    public init(style: AKSUGroupStyle = .horizontal, actionColor: Color = .aksuPrimary, disableFocus: Bool = false, hiddenDivider: Bool = false, hiddenBoard: Bool = false) {
         self.style = style
         self.disableFocus = disableFocus
         self.hiddenDivider = hiddenDivider
@@ -54,7 +54,7 @@ public struct AKSUGroup: View {
                                 Divider()
                                     .frame(width: style == .vertical ? maxWidth() : (!disableFocus && (fouced == index || fouced == index + 1) ? 2 : 1),
                                            height: style == .horizontal ? maxHeight() : (!disableFocus && (fouced == index || fouced == index + 1) ? 2 : 1))
-                                    .background(!disableFocus && (fouced == index || fouced == index + 1) ? actionColor : Color.gray)
+                                    .background(!disableFocus && (fouced == index || fouced == index + 1) ? actionColor : .aksuBoard)
                             }
                             .frame(width: style == .horizontal ? 2 : nil)
                             .frame(height: style == .vertical ? 2 : nil)
@@ -65,7 +65,7 @@ public struct AKSUGroup: View {
                     ZStack {
                         if !hiddenBoard {
                             RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                .stroke(Color.gray, lineWidth: 1)
+                                .stroke(.aksuBoard, lineWidth: 1)
                                 .padding(1)
 
                             if fouced != nil && !disableFocus {

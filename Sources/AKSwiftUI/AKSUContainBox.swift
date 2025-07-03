@@ -18,7 +18,7 @@ public struct AKSUContainBox<T: Equatable>: View {
     private var color: Color
     private var actionColor: Color
 
-    public init(label: String, key: T, list: Binding<[T]>, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool, T) -> Void)? = nil) {
+    public init(label: String, key: T, list: Binding<[T]>, color: Color = .aksuText, actionColor: Color = .aksuPrimary, change: ((Bool, T) -> Void)? = nil) {
         self.key = key
         self._list = list
         self.label = label

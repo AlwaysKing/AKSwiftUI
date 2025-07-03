@@ -40,7 +40,7 @@ public struct AKSUInputGroup: View {
     var leadingView: [AnyView] = []
     var trailingView: [AnyView] = []
 
-    public init(label: String, alignment: TextAlignment = .leading, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, actionColor: Color = AKSUColor.primary, submit: (() -> Void)? = nil) {
+    public init(label: String, alignment: TextAlignment = .leading, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, actionColor: Color = .aksuPrimary, submit: (() -> Void)? = nil) {
         self.label = label
         self._text = text
         self.password = password
@@ -63,7 +63,7 @@ public struct AKSUInputGroup: View {
                                 if index != 0 {
                                     VStack {}
                                         .frame(width: 1, height: realHeight - 2)
-                                        .background(.black.opacity(0.6))
+                                        .background(.aksuBoard)
                                         .padding([.leading, .trailing], 2)
                                         .zIndex(2)
                                 }
@@ -82,7 +82,7 @@ public struct AKSUInputGroup: View {
                                         actionColor
                                             .frame(width: 2, height: realHeight - 2)
                                     } else {
-                                        AKSUColor.gray
+                                        AKSUColor.board
                                             .frame(width: 1, height: realHeight - 2)
                                     }
                                 }
@@ -132,7 +132,7 @@ public struct AKSUInputGroup: View {
 
                         if showClearButton() {
                             ZStack {
-                                Image(systemName: "x.circle").foregroundColor(AKSUColor.gray)
+                                Image(systemName: "x.circle").foregroundColor(.aksuGray)
                             }
                             .frame(width: 20, height: 20)
                             .padding(.trailing, showPasswordButton() ? 0 : 5)
@@ -152,7 +152,7 @@ public struct AKSUInputGroup: View {
 
                     if showPasswordButton() {
                         ZStack {
-                            Image(systemName: showPassword ? "eye" : "eye.slash").foregroundColor(AKSUColor.gray)
+                            Image(systemName: showPassword ? "eye" : "eye.slash").foregroundColor(.aksuGray)
                         }
                         .frame(width: 20, height: 20)
                         .padding(.trailing, 5)
@@ -232,7 +232,7 @@ public struct AKSUInputGroup: View {
                     ZStack {
                         VStack {
                             RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                .stroke(AKSUColor.gray, lineWidth: 1)
+                                .stroke(.aksuBoard, lineWidth: 1)
                                 .padding(1)
                         }
 
@@ -250,7 +250,7 @@ public struct AKSUInputGroup: View {
                         // 禁用时候的背景色
                         if !isEnabled {
                             RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                .fill(AKSUColor.dyGrayMask)
+                                .fill(.aksuGrayMask)
                         }
                     }
                 )

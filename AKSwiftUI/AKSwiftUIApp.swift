@@ -18,20 +18,28 @@ struct AKSwiftUIApp: App {
                     .preferredColorScheme(light ? .light : .dark)
                     .onAppear {
                         AKSUToast.setColorScheme(light ? .light : .dark)
+                        AKSUPopWnd.setColorScheme(light ? .light : .dark)
+                        AKSUPopover.setColorScheme(light ? .light : .dark)
                     }
                     .onChange(of: light) { _ in
                         AKSUToast.setColorScheme(light ? .light : .dark)
-                        AKSUToast.changeColorScheme(light ? .light : .dark)
+                        AKSUToast.changeColorScheme(light ? .light : .dark)                        
+                        AKSUPopWnd.setColorScheme(light ? .light : .dark)
+                        AKSUPopover.setColorScheme(light ? .light : .dark)
                     }
             } else {
                 SplitContentView(light: $light)
                     .preferredColorScheme(light ? .light : .dark)
                     .onAppear {
                         AKSUToast.setColorScheme(light ? .light : .dark)
+                        AKSUPopWnd.setColorScheme(light ? .light : .dark)
+                        AKSUPopover.setColorScheme(light ? .light : .dark)
                     }
                     .onChange(of: light) { _ in
                         AKSUToast.setColorScheme(light ? .light : .dark)
                         AKSUToast.changeColorScheme(light ? .light : .dark)
+                        AKSUPopWnd.setColorScheme(light ? .light : .dark)
+                        AKSUPopover.setColorScheme(light ? .light : .dark)
                     }
             }
         }

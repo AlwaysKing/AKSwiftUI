@@ -17,7 +17,7 @@ public struct AKSURadio<V: Equatable>: View {
     var color: Color
     var actionColor: Color
 
-    public init(label: String, key: V, checked: Binding<V>, color: Color = Color.primary, actionColor: Color = AKSUColor.primary) {
+    public init(label: String, key: V, checked: Binding<V>, color: Color = .aksuText, actionColor: Color = .aksuPrimary) {
         self.label = label
         self.key = key
         self._checked = checked
@@ -38,18 +38,18 @@ public struct AKSURadio<V: Equatable>: View {
             .cornerRadius(4.0)
             .overlay {
                 Circle()
-                    .stroke(key == checked ? actionColor : AKSUColor.gray)
+                    .stroke(key == checked ? actionColor : .aksuBoard)
             }
             .overlay {
                 if !isEnabled {
                     Circle()
-                        .fill(AKSUColor.dyGrayMask)
+                        .fill(.aksuGrayMask)
                 }
             }
 
             Text(label)
                 .font(.title2)
-                .foregroundColor(isEnabled ? color : color.merge(up: AKSUColor.dyGrayMask, mode: environment))
+                .foregroundColor(isEnabled ? color : color.merge(up: .aksuGrayMask, mode: environment))
                 .padding(.trailing)
         }
         .background(.white.opacity(0.01))

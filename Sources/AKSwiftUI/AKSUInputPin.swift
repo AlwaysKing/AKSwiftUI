@@ -29,7 +29,7 @@ public struct AKSUInputPin: View {
 
     @Environment(\.isEnabled) private var isEnabled
 
-    public init(count: Int, onlyNumber: Bool = false, color: Color = .primary, actionColor: Color = .aksuPrimary, bgColor: Color = .gray.opacity(0.2), width: CGFloat = 40, height: CGFloat = 40, spacing: CGFloat? = nil, fontSize: CGFloat = 28, finish: @escaping (_ pin: String) -> Void) {
+    public init(count: Int, onlyNumber: Bool = false, color: Color = .aksuText, actionColor: Color = .aksuPrimary, bgColor: Color = .aksuGrayBackground, width: CGFloat = 40, height: CGFloat = 40, spacing: CGFloat? = nil, fontSize: CGFloat = 28, finish: @escaping (_ pin: String) -> Void) {
         self.count = count
         self.code = [String](repeating: "", count: count)
         self.width = width

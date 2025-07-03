@@ -356,6 +356,7 @@ public struct AKSUToastItemView: View, Identifiable {
             if let title = title {
                 Text(title)
                     .font(.aksuTitle4)
+                    .foregroundStyle(.aksuText)
                     .lineLimit(1)
                     .padding([.leading, .trailing])
                     .padding(.top, 6)
@@ -372,6 +373,7 @@ public struct AKSUToastItemView: View, Identifiable {
             ZStack {
                 Text(message)
                     .font(.aksuText)
+                    .foregroundStyle(.aksuText)
                     .padding([.leading, .trailing])
                     .padding(.bottom, title == nil ? 0 : 8)
                     .padding(.vertical, title == nil ? 8 : 0)
@@ -380,6 +382,7 @@ public struct AKSUToastItemView: View, Identifiable {
                 ScrollView {
                     Text(message)
                         .font(.aksuText)
+                        .foregroundStyle(.aksuText)
                         .padding([.leading, .trailing])
                         .padding(.bottom, title == nil ? 0 : 8)
                         .padding(.vertical, title == nil ? 8 : 0)
@@ -426,7 +429,7 @@ public struct AKSUToastItemView: View, Identifiable {
                         .frame(width: 14, height: 14)
                         .background {
                             Circle()
-                                .fill(hoveringExpand ? .aksuDYGrayBG : .aksuDYGrayMask)
+                                .fill(hoveringExpand ? .aksuGrayBackground : .aksuGrayMask)
                         }
                         .onHover { hoveringExpand = $0 }
                         .padding([.bottom, .trailing], 4)

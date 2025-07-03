@@ -55,11 +55,11 @@ struct AKSUCircleRingShapePreviewsView: View {
             Text("\(progress)")
             ZStack {
                 AKSUCircleRingShape(progress: progress)
-                    .fill(AKSUColor.primary)
+                    .fill(.aksuPrimary)
             }.frame(width: 100, height: 100).padding()
             ZStack {
                 AKSUCircleRingShape(progress: progress, lineWidth: 20)
-                    .fill(AKSUColor.primary)
+                    .fill(.aksuPrimary)
             }.frame(width: 100, height: 100).padding()
 
             AKSURange(progress: $range)

@@ -40,7 +40,7 @@ public struct AKSUButton<T: View>: View {
     @State var animationCircleOffset: (x: CGFloat, y: CGFloat) = (0, 0)
     @State var animationCircleSize: CGFloat = 100.0
 
-    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
+    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, height: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = color
         self.bgColor = bgColor
         self.content = content
@@ -90,7 +90,7 @@ public struct AKSUButton<T: View>: View {
             }
         )
         .background(hovering ? .black.opacity(0.1) : .clear)
-        .background(isEnabled ? .clear : AKSUColor.dyGrayMask)
+        .background(isEnabled ? .clear : .aksuGrayMask)
         .background(bgColor)
         .cornerRadius(style == .plain ? 0 : AKSUAppearance.cornerRadius)
         .onHover {
@@ -108,7 +108,7 @@ public struct AKSUButton<T: View>: View {
                 Rectangle()
             }
         }
-        .shadow(color: bgColor != .white && bgColor != .aksuTextBackground ? bgColor : .black.opacity(0.3), radius: style == .plain ? 0 : (hovering ? 4 : 2))
+        .shadow(color: bgColor != .white && bgColor != .aksuWhite && bgColor != .aksuTextBackground ? bgColor : .black.opacity(0.3), radius: style == .plain ? 0 : (hovering ? 4 : 2))
         .onTapGestureLocation { location in
             if isEnabled {
                 animationCircleOffset = (location.x, location.y)
@@ -125,7 +125,7 @@ public struct AKSUButton<T: View>: View {
 }
 
 public extension AKSUButton where T == Text {
-    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
+    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, height: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.bgColor = bgColor
         content = { Text(title).font(.title) }

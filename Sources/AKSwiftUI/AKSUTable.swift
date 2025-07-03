@@ -30,6 +30,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     let headerBgColor: Color
     let contentBgColor: Color
     let selectionColor: Color
+    let splitColor: Color
 
     let multSelection: Bool
     let selection: (([Value]) -> Void)?
@@ -42,7 +43,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     @State var backgroundRowCount: Int = 0
     @State var backgroundRowTotalHeight: CGFloat = 0.0
 
-    public init(data: Binding<[Value]>, rowHeight: CGFloat = 25, headerBgColor: Color = .aksuTextBackground, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, multSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value) -> CGFloat?)? = nil)
+    public init(data: Binding<[Value]>, rowHeight: CGFloat = 25, headerBgColor: Color = .aksuTextBackground, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, multSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value) -> CGFloat?)? = nil)
     {
         self._data = data
         self._initColumns = columns().map { AKSUTableColumnItem(builder: $0) }
@@ -54,6 +55,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         self.selectionColor = selectionColor
         self.rowHeight = rowHeight
         self.getRowHeight = getRowHeight
+        self.splitColor = splitColor
     }
 
     public var body: some View {
@@ -72,7 +74,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
                             ZStack {}
                                 .frame(width: 8, height: max(titleSize.height - 10, 10))
-                                .background(.gray.opacity(0.2))
+                                .background(.aksuDivider)
                                 .padding(.horizontal, -3.5)
                                 .padding(.vertical, 4)
                                 .mask {
@@ -102,9 +104,10 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(headerBgColor)
 
-                Divider()
+                ZStack {}
                     .frame(maxWidth: .infinity)
-                    .padding(0)
+                    .frame(height: 1)
+                    .background(.aksuDivider)
             }
             .background {
                 GeometryReader { geometry in
@@ -126,7 +129,8 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                             // 添加背景色
                             if item.light {
                                 RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                    .fill(.gray.opacity(0.1))
+                                    .fill(splitColor)
+                                    .padding(.horizontal, 4)
                             }
                             else {
                                 Rectangle().fill(contentBgColor)
@@ -178,7 +182,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
                             if item.rightSelected {
                                 RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                    .stroke(selected ? .white : selectionColor, lineWidth: 1.5)
+                                    .stroke(selected ? .aksuWhite : selectionColor, lineWidth: 1.5)
                                     .padding(.horizontal, selected ? 4 : 2)
                                     .padding(.vertical, selected ? 2 : 1)
                             }
@@ -190,7 +194,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                         header.itemBuilder(item.value).first
                                     }
                                     .frame(width: header.width)
-                                    .foregroundColor(selected ? .white : nil)
+                                    .foregroundColor(selected ? .aksuWhite : nil)
                                 }
                                 if endPinding > 0 {
                                     ZStack { }
@@ -200,7 +204,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                         }
                         .frame(height: getRealRowHeight(index: item.index, value: item.value, height: item.height), alignment: .leading)
                         .frame(minWidth: 25)
-                        .onMouseEvent(event:[.rightMouseDown]) { point, event in
+                        .onMouseEvent(event: [.rightMouseDown]) { point, event in
                             rightSelection(row: item, point: point, event: event)
                             refreshUI.toggle()
                             return true
@@ -225,12 +229,14 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
                             if (max(1, backgroundColorIndex) + index) % 2 == 0 {
                                 Rectangle()
-                                    .fill(.gray.opacity(0.1))
+                                    .fill(splitColor)
                                     .frame(width: tableSize.width, height: min(25.0, backgroundRowTotalHeight - CGFloat(index) * 25.0))
+                                    .cornerRadius(AKSUAppearance.cornerRadius)
+                                    .padding(.horizontal, 4)
                             }
                             else {
                                 Rectangle()
-                                    .fill(.white.opacity(0.1))
+                                    .fill(contentBgColor)
                                     .frame(width: tableSize.width, height: min(25.0, backgroundRowTotalHeight - CGFloat(index) * 25.0))
                             }
                         }
@@ -836,6 +842,7 @@ struct Person: Identifiable, Equatable {
 
 struct AKSUTablePreviewsView: View {
     @State private var people: [Person] = []
+    @State var color: Color = .aksuTextBackground
 
     func add() {
         for index in 0 ... 100 {
@@ -866,6 +873,24 @@ struct AKSUTablePreviewsView: View {
 
             Button("time") {
                 add()
+            }
+        }
+        HStack {
+            Text("颜色")
+            AKSUButton("", bgColor: .red) {
+                color = .red
+            }
+            AKSUButton("", bgColor: .green) {
+                color = .green
+            }
+            AKSUButton("", bgColor: .blue) {
+                color = .blue
+            }
+            AKSUButton("", bgColor: .aksuLightBlue) {
+                color = .aksuLightBlue
+            }
+            AKSUButton("", bgColor: .white) {
+                color = .aksuTextBackground
             }
         }
 
@@ -899,7 +924,7 @@ struct AKSUTablePreviewsView: View {
         } rightClick: { value, key, event in
             guard let location = AKSUMouseEventMonitor.filpLocationPoint(event: event) else { return }
             let menu = NSMenu()
-            let menuItem1 = NSMenuItem(title: "Menu Item 1", action: nil, keyEquivalent: "")       
+            let menuItem1 = NSMenuItem(title: "Menu Item 1", action: nil, keyEquivalent: "")
             menu.addItem(menuItem1)
             let menuItem2 = NSMenuItem(title: "Menu Item 2", action: nil, keyEquivalent: "")
             menu.addItem(menuItem2)
@@ -907,23 +932,5 @@ struct AKSUTablePreviewsView: View {
         } getRowHeight: { value in
             return CGFloat(value.index % 2 * 20 + 20)
         }
-//
-//        Table(people, selection: $selected) {
-//            TableColumn("名字") { value in
-//                Text(value.givenName)
-//            }
-//            .width(min: 20, ideal: 200, max: 300)
-//
-//            TableColumn("家庭") { value in
-//                Text(value.familyName)
-//            }
-//            .width(min: 20, ideal: 200, max: 300)
-//            TableColumn("电子邮件") { value in
-//                Text(value.emailAddress)
-//            }
-//            .width(min: 20, ideal: 200, max: 300)
-//        }
     }
-//
-//    @State var selected: Set<Person.ID> = []
 }

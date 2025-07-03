@@ -56,7 +56,25 @@ public class AKSUColor {
         }
     })
 
-    public static var dyGrayBG = Color(nsColor: NSColor(name: nil) { appearance in
+    public static var board = Color(nsColor: NSColor(name: nil) { appearance in
+        switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
+        case NSAppearance.Name.darkAqua:
+            return NSColor(red: 251 / 255, green: 251 / 255, blue: 251 / 255, alpha: 1.0)
+        default:
+            return NSColor(red: 189 / 255, green: 189 / 255, blue: 189 / 255, alpha: 1.0)
+        }
+    })
+
+    public static var placeholder = Color(nsColor: NSColor(name: nil) { appearance in
+        switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
+        case NSAppearance.Name.darkAqua:
+            return NSColor(red: 251 / 255, green: 251 / 255, blue: 251 / 255, alpha: 1.0)
+        default:
+            return NSColor(red: 113 / 255, green: 113 / 255, blue: 113 / 255, alpha: 1.0)
+        }
+    })
+
+    public static var grayBackground = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case NSAppearance.Name.darkAqua:
             return NSColor(red: 63 / 255, green: 63 / 255, blue: 63 / 255, alpha: 1.0)
@@ -64,8 +82,33 @@ public class AKSUColor {
             return NSColor(red: 220 / 255, green: 220 / 255, blue: 220 / 255, alpha: 1.0)
         }
     })
+        
+    public static var grayLessBackground = Color(nsColor: NSColor(name: nil) { appearance in
+        switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
+        case NSAppearance.Name.darkAqua:
+            return NSColor(red: 44 / 255, green: 44 / 255, blue: 44 / 255, alpha: 1.0)
+        default:
+            return NSColor(red: 230 / 255, green: 230 / 255, blue: 230 / 255, alpha: 1.0)
+        }
+    })
+    
+    public static var divider = Color(nsColor: NSColor(name: nil) { appearance in
+        switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
+        case NSAppearance.Name.darkAqua:
+            return NSColor(red: 0 / 255, green: 0 / 255, blue: 0 / 255, alpha: 1.0)
+        default:
+            return NSColor(red: 216 / 255, green: 216 / 255, blue: 216 / 255, alpha: 1.0)
+        }
+    })
 
-    public static var dyGrayMask = dyGrayBG.opacity(0.4)
+    public static var grayMask = Color(nsColor: NSColor(name: nil) { appearance in
+        switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
+        case NSAppearance.Name.darkAqua:
+            return NSColor(red: 63 / 255, green: 63 / 255, blue: 63 / 255, alpha: 1.0)
+        default:
+            return NSColor(red: 220 / 255, green: 220 / 255, blue: 220 / 255, alpha: 1.0)
+        }
+    }).opacity(0.4)
 
     public static var primary = Color(red: 59 / 255, green: 113 / 255, blue: 202 / 255)
     public static var success = Color(red: 20 / 255, green: 164 / 255, blue: 77 / 255)
@@ -89,8 +132,12 @@ public extension Color {
     static var aksuSecondaryText: Color { return AKSUColor.secondaryText }
     static var aksuLessText: Color { return AKSUColor.lessText }
 
-    static var aksuDYGrayBG: Color { return AKSUColor.dyGrayBG }
-    static var aksuDYGrayMask: Color { return AKSUColor.dyGrayMask }
+    static var aksuBoard: Color { return AKSUColor.board }
+    static var aksuPlaceholder: Color { return AKSUColor.placeholder }
+    static var aksuGrayBackground: Color { return AKSUColor.grayBackground }
+    static var aksuGrayLessBackground: Color { return AKSUColor.grayLessBackground }
+    static var aksuDivider: Color { return AKSUColor.divider }
+    static var aksuGrayMask: Color { return AKSUColor.grayMask }
 
     static var aksuPrimary: Color { return AKSUColor.primary }
     static var aksuSuccess: Color { return AKSUColor.success }
@@ -114,8 +161,12 @@ public extension ShapeStyle where Self == Color {
     static var aksuSecondaryText: Color { return AKSUColor.secondaryText }
     static var aksuLessText: Color { return AKSUColor.lessText }
 
-    static var aksuDYGrayBG: Color { return AKSUColor.dyGrayBG }
-    static var aksuDYGrayMask: Color { return AKSUColor.dyGrayMask }
+    static var aksuBoard: Color { return AKSUColor.board }
+    static var aksuPlaceholder: Color { return AKSUColor.placeholder }
+    static var aksuGrayBackground: Color { return AKSUColor.grayBackground }
+    static var aksuGrayLessBackground: Color { return AKSUColor.grayLessBackground }
+    static var aksuDivider: Color { return AKSUColor.divider }
+    static var aksuGrayMask: Color { return AKSUColor.grayMask }
 
     static var aksuPrimary: Color { return AKSUColor.primary }
     static var aksuSuccess: Color { return AKSUColor.success }
@@ -207,8 +258,12 @@ struct AKSUColorPreviewsView: View {
         "text": AKSUColor.text,
         "secondaryText": AKSUColor.secondaryText,
         "lessText": AKSUColor.lessText,
-        "dyGrayBG": AKSUColor.dyGrayBG,
-        "dyGrayMask": AKSUColor.dyGrayMask,
+        "board": AKSUColor.board,
+        "placeholder": AKSUColor.placeholder,
+        "grayBackground": AKSUColor.grayBackground,
+        "grayLessBackground": AKSUColor.grayLessBackground,
+        "divider": AKSUColor.divider,
+        "grayMask": AKSUColor.grayMask,
         "primary": AKSUColor.primary,
         "success": AKSUColor.success,
         "warning": AKSUColor.warning,
@@ -226,8 +281,12 @@ struct AKSUColorPreviewsView: View {
                 "text",
                 "secondaryText",
                 "lessText",
-                "dyGrayBG",
-                "dyGrayMask",
+                "board",
+                "placeholder",
+                "grayBackground",
+                "grayLessBackground",
+                "divider",
+                "grayMask",
                 "primary",
                 "success",
                 "warning",

@@ -22,7 +22,7 @@ public struct AKSUProgress: View {
     @State private var width: CGFloat = 0.0
     @State private var titleWidth: CGFloat = 0.0
 
-    public init(progress: CGFloat, color: Color = .white, actionColor: Color = AKSUColor.primary, hiddenLabel: Bool = false, height: CGFloat = 20.0) {
+    public init(progress: CGFloat, color: Color = .aksuWhite, actionColor: Color = .aksuPrimary, hiddenLabel: Bool = false, height: CGFloat = 20.0) {
         self.progress = progress
         self.color = color
         self.actionColor = actionColor
@@ -44,7 +44,7 @@ public struct AKSUProgress: View {
                 if !hiddenLabel {
                     HStack(spacing: 0) {
                         HStack {
-                            Text(progressString()).foregroundColor(.white)
+                            Text(progressString()).foregroundColor(.aksuWhite)
                                 .overlay {
                                     GeometryReader { geometry in
                                         Color.clear.task {
@@ -65,7 +65,7 @@ public struct AKSUProgress: View {
             .overlay {
                 if !isEnabled {
                     RoundedRectangle(cornerRadius: height / 2)
-                        .fill(AKSUColor.dyGrayMask)
+                        .fill(.aksuGrayMask)
                 }
             }
             .onAppear {
@@ -76,7 +76,7 @@ public struct AKSUProgress: View {
         .frame(height: height)
         .background {
             RoundedRectangle(cornerRadius: height / 2)
-                .fill(AKSUColor.dyGrayBG)
+                .fill(.aksuGrayBackground)
         }
     }
 

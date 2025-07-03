@@ -21,6 +21,7 @@ public struct AKSUDropdown<K: Hashable>: View {
     @Binding var selected: K
     var color: Color
     var bgColor: Color
+    var dropBgColor: Color
     var height: CGFloat?
     var dropMaxHeight: CGFloat?
     var hiddenTriangle: Bool
@@ -43,10 +44,10 @@ public struct AKSUDropdown<K: Hashable>: View {
     @State var dropBtnSize: CGSize = CGSize.zero
     @State var mouseEvent: NSEvent? = nil
 
-    public init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, dropHeight: CGFloat? = nil, noPadding: Bool = false, hiddenTriangle: Bool = false, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
+    public init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, dropTextColor: Color = .aksuText, dropTextHoverColor: Color = .aksuWhite, dropBgColor:Color = .aksuTextBackground, height: CGFloat? = nil, dropHeight: CGFloat? = nil, noPadding: Bool = false, hiddenTriangle: Bool = false, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
         self._selected = selected
         for item in content() {
-            self.content[item.index] = AKSUDropdownItem(index: item.index, height: item.height, noPadding: item.noPadding ?? noPadding, color: bgColor, content: item.content, action: item.action)
+            self.content[item.index] = AKSUDropdownItem(index: item.index, height: item.height, noPadding: item.noPadding ?? noPadding, textColor: dropTextColor, hoverTextColor: dropTextHoverColor, hoverBgColor: bgColor, content: item.content, action: item.action)
             self.sort.append(item.index)
         }
         self.plain = plain
@@ -57,6 +58,7 @@ public struct AKSUDropdown<K: Hashable>: View {
         self.style = style
         self.noPadding = noPadding
         self.hiddenTriangle = hiddenTriangle
+        self.dropBgColor = dropBgColor
     }
 
     public var body: some View {
@@ -92,7 +94,7 @@ public struct AKSUDropdown<K: Hashable>: View {
                     .frame(width: 1, height: self.height ?? self.selectedRealHeight)
                     .padding([.top, .bottom], 10)
                     .padding([.leading, .trailing], 0)
-                    .background(AKSUColor.dyGrayMask)
+                    .background(.aksuGrayMask)
             }
 
             // 下拉按钮
@@ -127,14 +129,14 @@ public struct AKSUDropdown<K: Hashable>: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .background(!self.isEnabled ? AKSUColor.dyGrayMask : .clear)
+        .background(!self.isEnabled ? .aksuGrayMask : .clear)
         .background(self.hoveringAll && self.style != .selectBtn ? .black.opacity(0.1) : .clear)
         .background(self.bgColor)
         .cornerRadius(self.plain ? 0 : AKSUAppearance.cornerRadius)
         .onHover {
             self.hoveringAll = $0
         }
-        .shadow(color: self.bgColor != .white ? self.bgColor : .black, radius: self.plain ? 0 : 2)
+        .shadow(color: self.bgColor != .white && self.bgColor != .aksuWhite ? self.bgColor : .black, radius: self.plain ? 0 : 2)
         .overlay {
             GeometryReader {
                 g in
@@ -216,7 +218,7 @@ public struct AKSUDropdown<K: Hashable>: View {
             }
         }
         .frame(width: location.width, height: dropHeight, alignment: .top)
-        .background(.white)
+        .background(dropBgColor)
     }
 }
 
@@ -226,11 +228,14 @@ public struct AKSUDropdownItem<K: Hashable>: View {
     var index: K
     var height: CGFloat
     var noPadding: Bool?
+    var color: Color?
     var content: [AnyView]
     var action: (() -> Void)?
 
     private var canAction: Bool = false
-    private var hoverColor: Color = AKSUColor.primary
+    private var textColor: Color = .aksuText
+    private var hoverTextColor: Color = .aksuWhite
+    private var hoverBgColor: Color = .aksuPrimary
     @State private var hovering: Bool = false
     private var selected: Bool = false
 
@@ -242,9 +247,11 @@ public struct AKSUDropdownItem<K: Hashable>: View {
         self.noPadding = noPadding
     }
 
-    public init(index: K, height: CGFloat = 20, noPadding: Bool? = nil, color: Color, content: [AnyView], action: (() -> Void)?) {
+    public init(index: K, height: CGFloat = 20, noPadding: Bool? = nil, textColor: Color, hoverTextColor: Color, hoverBgColor: Color, content: [AnyView], action: (() -> Void)?) {
         self.index = index
-        self.hoverColor = color
+        self.hoverBgColor = hoverBgColor
+        self.hoverTextColor = hoverTextColor
+        self.textColor = textColor
         self.content = content
         self.action = action
         self.height = height
@@ -260,11 +267,11 @@ public struct AKSUDropdownItem<K: Hashable>: View {
         .frame(maxWidth: .infinity)
         .frame(height: height)
         .padding([.top, .bottom], self.selected || noPadding == true ? 0 : 10)
-        .foregroundColor(self.selected || self.hovering ? .white : .black)
+        .foregroundColor(self.selected || self.hovering ? self.hoverTextColor : self.textColor)
         .onHover {
             self.hovering = $0
         }
-        .background(!self.selected && self.hovering ? self.hoverColor : .clear)
+        .background(!self.selected && self.hovering ? self.hoverBgColor : .clear)
         .onTapGesture {
             if self.canAction {
                 if let action = action {
@@ -346,10 +353,12 @@ struct AKSUDropdown_Previews: PreviewProvider {
 
 struct AKSUDropdownPreviewsView: View {
     @State var text: String = "1"
-    @State var color: Color = AKSUColor.primary
+    @State var color: Color = .aksuPrimary
 
     var body: some View {
         VStack {
+            Text("asdasdasdasd").foregroundStyle(.aksuText)
+
             AKSUDropdown(style: .selectBtn, selected: .constant("primary")) {
                 Text("primary")
                     .AKSUDropdownTag(index: "primary") {
@@ -375,31 +384,31 @@ struct AKSUDropdownPreviewsView: View {
 
             AKSUDropdown(selected: self.$color, bgColor: self.color) {
                 Text("primary")
-                    .AKSUDropdownTag(index: AKSUColor.primary)
+                    .AKSUDropdownTag(index: .aksuPrimary)
 
                 Text("success")
-                    .AKSUDropdownTag(index: AKSUColor.success)
+                    .AKSUDropdownTag(index: .aksuSuccess)
 
                 Text("warning")
-                    .AKSUDropdownTag(index: AKSUColor.warning)
+                    .AKSUDropdownTag(index: .aksuWarning)
 
                 Text("danger")
-                    .AKSUDropdownTag(index: AKSUColor.danger)
+                    .AKSUDropdownTag(index: .aksuDanger)
             }
             .frame(width: 200)
 
             AKSUDropdown(selected: self.$color, bgColor: self.color, hiddenTriangle: true) {
                 Text("primary")
-                    .AKSUDropdownTag(index: AKSUColor.primary)
+                    .AKSUDropdownTag(index: .aksuPrimary)
 
                 Text("success")
-                    .AKSUDropdownTag(index: AKSUColor.success)
+                    .AKSUDropdownTag(index: .aksuSuccess)
 
                 Text("warning")
-                    .AKSUDropdownTag(index: AKSUColor.warning)
+                    .AKSUDropdownTag(index: .aksuWarning)
 
                 Text("danger")
-                    .AKSUDropdownTag(index: AKSUColor.danger)
+                    .AKSUDropdownTag(index: .aksuDanger)
             }
             .frame(width: 200)
 
@@ -421,9 +430,24 @@ struct AKSUDropdownPreviewsView: View {
                         .AKSUDropdownTag(index: "danger")
                 }
                 .frame(width: 200)
+            }
+            
+            Divider()
+            HStack {
+                AKSUDropdown(selected: self.$color, bgColor: self.color, dropTextColor: .green, dropTextHoverColor: .white, dropBgColor: .yellow) {
+                    Text("primary")
+                        .AKSUDropdownTag(index: .aksuPrimary)
 
-                VStack {}.frame(width: 100, height: 40)
-                    .background(.green)
+                    Text("success")
+                        .AKSUDropdownTag(index: .aksuSuccess)
+
+                    Text("warning")
+                        .AKSUDropdownTag(index: .aksuWarning)
+
+                    Text("danger")
+                        .AKSUDropdownTag(index: .aksuDanger)
+                }
+                .frame(width: 200)
             }
         }
     }

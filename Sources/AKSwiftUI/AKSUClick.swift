@@ -19,7 +19,7 @@ public struct AKSUClick<T: View>: View {
     @State var hovering: Bool = false
     @State var mouseDown: Bool = false
 
-    public init(color: Color = Color.primary, actionColor: Color = AKSUColor.primary, content: @escaping () -> T, action: @escaping () -> Void) {
+    public init(color: Color = .aksuText, actionColor: Color = .aksuPrimary, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = color
         self.actionColor = actionColor
         self.content = content
@@ -29,7 +29,7 @@ public struct AKSUClick<T: View>: View {
     public var body: some View {
         ZStack {
             content()
-                .foregroundColor(hovering || mouseDown ? actionColor.opacity(mouseDown ? 0.6 : 1.0) : isEnabled ? color : color.merge(up: AKSUColor.dyGrayMask, mode: environment))
+                .foregroundColor(hovering || mouseDown ? actionColor.opacity(mouseDown ? 0.6 : 1.0) : isEnabled ? color : color.merge(up: .aksuGrayMask, mode: environment))
         }
         .onHover {
             hovering = $0
@@ -53,7 +53,7 @@ public struct AKSUClick<T: View>: View {
 }
 
 public extension AKSUClick where T == Text {
-    init<S>(_ title: S, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, action: @escaping () -> Void) where S: StringProtocol {
+    init<S>(_ title: S, color: Color = .aksuText, actionColor: Color = .aksuPrimary, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.actionColor = actionColor
         self.action = action

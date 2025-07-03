@@ -29,7 +29,7 @@ public struct AKSURange: View {
     @Binding private var progress: CGFloat
     @State private var width: CGFloat = 0.0
 
-    public init(style: AKSURangeStyle = .fat, step: CGFloat? = nil, min: CGFloat = 0, max: CGFloat = 100, progress: Binding<CGFloat>, color: Color = .white, actionColor: Color = AKSUColor.primary, height: CGFloat = 20.0) {
+    public init(style: AKSURangeStyle = .fat, step: CGFloat? = nil, min: CGFloat = 0, max: CGFloat = 100, progress: Binding<CGFloat>, color: Color = .aksuWhite, actionColor: Color = .aksuPrimary, height: CGFloat = 20.0) {
         if let step = step {
             if step >= 0 {
                 self.step = Swift.min(step, max - min)
@@ -54,17 +54,17 @@ public struct AKSURange: View {
     public var body: some View {
         ZStack(alignment: .leading) {
             RoundedRectangle(cornerSize: CGSize(width: height, height: height))
-                .fill(AKSUColor.dyGrayBG)
+                .fill(.aksuGrayBackground)
                 .frame(height: style == .fat ? nil : height / 2)
 
             RoundedRectangle(cornerSize: CGSize(width: height, height: height))
-                .fill(isEnabled ? actionColor : actionColor.merge(up: AKSUColor.dyGrayMask, mode: environment))
+                .fill(isEnabled ? actionColor : actionColor.merge(up: .aksuGrayMask, mode: environment))
                 .frame(width: max(height, computerOffset(progress: progress) + height / 2 - 2))
                 .frame(height: style == .fat ? nil : height / 2)
 
             Circle()
                 .offset(x: computerOffset(progress: progress) - (width / 2))
-                .foregroundColor(isEnabled ? color : color.merge(up: AKSUColor.dyGrayMask, mode: environment))
+                .foregroundColor(isEnabled ? color : color.merge(up: .aksuGrayMask, mode: environment))
         }
         .overlay {
             GeometryReader { geometry in

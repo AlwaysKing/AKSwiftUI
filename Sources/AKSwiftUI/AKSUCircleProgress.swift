@@ -16,7 +16,7 @@ public struct AKSUCircleProgress: View {
     var size: CGFloat
     var lineWidth: CGFloat
 
-    public init(progress: CGFloat, size: CGFloat = 60.0, lineWidth: CGFloat = 10.0, actionColor: Color = AKSUColor.primary, bgColor: Color = AKSUColor.dyGrayBG) {
+    public init(progress: CGFloat, size: CGFloat = 60.0, lineWidth: CGFloat = 10.0, actionColor: Color = .aksuPrimary, bgColor: Color = .aksuGrayBackground) {
         self.progress = progress
         self.size = size
         self.lineWidth = lineWidth
@@ -29,7 +29,7 @@ public struct AKSUCircleProgress: View {
             AKSUCircleRingShape(progress: 1.0, lineWidth: lineWidth)
                 .fill(bgColor)
             AKSUCircleRingShape(progress: progress, lineWidth: lineWidth)
-                .fill(isEnabled ? actionColor : actionColor.merge(up: AKSUColor.dyGrayMask, mode: environment))
+                .fill(isEnabled ? actionColor : actionColor.merge(up: .aksuGrayMask, mode: environment))
         }.frame(width: size, height: size)
     }
 }

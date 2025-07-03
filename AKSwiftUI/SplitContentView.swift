@@ -39,7 +39,7 @@ struct SplitContentView: View {
                                 title in
                                 AKSUButton {
                                     Text(title)
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.aksuWhite)
                                         .font(.title)
                                         .frame(maxWidth: .infinity)
                                 } action: {

@@ -26,7 +26,7 @@ public enum AKSUPopoverAligment {
 }
 
 public class AKSUPopover: AKSUPopWnd {
-    public func show(toggle: Bool = false, rect: CGRect, size: CGSize, padding: CGFloat = 10, alignment: AKSUPopoverAligment, autoRePosition: Bool = false, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil, rePosition: ((_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment)? = nil) {
+    public func show(toggle: Bool = false, rect: CGRect, size: CGSize, darkTheme: Bool? = nil, padding: CGFloat = 10, alignment: AKSUPopoverAligment, autoRePosition: Bool = false, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil, rePosition: ((_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment)? = nil) {
         var newAligment = alignment
         var point = getPoint(rect: rect, size: size, padding: padding, alignment: alignment)
 
@@ -59,7 +59,7 @@ public class AKSUPopover: AKSUPopWnd {
             }
         }
 
-        show(point: point, pointRect: rect, toggle: toggle, width: size.width, height: size.height, autoHidden: autoHidden, parent: parent, view: view)
+        show(point: point, pointRect: rect, toggle: toggle, width: size.width, height: size.height, darkTheme: darkTheme, autoHidden: autoHidden, parent: parent, view: view)
     }
 
     public func autoRePosition(_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment {

@@ -59,10 +59,10 @@ public struct AKSUStepScrollview<K, V: View>: View {
                         } else {
                             ZStack {
                                 Image(systemName: direction == .horizontal ? "chevron.compact.left" : "chevron.compact.up")
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(.aksuWhite)
                             }
                             .frame(width: direction == .horizontal ? 20 : 40, height: direction == .horizontal ? 40 : 20)
-                            .background(leftHovering ? .aksuDYGrayMask : .aksuDYGrayBG)
+                            .background(leftHovering ? .aksuGrayMask : .aksuGrayBackground)
                             .cornerRadius(8)
                             .onHover {
                                 leftHovering = $0
@@ -115,10 +115,10 @@ public struct AKSUStepScrollview<K, V: View>: View {
                         } else {
                             ZStack {
                                 Image(systemName: direction == .horizontal ? "chevron.compact.right" : "chevron.compact.down")
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(.aksuWhite)
                             }
                             .frame(width: direction == .horizontal ? 20 : 40, height: direction == .horizontal ? 40 : 20)
-                            .background(rightHovering ? .aksuDYGrayMask : .aksuDYGrayBG)
+                            .background(rightHovering ? .aksuGrayMask : .aksuGrayBackground)
                             .cornerRadius(8)
                             .onHover {
                                 rightHovering = $0

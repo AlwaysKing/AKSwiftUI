@@ -18,7 +18,7 @@ public struct AKSUCheckBox: View {
 
     @State var realChecked: Bool = false
     
-    public init(label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
+    public init(label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, change: ((Bool) -> Void)? = nil) {
         self.label = label
         self.color = color
         self.actionColor = actionColor
@@ -27,7 +27,7 @@ public struct AKSUCheckBox: View {
         self.realChecked = false
     }
 
-    public init(checked: Bool, label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
+    public init(checked: Bool, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, change: ((Bool) -> Void)? = nil) {
         self._checked = .constant(false)
         self.label = label
         self.color = color
@@ -36,7 +36,7 @@ public struct AKSUCheckBox: View {
         self.realChecked = checked
     }
 
-    public init(checked: Binding<Bool>, label: String, color: Color = Color.primary, actionColor: Color = AKSUColor.primary, change: ((Bool) -> Void)? = nil) {
+    public init(checked: Binding<Bool>, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, change: ((Bool) -> Void)? = nil) {
         self._checked = checked
         self.label = label
         self.color = color
@@ -50,7 +50,7 @@ public struct AKSUCheckBox: View {
             ZStack {
                 if realChecked {
                     Image(systemName: "checkmark")
-                        .foregroundColor(.white)
+                        .foregroundColor(.aksuWhite)
                 }
             }
             .frame(width: 20, height: 20)
@@ -58,18 +58,19 @@ public struct AKSUCheckBox: View {
             .cornerRadius(4.0)
             .overlay {
                 RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                    .stroke(realChecked ? actionColor : AKSUColor.gray)
+                    .stroke(realChecked ? actionColor : .aksuBoard)
             }
             .overlay {
                 if !isEnabled {
                     RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                        .fill(AKSUColor.dyGrayMask)
+                        .fill(.aksuGrayMask)
                 }
             }
 
             Text(label)
+                .foregroundStyle(.aksuText)
                 .font(.title2)
-                .foregroundColor(isEnabled ? color : color.merge(up: AKSUColor.dyGrayMask, mode: environment))
+                .foregroundColor(isEnabled ? color : color.merge(up: .aksuGrayMask, mode: environment))
                 .padding(.trailing)
         }
         .background(.white.opacity(0.01))

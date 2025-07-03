@@ -18,7 +18,7 @@ public struct AKSUBadges<T: View>: View {
     let circle: Bool
     @State var size: CGFloat = 0.0
 
-    public init(color: Color = .white, bgColor: Color = AKSUColor.primary, circle: Bool = false, radius: CGFloat = 8, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
+    public init(color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, circle: Bool = false, radius: CGFloat = 8, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = color
         self.bgColor = bgColor
         self.content = content
@@ -57,7 +57,7 @@ public struct AKSUBadges<T: View>: View {
 }
 
 public extension AKSUBadges where T == Text {
-    init<S>(_ title: S, color: Color = .white, bgColor: Color = AKSUColor.primary, circle: Bool = false, radius: CGFloat = 8, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
+    init<S>(_ title: S, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, circle: Bool = false, radius: CGFloat = 8, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.bgColor = bgColor
         content = { Text(title).font(.title2) }

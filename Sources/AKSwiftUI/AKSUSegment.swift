@@ -27,7 +27,7 @@ public struct AKSUSegment<K: Hashable>: View {
     @Namespace var animation
     @State var realHeight: CGFloat = 0.0
 
-    public init(selected: Binding<K>, style: AKSUSegmentStyle = .fat, color: Color = .white, bgColor: Color = AKSUColor.primary, height: CGFloat? = nil, horizontal: Bool = false, @AKSUSegmentBuilder<K> content: () -> [AKSUSegmentItem<K>]) {
+    public init(selected: Binding<K>, style: AKSUSegmentStyle = .fat, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, height: CGFloat? = nil, horizontal: Bool = false, @AKSUSegmentBuilder<K> content: () -> [AKSUSegmentItem<K>]) {
         self._selected = selected
         for item in content() {
             self.content[item.index] = AKSUSegmentItem(index: item.index, selected: selected, style: style, color: color, bgColor: bgColor, content: item.content)
@@ -53,7 +53,7 @@ public struct AKSUSegment<K: Hashable>: View {
                         if index == self.selected {
                             VStack {}
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .background(self.style == .slim ? self.bgColor : self.bgColor.merge(up: .white.opacity(0.2), mode: environment))
+                                .background(self.style == .slim ? self.bgColor : self.bgColor.merge(up: .aksuGrayMask, mode: environment))
                                 .matchedGeometryEffect(id: "AKSUSegment", in: self.animation)
                         }
                     }
@@ -62,7 +62,7 @@ public struct AKSUSegment<K: Hashable>: View {
                 if index != self.sort.last {
                     VStack {}
                         .frame(width: 1, height: max(0, self.realHeight / 2))
-                        .background(self.style == .slim ? AKSUColor.dyGrayBG : .white.opacity(0.4))
+                        .background(self.style == .slim ? .aksuGrayBackground : .aksuGrayMask)
                         .padding([.leading, .trailing], -0.5)
                 }
             }
@@ -71,7 +71,7 @@ public struct AKSUSegment<K: Hashable>: View {
         .overlay {
             GeometryReader { g in
                 RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                    .stroke(self.style == .slim ? AKSUColor.gray : .clear, lineWidth: 2)
+                    .stroke(self.style == .slim ? .aksuBoard : .clear, lineWidth: 2)
                     .padding(1)
                     .onAppear {
                         self.realHeight = g.size.height
@@ -82,7 +82,7 @@ public struct AKSUSegment<K: Hashable>: View {
         .overlay {
             if !self.isEnabled {
                 RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                    .fill(AKSUColor.dyGrayMask)
+                    .fill(.aksuGrayMask)
                     .padding(1)
             }
         }
@@ -100,8 +100,8 @@ public struct AKSUSegmentItem<K: Hashable>: View {
     var content: [AnyView]
 
     private var canAction: Bool = false
-    private var color: Color = .white
-    private var hoverColor: Color = AKSUColor.primary
+    private var color: Color = .aksuWhite
+    private var hoverColor: Color = .aksuPrimary
     private var style: AKSUSegmentStyle = .fat
     @State private var hovering: Bool = false
 
@@ -126,13 +126,13 @@ public struct AKSUSegmentItem<K: Hashable>: View {
                 self.content[i]
             }
         }
-        .foregroundColor(self.hovering || index == selected ? .white : self.color)
+        .foregroundColor(self.hovering || index == selected ? .aksuWhite : self.color)
         .frame(maxWidth: .infinity)
         .padding([.top, .bottom], 10)
         .onHover {
             self.hovering = $0
         }
-        .background(self.hovering ? (self.style == .slim ? self.hoverColor.opacity(0.8) : .white.opacity(0.2)) : .clear)
+        .background(self.hovering ? (self.style == .slim ? self.hoverColor.opacity(0.8) : .aksuGrayMask) : .clear)
     }
 }
 
@@ -208,7 +208,7 @@ struct AKSUSegmentPreviewsView: View {
                 }
             }
 
-            AKSUSegment(selected: self.$index, style: .slim, color: AKSUColor.gray) {
+            AKSUSegment(selected: self.$index, style: .slim, color: .aksuGray) {
                 ForEach(0 ..< 5) {
                     index in
                     Text("\(index)").AKSUSegmentTag(index: "\(index)")

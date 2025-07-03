@@ -19,7 +19,7 @@ public struct AKSUStep: View {
     
     @Environment(\.isEnabled) private var isEnabled
 
-    public init(count: Int, label: [String]? = nil, color: Color = .gray.opacity(0.7), actionColor: Color = .aksuPrimary, size: CGFloat = 30, step: Binding<Int>) {
+    public init(count: Int, label: [String]? = nil, color: Color = .aksuBoard, actionColor: Color = .aksuPrimary, size: CGFloat = 30, step: Binding<Int>) {
         self.count = count
         self._step = step
         self.size = size

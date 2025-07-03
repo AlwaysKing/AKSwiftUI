@@ -102,19 +102,19 @@ struct AKSUCollapsePreviewsView: View {
                     AKSUCollapse(index: $index, key: "A") {
                         VStack {
                         }
-                        .frame(width: 100, height: 100).background(AKSUColor.primary)
+                        .frame(width: 100, height: 100).background(.aksuPrimary)
                     }
 
                     AKSUCollapse(index: $index, key: "B") {
                         VStack {
                         }
-                        .frame(width: 100, height: 100).background(AKSUColor.success)
+                        .frame(width: 100, height: 100).background(.aksuSuccess)
                     }
 
                     AKSUCollapse(index: $index, key: "C") {
                         VStack {
                         }
-                        .frame(width: 100, height: 100).background(AKSUColor.warning)
+                        .frame(width: 100, height: 100).background(.aksuWarning)
                     }
                 }
 
@@ -122,19 +122,19 @@ struct AKSUCollapsePreviewsView: View {
                     AKSUCollapse(index: $index, key: "A", vertical: false, horizontal: true) {
                         VStack {
                         }
-                        .frame(width: 100, height: 100).background(AKSUColor.primary)
+                        .frame(width: 100, height: 100).background(.aksuPrimary)
                     }
 
                     AKSUCollapse(index: $index, key: "B", vertical: false, horizontal: true) {
                         VStack {
                         }
-                        .frame(width: 100, height: 100).background(AKSUColor.success)
+                        .frame(width: 100, height: 100).background(.aksuSuccess)
                     }
 
                     AKSUCollapse(index: $index, key: "C", vertical: false, horizontal: true) {
                         VStack {
                         }
-                        .frame(width: 100, height: 100).background(AKSUColor.warning)
+                        .frame(width: 100, height: 100).background(.aksuWarning)
                     }
                 }
 
@@ -142,19 +142,19 @@ struct AKSUCollapsePreviewsView: View {
                     AKSUCollapse(index: $index, key: "A", vertical: true, horizontal: true) {
                         VStack {
                         }
-                        .frame(width: 100, height: 100).background(AKSUColor.primary)
+                        .frame(width: 100, height: 100).background(.aksuPrimary)
                     }
 
                     AKSUCollapse(index: $index, key: "B", vertical: true, horizontal: true) {
                         VStack {
                         }
-                        .frame(width: 100, height: 100).background(AKSUColor.success)
+                        .frame(width: 100, height: 100).background(.aksuSuccess)
                     }
 
                     AKSUCollapse(index: $index, key: "C", vertical: true, horizontal: true) {
                         VStack {
                         }
-                        .frame(width: 100, height: 100).background(AKSUColor.warning)
+                        .frame(width: 100, height: 100).background(.aksuWarning)
                     }
                 }
             }
@@ -169,7 +169,7 @@ struct AKSUCollapsePreviewsView: View {
                         VStack {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(AKSUColor.primary)
+                        .background(.aksuPrimary)
                     }
                 }.frame(maxWidth: 200)
                 Spacer()
