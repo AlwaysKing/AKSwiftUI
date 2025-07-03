@@ -15,6 +15,7 @@ struct SplitWndContentView: View {
     @State var showRightView: Bool = true
     @State var disable: Bool = false
 
+    @State var refresh: Int = 0
     @State var bg: Bool = false
     @State var r: CGFloat = 0.0
     @State var g: CGFloat = 0.0
@@ -72,6 +73,7 @@ struct SplitWndContentView: View {
                         Color.clear
                     }
                 }
+                .environment(<#T##keyPath: WritableKeyPath<EnvironmentValues, V>##WritableKeyPath<EnvironmentValues, V>#>, <#T##value: V##V#>)
             } leftView: {
                 List {
                     ForEach(["主题", "布局", "组件"], id: \.self) {
@@ -131,6 +133,23 @@ struct SplitWndContentView: View {
                                 .frame(width: 50)
                             AKSURange(step: 1, min: 0, max: 255, progress: $b, actionColor: .blue)
                                 .frame(width: 100)
+                        }
+                    }
+                    VStack {
+                        Text("切换主体颜色")
+                            .font(.aksuTitle4).padding()
+
+                        AKSUButton("", bgColor: .red) {
+                            AKSUColor.primary = .red
+                        }
+                        AKSUButton("", bgColor: .green) {
+                            AKSUColor.primary = .green
+                        }
+                        AKSUButton("", bgColor: .blue) {
+                            AKSUColor.primary = .blue
+                        }
+                        AKSUButton("", bgColor: .aksuLightBlue) {
+                            AKSUColor.primary = .aksuLightBlue
                         }
                     }
                     Spacer()
