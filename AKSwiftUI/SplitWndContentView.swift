@@ -73,7 +73,6 @@ struct SplitWndContentView: View {
                         Color.clear
                     }
                 }
-                .environment(<#T##keyPath: WritableKeyPath<EnvironmentValues, V>##WritableKeyPath<EnvironmentValues, V>#>, <#T##value: V##V#>)
             } leftView: {
                 List {
                     ForEach(["主题", "布局", "组件"], id: \.self) {

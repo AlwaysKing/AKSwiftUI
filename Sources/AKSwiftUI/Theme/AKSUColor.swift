@@ -10,17 +10,17 @@ import SwiftUI
 
 // MARK: - 颜色定义
 public class AKSUColor {
-    public static let blue = Color(red: 6 / 255, green: 82 / 255, blue: 237 / 255)
-    public static let lightBlue = Color(red: 76 / 255, green: 172 / 255, blue: 248 / 255)
+    public static var blue = Color(red: 6 / 255, green: 82 / 255, blue: 237 / 255)
+    public static var lightBlue = Color(red: 76 / 255, green: 172 / 255, blue: 248 / 255)
 
-    public static let black = Color.black
-    public static let white = Color.white
-    public static let gray = Color.gray
+    public static var black = Color.black
+    public static var white = Color.white
+    public static var gray = Color.gray
 
-    public static let textBackground = Color(NSColor.textBackgroundColor)
-    public static let textForeground = Color.primary
+    public static var textBackground = Color(NSColor.textBackgroundColor)
+    public static var textForeground = Color.primary
 
-    public static let title = Color(nsColor: NSColor(name: nil) { appearance in
+    public static var title = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case NSAppearance.Name.darkAqua:
             return NSColor(red: 240 / 255, green: 240 / 255, blue: 240 / 255, alpha: 1.0)
@@ -29,7 +29,7 @@ public class AKSUColor {
         }
     })
 
-    public static let text = Color(nsColor: NSColor(name: nil) { appearance in
+    public static var text = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case NSAppearance.Name.darkAqua:
             return NSColor(red: 220 / 255, green: 220 / 255, blue: 220 / 255, alpha: 1.0)
@@ -38,7 +38,7 @@ public class AKSUColor {
         }
     })
 
-    public static let secondaryText = Color(nsColor: NSColor(name: nil) { appearance in
+    public static var secondaryText = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case NSAppearance.Name.darkAqua:
             return NSColor(red: 160 / 255, green: 160 / 255, blue: 160 / 255, alpha: 1.0)
@@ -47,7 +47,7 @@ public class AKSUColor {
         }
     })
 
-    public static let lessText = Color(nsColor: NSColor(name: nil) { appearance in
+    public static var lessText = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case NSAppearance.Name.darkAqua:
             return NSColor(red: 130 / 255, green: 130 / 255, blue: 130 / 255, alpha: 1.0)
@@ -56,7 +56,7 @@ public class AKSUColor {
         }
     })
 
-    public static let dyGrayBG = Color(nsColor: NSColor(name: nil) { appearance in
+    public static var dyGrayBG = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case NSAppearance.Name.darkAqua:
             return NSColor(red: 63 / 255, green: 63 / 255, blue: 63 / 255, alpha: 1.0)
@@ -65,41 +65,41 @@ public class AKSUColor {
         }
     })
 
-    public static let dyGrayMask = dyGrayBG.opacity(0.4)
+    public static var dyGrayMask = dyGrayBG.opacity(0.4)
 
-    public static let primary = Color(red: 59 / 255, green: 113 / 255, blue: 202 / 255)
-    public static let success = Color(red: 20 / 255, green: 164 / 255, blue: 77 / 255)
-    public static let warning = Color(red: 228 / 255, green: 161 / 255, blue: 28 / 255)
-    public static let danger = Color(red: 249 / 255, green: 49 / 255, blue: 84 / 255)
+    public static var primary = Color(red: 59 / 255, green: 113 / 255, blue: 202 / 255)
+    public static var success = Color(red: 20 / 255, green: 164 / 255, blue: 77 / 255)
+    public static var warning = Color(red: 228 / 255, green: 161 / 255, blue: 28 / 255)
+    public static var danger = Color(red: 249 / 255, green: 49 / 255, blue: 84 / 255)
 }
 
 public extension Color {
-    static let aksuBlue = AKSUColor.blue
-    static let aksuLightBlue = AKSUColor.lightBlue
+    static var aksuBlue: Color { return AKSUColor.blue }
+    static var aksuLightBlue: Color { return AKSUColor.lightBlue }
 
-    static let aksuBlack = AKSUColor.black
-    static let aksuWhite = AKSUColor.white
-    static let aksuGray = AKSUColor.gray
+    static var aksuBlack: Color { return AKSUColor.black }
+    static var aksuWhite: Color { return AKSUColor.white }
+    static var aksuGray: Color { return AKSUColor.gray }
 
-    static let aksuTextBackground = AKSUColor.textBackground
-    static let aksuTextForeground = AKSUColor.textForeground
+    static var aksuTextBackground: Color { return AKSUColor.textBackground }
+    static var aksuTextForeground: Color { return AKSUColor.textForeground }
 
-    static let aksuTitle = AKSUColor.title
-    static let aksuText = AKSUColor.text
-    static let aksuSecondaryText = AKSUColor.secondaryText
-    static let aksuLessText = AKSUColor.lessText
+    static var aksuTitle: Color { return AKSUColor.title }
+    static var aksuText: Color { return AKSUColor.text }
+    static var aksuSecondaryText: Color { return AKSUColor.secondaryText }
+    static var aksuLessText: Color { return AKSUColor.lessText }
 
-    static let aksuDYGrayBG = AKSUColor.dyGrayBG
-    static let aksuDYGrayMask = AKSUColor.dyGrayMask
+    static var aksuDYGrayBG: Color { return AKSUColor.dyGrayBG }
+    static var aksuDYGrayMask: Color { return AKSUColor.dyGrayMask }
 
-    static let aksuPrimary = AKSUColor.primary
-    static let aksuSuccess = AKSUColor.success
-    static let aksuWarning = AKSUColor.warning
-    static let aksuDanger = AKSUColor.danger
+    static var aksuPrimary: Color { return AKSUColor.primary }
+    static var aksuSuccess: Color { return AKSUColor.success }
+    static var aksuWarning: Color { return AKSUColor.warning }
+    static var aksuDanger: Color { return AKSUColor.danger }
 }
 
 public extension ShapeStyle where Self == Color {
-    static var aksublue: Color { return AKSUColor.blue }
+    static var aksuBlue: Color { return AKSUColor.blue }
     static var aksuLightBlue: Color { return AKSUColor.lightBlue }
 
     static var aksuBlack: Color { return AKSUColor.black }
