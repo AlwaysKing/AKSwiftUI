@@ -97,15 +97,15 @@ struct AKSUFontPreviewsView: View {
                 Divider().frame(width: 200)
 
                 VStack {
-                    Text("这是Text字体和字体颜色的演示").fontWeight(AKSUFont.ultraLight)
-                    Text("这是Text字体和字体颜色的演示").fontWeight(AKSUFont.thin)
-                    Text("这是Text字体和字体颜色的演示").fontWeight(AKSUFont.light)
-                    Text("这是Text字体和字体颜色的演示").fontWeight(AKSUFont.regular)
-                    Text("这是Text字体和字体颜色的演示").fontWeight(AKSUFont.medium)
-                    Text("这是Text字体和字体颜色的演示").fontWeight(AKSUFont.semibold)
-                    Text("这是Text字体和字体颜色的演示").fontWeight(AKSUFont.bold)
-                    Text("这是Text字体和字体颜色的演示").fontWeight(AKSUFont.heavy)
-                    Text("这是Text字体和字体颜色的演示").fontWeight(AKSUFont.black)
+                    Text("这是ultraLight字体和字体颜色的演示").fontWeight(AKSUFont.ultraLight)
+                    Text("这是thin字体和字体颜色的演示").fontWeight(AKSUFont.thin)
+                    Text("这是light字体和字体颜色的演示").fontWeight(AKSUFont.light)
+                    Text("这是regular字体和字体颜色的演示").fontWeight(AKSUFont.regular)
+                    Text("这是medium字体和字体颜色的演示").fontWeight(AKSUFont.medium)
+                    Text("这是semibold字体和字体颜色的演示").fontWeight(AKSUFont.semibold)
+                    Text("这是bold字体和字体颜色的演示").fontWeight(AKSUFont.bold)
+                    Text("这是heavy字体和字体颜色的演示").fontWeight(AKSUFont.heavy)
+                    Text("这是black字体和字体颜色的演示").fontWeight(AKSUFont.black)
                 }
 
                 .font(AKSUFont.text)

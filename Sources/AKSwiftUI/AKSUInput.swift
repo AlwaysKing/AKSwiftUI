@@ -29,7 +29,7 @@ public struct AKSUInput: View {
     // 禁止 action leable
     var disableActionLabel: Bool
     // 主要颜色
-    let actionColor: Color = AKSUColor.primary
+    let actionColor: Color
     // 是否显示清空按钮
     var clearButton: AKSUInputButtonShowMode
     // 密码模式
@@ -72,10 +72,11 @@ public struct AKSUInput: View {
     // 大小
     @State private var size: CGSize = CGSize.zero
 
-    public init(style: AKSUInputStyle = .box, label: String, alignment: TextAlignment = .leading, disableActionLabel: Bool = false, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, onlyNumber: Bool = false, decimalCount: Int? = nil, numberStep: Float? = nil, numberMax: Float? = nil, numberMin: Float? = nil, unit: String? = nil, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, submit: (() -> Void)? = nil)
+    public init(style: AKSUInputStyle = .box, label: String, actionColor:Color = .aksuPrimary, alignment: TextAlignment = .leading, disableActionLabel: Bool = false, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, onlyNumber: Bool = false, decimalCount: Int? = nil, numberStep: Float? = nil, numberMax: Float? = nil, numberMin: Float? = nil, unit: String? = nil, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, submit: (() -> Void)? = nil)
     {
         self.style = style
         self.label = label
+        self.actionColor = actionColor
         self.disableActionLabel = disableActionLabel
         self.clearButton = clearButton
         self.password = password
@@ -547,7 +548,7 @@ struct AKSUInputPreviewsView: View {
 
             Text("输入内容: \(input)")
             HStack {
-                AKSUInput(style: style, label: "请 输 入 文 本", alignment: alignment, disableActionLabel: disableActionLabel, clearButton: clearButton, password: password, onlyNumber: numberMode, decimalCount: decimalCount, numberStep: numberStep, numberMax: numberStep == nil ? nil : 100, numberMin: numberStep == nil ? nil : -100, unit: unit, passwordButton: passwordButton, text: $input)
+                AKSUInput(style: style, label: "请 输 入 文 本", actionColor: .aksuBlue, alignment: alignment, disableActionLabel: disableActionLabel, clearButton: clearButton, password: password, onlyNumber: numberMode, decimalCount: decimalCount, numberStep: numberStep, numberMax: numberStep == nil ? nil : 100, numberMin: numberStep == nil ? nil : -100, unit: unit, passwordButton: passwordButton, text: $input)
                     .frame(width: 200)
             }
         }
