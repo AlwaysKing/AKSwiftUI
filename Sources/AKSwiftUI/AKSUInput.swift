@@ -100,7 +100,7 @@ public struct AKSUInput: View {
     public var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
-                Text((disableActionLabel && !text.isEmpty) ? "" : label)
+                Text(label)
                     .fontWeight(AKSUFont.light)
                     .foregroundStyle(focused && !disableActionLabel ? actionColor : .aksuPlaceholder)
                     .background(
@@ -119,9 +119,10 @@ public struct AKSUInput: View {
                     .offset(x: labelActionActivate ? 0 : actionLabelXOffset())
                     .padding(0)
                     .padding(.leading, style != .box ? 4 : 15)
-                    .frame(height: style != .plain ? 15 : 0)
-                    .padding(.top, style != .plain ? 0 : -2)
+                    .frame(height: disableActionLabel ? 0 : 15)
+                    .padding(.top, disableActionLabel ? -2 : 0)
                     .allowsHitTesting(false)
+                    .opacity((disableActionLabel && !text.isEmpty) ? 0 : 1)
 
                 HStack {
                     ZStack {
@@ -244,7 +245,7 @@ public struct AKSUInput: View {
                         }
                     }
                 )
-                .padding(.top, style == .plain ? 0 : -6)
+                .padding(.top, disableActionLabel ? 0 : -6)
 
                 if style == .line && isEnabled {
                     VStack {}
