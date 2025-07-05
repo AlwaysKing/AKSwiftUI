@@ -512,7 +512,7 @@ struct AKSUToastPreviewsView: View {
 
             AKSUWarpStack { reader in
                 VStack {
-                    AKSUCheckBox(checked: $timeout, label: "定时关闭")
+                    AKSUToggle(toggle: $timeout, label: "定时关闭")
 
                     Text("基本消息")
                     Divider()

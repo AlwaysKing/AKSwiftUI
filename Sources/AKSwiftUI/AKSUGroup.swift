@@ -12,6 +12,7 @@ public enum AKSUGroupStyle {
 }
 
 public struct AKSUGroup: View {
+    @Environment(\.isEnabled) private var isEnabled
     var style: AKSUGroupStyle
     var disableFocus: Bool
     var hiddenDivider: Bool
@@ -52,9 +53,9 @@ public struct AKSUGroup: View {
                         if index != itemView.count - 1 && !hiddenDivider {
                             ZStack {
                                 Divider()
-                                    .frame(width: style == .vertical ? maxWidth() : (!disableFocus && (fouced == index || fouced == index + 1) ? 2 : 1),
-                                           height: style == .horizontal ? maxHeight() : (!disableFocus && (fouced == index || fouced == index + 1) ? 2 : 1))
-                                    .background(!disableFocus && (fouced == index || fouced == index + 1) ? actionColor : .aksuBoard)
+                                    .frame(width: style == .vertical ? maxWidth() : (!disableFocus && (fouced == index || fouced == index + 1) && isEnabled ? 2 : 1),
+                                           height: style == .horizontal ? maxHeight() : (!disableFocus && (fouced == index || fouced == index + 1) && isEnabled ? 2 : 1))
+                                    .background(!disableFocus && (fouced == index || fouced == index + 1) && isEnabled ? actionColor : .aksuBoard)
                             }
                             .frame(width: style == .horizontal ? 2 : nil)
                             .frame(height: style == .vertical ? 2 : nil)
@@ -68,7 +69,7 @@ public struct AKSUGroup: View {
                                 .stroke(.aksuBoard, lineWidth: 1)
                                 .padding(1)
 
-                            if fouced != nil && !disableFocus {
+                            if fouced != nil && !disableFocus && isEnabled {
                                 RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                     .stroke(actionColor, lineWidth: 2)
                                     .padding(1)
@@ -157,7 +158,7 @@ public struct AKSUGroup: View {
             let height = itemSize[item]?.height ?? 0
             rv = max(rv, height)
         }
-        return rv
+        return rv - 1
     }
 
     func getLeading() -> CGFloat {

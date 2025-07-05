@@ -24,7 +24,7 @@ struct SplitContentView: View {
     let menu: [String: [String]] = [
         "主题": ["Color", "Font"],
         "布局": ["Flex", "Grid", "Split"],
-        "组件": ["Button", "Click", "Group", "Input", "InputGroup", "PinInput", "Dropdown", "PopWnd", "Popover", "Toast", "CheckBox", "ContainBox", "Radio", "Range", "Progress", "step", "CircleProgress", "Collapse", "SetpScrollView", "Segment", "Table"]
+        "组件": ["Button", "Click", "Group", "Input", "InputGroup", "PinInput", "Dropdown", "PopWnd", "Popover", "Toast", "Toggle", "ContainBox", "Radio", "Range", "Progress", "step", "CircleProgress", "Collapse", "SetpScrollView", "Segment", "Table"]
     ]
 
     var body: some View {
@@ -70,7 +70,7 @@ struct SplitContentView: View {
                     case "PopWnd": AKSUPopWndPreviewsView()
                     case "Popover": AKSUPopoverPreviewsView()
                     case "Toast": AKSUToastPreviewsView()
-                    case "CheckBox": AKSUCheckBoxPreviewsView()
+                    case "Toggle": AKSUTogglePreviewsView()
                     case "ContainBox": AKSUContainBoxPreviewsView()
                     case "Radio": AKSURadioPreviewsView()
                     case "Range": AKSURangePreviewsView()
@@ -114,7 +114,7 @@ struct SplitContentView: View {
                         }
                     }.padding()
 
-                    AKSUCheckBox(checked: $bg, label: "启用背景")
+                    AKSUToggle(toggle: $bg, label: "启用背景")
 
                     VStack {
                         HStack {

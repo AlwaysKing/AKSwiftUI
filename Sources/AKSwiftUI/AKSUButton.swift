@@ -29,6 +29,7 @@ public struct AKSUButton<T: View>: View {
     let color: Color
     let bgColor: Color
     let height: CGFloat?
+    let maxWidth: CGFloat?
     let action: () -> Void
     let style: AKSUButtonStyle
     let autoPadding: Bool
@@ -40,13 +41,14 @@ public struct AKSUButton<T: View>: View {
     @State var animationCircleOffset: (x: CGFloat, y: CGFloat) = (0, 0)
     @State var animationCircleSize: CGFloat = 100.0
 
-    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, height: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
+    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = color
         self.bgColor = bgColor
         self.content = content
         self.action = action
         self.style = style
         self.height = height
+        self.maxWidth = maxWidth
         self.animationCircleSize = height ?? 0
         self.autoPadding = autoPadding
         self.clickStyke = clickStyke
@@ -58,6 +60,7 @@ public struct AKSUButton<T: View>: View {
                 .foregroundColor(color)
                 .padding([.leading, .trailing], autoPadding ? 16 : 0)
                 .padding([.top, .bottom], autoPadding ? 8 : 0)
+                .frame(maxWidth: maxWidth)
                 .overlay {
                     GeometryReader { geometry in
                         Color.clear.task {
@@ -125,13 +128,14 @@ public struct AKSUButton<T: View>: View {
 }
 
 public extension AKSUButton where T == Text {
-    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, height: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
+    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.bgColor = bgColor
         content = { Text(title).font(.title) }
         self.action = action
         self.style = style
         self.height = height
+        self.maxWidth = maxWidth
         self.animationCircleSize = height ?? 0
         self.autoPadding = autoPadding
         self.clickStyke = clickStyke
@@ -171,7 +175,7 @@ struct AKSUButtonPreviewsView: View {
             }
 
             AKSUButton(style: .plain, clickStyke: .center, height: 100) {
-                Text("Plain")
+                Text("height")
                     .foregroundColor(.white)
                     .font(.title)
                     .frame(maxWidth: .infinity)

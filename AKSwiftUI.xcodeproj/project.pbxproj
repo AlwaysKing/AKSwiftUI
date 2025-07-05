@@ -37,7 +37,7 @@
 		9355A0812CA519F600CA164C /* AKSUFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A05E2CA519F600CA164C /* AKSUFont.swift */; };
 		9355A0822CA519F600CA164C /* AKSUBadges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0602CA519F600CA164C /* AKSUBadges.swift */; };
 		9355A0832CA519F600CA164C /* AKSUButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0612CA519F600CA164C /* AKSUButton.swift */; };
-		9355A0842CA519F600CA164C /* AKSUCheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0622CA519F600CA164C /* AKSUCheckBox.swift */; };
+		9355A0842CA519F600CA164C /* AKSUToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0622CA519F600CA164C /* AKSUToggle.swift */; };
 		9355A0852CA519F600CA164C /* AKSUCircleProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0632CA519F600CA164C /* AKSUCircleProgress.swift */; };
 		9355A0862CA519F600CA164C /* AKSUCircleRingShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0642CA519F600CA164C /* AKSUCircleRingShape.swift */; };
 		9355A0872CA519F600CA164C /* AKSUClick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0652CA519F600CA164C /* AKSUClick.swift */; };
@@ -88,7 +88,7 @@
 		9355A05E2CA519F600CA164C /* AKSUFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUFont.swift; sourceTree = "<group>"; };
 		9355A0602CA519F600CA164C /* AKSUBadges.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUBadges.swift; sourceTree = "<group>"; };
 		9355A0612CA519F600CA164C /* AKSUButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUButton.swift; sourceTree = "<group>"; };
-		9355A0622CA519F600CA164C /* AKSUCheckBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUCheckBox.swift; sourceTree = "<group>"; };
+		9355A0622CA519F600CA164C /* AKSUToggle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUToggle.swift; sourceTree = "<group>"; };
 		9355A0632CA519F600CA164C /* AKSUCircleProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUCircleProgress.swift; sourceTree = "<group>"; };
 		9355A0642CA519F600CA164C /* AKSUCircleRingShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUCircleRingShape.swift; sourceTree = "<group>"; };
 		9355A0652CA519F600CA164C /* AKSUClick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUClick.swift; sourceTree = "<group>"; };
@@ -219,7 +219,7 @@
 				9355A05F2CA519F600CA164C /* Theme */,
 				9355A0602CA519F600CA164C /* AKSUBadges.swift */,
 				9355A0612CA519F600CA164C /* AKSUButton.swift */,
-				9355A0622CA519F600CA164C /* AKSUCheckBox.swift */,
+				9355A0622CA519F600CA164C /* AKSUToggle.swift */,
 				9355A0632CA519F600CA164C /* AKSUCircleProgress.swift */,
 				9355A0642CA519F600CA164C /* AKSUCircleRingShape.swift */,
 				9355A0652CA519F600CA164C /* AKSUClick.swift */,
@@ -349,7 +349,7 @@
 				9355A07B2CA519F600CA164C /* AKSUGrid.swift in Sources */,
 				9355A07D2CA519F600CA164C /* AKSUSplitWnd.swift in Sources */,
 				9355A07C2CA519F600CA164C /* AKSUSplitStack.swift in Sources */,
-				9355A0842CA519F600CA164C /* AKSUCheckBox.swift in Sources */,
+				9355A0842CA519F600CA164C /* AKSUToggle.swift in Sources */,
 				9355A08E2CA519F600CA164C /* AKSUPopWnd.swift in Sources */,
 				395A48E52D15A2FE0095E299 /* AKSUStackView.swift in Sources */,
 				9355A0802CA519F600CA164C /* AKSUColor.swift in Sources */,

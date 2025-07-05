@@ -82,7 +82,7 @@ public class AKSUColor {
             return NSColor(red: 220 / 255, green: 220 / 255, blue: 220 / 255, alpha: 1.0)
         }
     })
-        
+
     public static var grayLessBackground = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case NSAppearance.Name.darkAqua:
@@ -91,7 +91,7 @@ public class AKSUColor {
             return NSColor(red: 230 / 255, green: 230 / 255, blue: 230 / 255, alpha: 1.0)
         }
     })
-    
+
     public static var divider = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case NSAppearance.Name.darkAqua:
@@ -100,6 +100,10 @@ public class AKSUColor {
             return NSColor(red: 216 / 255, green: 216 / 255, blue: 216 / 255, alpha: 1.0)
         }
     })
+
+    public static var grayLightMask = Color(red: 220 / 255, green: 220 / 255, blue: 220 / 255).opacity(0.4)
+
+    public static var grayDarkMask = Color(red: 63 / 255, green: 63 / 255, blue: 63 / 255).opacity(0.4)
 
     public static var grayMask = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
@@ -137,6 +141,8 @@ public extension Color {
     static var aksuGrayBackground: Color { return AKSUColor.grayBackground }
     static var aksuGrayLessBackground: Color { return AKSUColor.grayLessBackground }
     static var aksuDivider: Color { return AKSUColor.divider }
+    static var aksuGrayLightMask :Color { return AKSUColor.grayLightMask }
+    static var aksuGrayDarkMask :Color { return AKSUColor.grayDarkMask }
     static var aksuGrayMask: Color { return AKSUColor.grayMask }
 
     static var aksuPrimary: Color { return AKSUColor.primary }
@@ -166,6 +172,8 @@ public extension ShapeStyle where Self == Color {
     static var aksuGrayBackground: Color { return AKSUColor.grayBackground }
     static var aksuGrayLessBackground: Color { return AKSUColor.grayLessBackground }
     static var aksuDivider: Color { return AKSUColor.divider }
+    static var aksuGrayLightMask :Color { return AKSUColor.grayLightMask }
+    static var aksuGrayDarkMask :Color { return AKSUColor.grayDarkMask }
     static var aksuGrayMask: Color { return AKSUColor.grayMask }
 
     static var aksuPrimary: Color { return AKSUColor.primary }

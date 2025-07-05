@@ -62,9 +62,8 @@ public struct AKSUInputGroup: View {
 
                                 if index != 0 {
                                     VStack {}
-                                        .frame(width: 1, height: realHeight - 2)
+                                        .frame(width: 1, height: realHeight - 6)
                                         .background(.aksuBoard)
-                                        .padding([.leading, .trailing], 2)
                                         .zIndex(2)
                                 }
 
@@ -75,12 +74,12 @@ public struct AKSUInputGroup: View {
                             }
 
                             VStack {}
-                                .frame(width: 2, height: realHeight - 2)
+                                .frame(width: 2, height: realHeight)
                                 .padding(0)
                                 .overlay {
                                     if focused {
                                         actionColor
-                                            .frame(width: 2, height: realHeight - 2)
+                                            .frame(width: 2, height: realHeight)
                                     } else {
                                         AKSUColor.board
                                             .frame(width: 1, height: realHeight - 2)
@@ -178,14 +177,14 @@ public struct AKSUInputGroup: View {
                     if trailingView.count != 0 {
                         HStack(spacing: 0) {
                             VStack {}
-                                .frame(width: 2, height: realHeight - 2)
+                                .frame(width: 2, height: realHeight )
                                 .padding(0)
                                 .overlay {
                                     if focused {
                                         actionColor
-                                            .frame(width: 2, height: realHeight - 2)
+                                            .frame(width: 2, height: realHeight )
                                     } else {
-                                        AKSUColor.gray
+                                        AKSUColor.board
                                             .frame(width: 1, height: realHeight - 2)
                                     }
                                 }
@@ -196,14 +195,14 @@ public struct AKSUInputGroup: View {
 
                                 if index != 0 {
                                     VStack {}
-                                        .frame(width: 1, height: realHeight - 2)
-                                        .background(.black.opacity(0.3))
-                                        .padding([.leading, .trailing], 2)
+                                        .frame(width: 1, height: realHeight - 6)
+                                        .background(.aksuBoard)
                                         .zIndex(2)
                                 }
 
                                 trailingView[index]
                                     .frame(minWidth: 40)
+                                    .padding(.leading, -2)
                             }
                         }
                         .overlay {

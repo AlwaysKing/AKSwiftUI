@@ -29,7 +29,7 @@ public struct AKSUContainBox<T: Equatable>: View {
     }
 
     public var body: some View {
-        AKSUCheckBox(checked: contain, label: label, color: color, actionColor: actionColor) {
+        AKSUToggle(toggle: contain, label: label, color: color, actionColor: actionColor) {
             checked in
             if checked {
                 list.append(key)

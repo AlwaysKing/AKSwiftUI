@@ -8,6 +8,7 @@
 import SwiftUI
 
 public struct AKSUInputPin: View {
+    @Environment(\.isEnabled) private var isEnabled
     let count: Int
     let width: CGFloat
     let height: CGFloat
@@ -16,8 +17,11 @@ public struct AKSUInputPin: View {
     let onlyNumber: Bool
     let finish: (_ pin: String) -> Void
     let color: Color
-    let bgColor: Color
+    let bgColor: Color?
+    let boardColor: Color?
     let actionColor: Color
+
+    let filter: ((Character) -> Character?)?
 
     @State private var code: [String]
 
@@ -27,9 +31,7 @@ public struct AKSUInputPin: View {
 
     @State var selected: Int
 
-    @Environment(\.isEnabled) private var isEnabled
-
-    public init(count: Int, onlyNumber: Bool = false, color: Color = .aksuText, actionColor: Color = .aksuPrimary, bgColor: Color = .aksuGrayBackground, width: CGFloat = 40, height: CGFloat = 40, spacing: CGFloat? = nil, fontSize: CGFloat = 28, finish: @escaping (_ pin: String) -> Void) {
+    public init(count: Int, onlyNumber: Bool = false, color: Color = .aksuText, actionColor: Color = .aksuPrimary, bgColor: Color? = .aksuGrayLessBackground, boardColor: Color? = .aksuBoard, width: CGFloat = 40, height: CGFloat = 40, spacing: CGFloat? = nil, fontSize: CGFloat = 28, filter: ((Character) -> Character?)? = nil, finish: @escaping (_ pin: String) -> Void) {
         self.count = count
         self.code = [String](repeating: "", count: count)
         self.width = width
@@ -42,12 +44,14 @@ public struct AKSUInputPin: View {
         self.color = color
         self.actionColor = actionColor
         self.bgColor = bgColor
+        self.boardColor = boardColor
+        self.filter = filter
         self.focusedField = 0
     }
 
     public var body: some View {
         HStack(spacing: spacing) {
-            ForEach(0 ..< 6, id: \.self) { index in
+            ForEach(0 ..< count, id: \.self) { index in
 
                 ZStack {
                     Text(code[index])
@@ -102,13 +106,20 @@ public struct AKSUInputPin: View {
                 .frame(width: width, height: height)
                 .background(bgColor)
                 .cornerRadius(AKSUAppearance.cornerRadius)
-                .background {
+                .overlay {
+                    if let boardColor = boardColor {
+                        RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
+                            .stroke(boardColor, lineWidth: 1)
+                    }
+                }
+                .overlay {
                     if selected == index {
                         RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                             .stroke(actionColor, lineWidth: 2)
                             .matchedGeometryEffect(id: "AKSUInputPin", in: self.pinAnimation)
                     }
                 }
+
                 .onTapGesture {
                     focusedField = index
                 }
@@ -126,15 +137,21 @@ public struct AKSUInputPin: View {
 
     func inputVaild(_ event: NSEvent) -> String? {
         if let character = event.characters?.first {
-            if character.isNumber {
-                return String(character)
-            } else if character.isLetter {
-                if onlyNumber {
+            if let filter = filter {
+                if let result = filter(character) {
+                    return String(result)
+                }
+            } else {
+                if character.isNumber {
+                    return String(character)
+                } else if character.isLetter {
+                    if onlyNumber {
+                        return nil
+                    }
+                    return String(character)
+                } else {
                     return nil
                 }
-                return String(character)
-            } else {
-                return nil
             }
         }
 
@@ -157,7 +174,17 @@ struct AKSUInputPinPreviewsView: View {
     var body: some View {
         VStack {
             Text("pin: \(finish)")
-            AKSUInputPin(count: 6) { pin in
+            AKSUInputPin(count: 4) { pin in
+                finish = pin
+            }
+
+            Text("upper: \(finish)")
+            AKSUInputPin(count: 4) { input in
+                if input.isLetter {
+                    return input.uppercased().first
+                }
+                return nil
+            } finish: { pin in
                 finish = pin
             }
         }
