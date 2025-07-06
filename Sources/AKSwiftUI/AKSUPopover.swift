@@ -168,6 +168,7 @@ public class AKSUPopover: AKSUPopWnd {
 }
 
 public struct AKSUPopoverWarp<V: View, T: View>: View {
+    @Environment(\.isEnabled) private var isEnabled
     var alignment: AKSUPopoverAligment
     let content: V
     let menu: T
@@ -196,7 +197,7 @@ public struct AKSUPopoverWarp<V: View, T: View>: View {
 
             content
                 .onHover { hover in
-                    if !click {
+                    if !click && isEnabled {
                         hoverTask?.cancel()
                         if !hover {
                             toggleMenu(reader: reader, show: false)
@@ -215,7 +216,7 @@ public struct AKSUPopoverWarp<V: View, T: View>: View {
                 .simultaneousGesture(
                     TapGesture()
                         .onEnded { _ in
-                            if click {
+                            if click && isEnabled{
                                 toggleMenu(reader: reader, show: true)
                             }
                         }
