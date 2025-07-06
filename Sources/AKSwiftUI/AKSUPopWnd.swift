@@ -15,13 +15,13 @@ public class AKSUPopWnd: NSObject {
     public var hiddenEvent: (() -> Void)? = nil
     var monitor: Bool = false
     var uuid: UUID
-    
+
     static var colorScheme: ColorScheme = .light
 
     public static func setColorScheme(_ colorScheme: ColorScheme) {
         AKSUPopWnd.colorScheme = colorScheme
     }
-    
+
     override public init() {
         uuid = UUID()
         window = NSWindow(
@@ -37,12 +37,12 @@ public class AKSUPopWnd: NSObject {
         super.init()
     }
 
-    public func show(point: CGPoint, pointRect: CGRect? = nil, toggle: Bool = false, width: CGFloat, height: CGFloat, darkTheme: Bool? = nil, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil) {
+    public func show(point: CGPoint, pointRect: CGRect? = nil, toggle: Bool = false, width: CGFloat, height: CGFloat, darkTheme: Bool? = nil, autoHidden: Bool = true, parent: NSWindow, limit: Bool = false, view: AnyView? = nil) {
         var scheme = AKSUPopWnd.colorScheme
         if let darkTheme = darkTheme {
             scheme = darkTheme ? .dark : .light
         }
-        
+
         if let view = view {
             window.contentView = NSHostingView(rootView: AKSUPopWndView(width: width, height: height, colorScheme: scheme, content: view))
         } else if let menuContent = menuContent {
@@ -77,7 +77,8 @@ public class AKSUPopWnd: NSObject {
         self.pointRect = pointRect ?? CGRect.zero
 
         // 边缘测试
-        window.setFrame(NSRect(x: point.x + parentRect.minX - 4, y: parentRect.maxY - point.y - height + 4, width: width, height: height), display: true)
+        // 这里要增加约束？不超过父窗口内容？
+        window.setFrame(getRect(point: point, parentRect: parentRect, width: width, height: height, limit: limit), display: true)
         if !autoHidden {
             return
         }
@@ -110,6 +111,33 @@ public class AKSUPopWnd: NSObject {
         self.window.close()
         NotificationCenter.default.removeObserver(self, name: NSWindow.didResignKeyNotification, object: parent)
         AKSUMouseEventMonitor.stop(uuid: uuid)
+    }
+
+    public func getRect(point: CGPoint, parentRect: CGRect, width: CGFloat, height: CGFloat, limit: Bool) -> NSRect {
+        if !limit {
+            return NSRect(x: point.x + parentRect.minX - 4, y: parentRect.maxY - point.y - height + 4, width: width, height: height)
+        }
+
+        print("point:\(point.y) height:\(width) maxY:\(parentRect.maxX)")
+
+        // 先确定x
+        var x: CGFloat = point.x
+        // 需要收缩
+        if parentRect.width < width {
+            // 放到原点即可
+            x = 0
+        } else if point.x + width > parentRect.width {
+            x = parentRect.width - width
+        }
+
+        var y: CGFloat = point.y
+        if parentRect.height < height {
+            y = 0
+        } else if point.y + height > parentRect.height {
+            y = parentRect.height - height
+        }
+
+        return NSRect(x: x + parentRect.minX - 4, y: parentRect.maxY - y - height + 4, width: width, height: height)
     }
 }
 

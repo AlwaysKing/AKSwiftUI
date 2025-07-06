@@ -533,7 +533,6 @@ struct AKSUInputGroupPreviewsView: View {
                         }
                         action: {
                         }
-
                         .frame(width: 100)
                     }
                     .addLeading {

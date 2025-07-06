@@ -26,7 +26,7 @@ public enum AKSUPopoverAligment {
 }
 
 public class AKSUPopover: AKSUPopWnd {
-    public func show(toggle: Bool = false, rect: CGRect, size: CGSize, darkTheme: Bool? = nil, padding: CGFloat = 10, alignment: AKSUPopoverAligment, autoRePosition: Bool = false, autoHidden: Bool = true, parent: NSWindow, view: AnyView? = nil, rePosition: ((_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment)? = nil) {
+    public func show(toggle: Bool = false, rect: CGRect, size: CGSize, darkTheme: Bool? = nil, padding: CGFloat = 10, alignment: AKSUPopoverAligment, autoRePosition: Bool = false, autoHidden: Bool = true, parent: NSWindow, limit: Bool = false, view: AnyView? = nil, rePosition: ((_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment)? = nil) {
         var newAligment = alignment
         var point = getPoint(rect: rect, size: size, padding: padding, alignment: alignment)
 
@@ -59,7 +59,7 @@ public class AKSUPopover: AKSUPopWnd {
             }
         }
 
-        show(point: point, pointRect: rect, toggle: toggle, width: size.width, height: size.height, darkTheme: darkTheme, autoHidden: autoHidden, parent: parent, view: view)
+        show(point: point, pointRect: rect, toggle: toggle, width: size.width, height: size.height, darkTheme: darkTheme, autoHidden: autoHidden, parent: parent, limit: limit, view: view)
     }
 
     public func autoRePosition(_ alignment: AKSUPopoverAligment, _ edge: [AKSUScreenEdge]) -> AKSUPopoverAligment {
@@ -164,6 +164,81 @@ public class AKSUPopover: AKSUPopWnd {
             point.y = centerY()
         }
         return point
+    }
+}
+
+public struct AKSUPopoverWarp<V: View, T: View>: View {
+    var alignment: AKSUPopoverAligment
+    let content: V
+    let menu: T
+    let size: CGSize
+    let click: Bool
+    let delay: Float
+    let limit: Bool
+
+    let popover = AKSUPopover()
+
+    @State private var hoverTask: DispatchWorkItem? // 用于取消延迟任务
+
+    public init(click: Bool = false, delay: Float = 2, alignment: AKSUPopoverAligment, limit: Bool = true, size: CGSize, content: @escaping () -> V, menu: @escaping () -> T) {
+        self.alignment = alignment
+        self.menu = menu()
+        self.size = size
+        self.click = click
+        self.delay = delay
+        self.limit = limit
+        self.content = content()
+    }
+
+    public var body: some View {
+        AKSUWarpStack {
+            reader in
+
+            content
+                .onHover { hover in
+                    if !click {
+                        hoverTask?.cancel()
+                        if !hover {
+                            toggleMenu(reader: reader, show: false)
+                        } else {
+                            if delay == 0 {
+                                toggleMenu(reader: reader, show: true)
+                            } else {
+                                // 创建新的延迟任务
+                                let task = DispatchWorkItem { toggleMenu(reader: reader, show: true) }
+                                hoverTask = task
+                                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: task)
+                            }
+                        }
+                    }
+                }
+                .simultaneousGesture(
+                    TapGesture()
+                        .onEnded { _ in
+                            if click {
+                                toggleMenu(reader: reader, show: true)
+                            }
+                        }
+                )
+        }
+    }
+
+    func toggleMenu(reader: AKSUWarpStackReader, show: Bool) {
+        if show {
+            guard let global = reader.global else { return }
+            guard let window = reader.window else { return }
+            popover.menuContent = AnyView(menu)
+            popover.show(rect: global, size: size, alignment: alignment, parent: window)
+        } else {
+            popover.close()
+        }
+    }
+}
+
+public extension View {
+    @ViewBuilder
+    func onAKSUPopover<T: View>(click: Bool = false, delay: Float = 2, limit: Bool = true, alignment: AKSUPopoverAligment, size: CGSize, menu: @escaping () -> T) -> some View {
+        AKSUPopoverWarp(click: click, delay: delay, alignment: alignment, limit: limit, size: size, content: { self }, menu: menu)
     }
 }
 
@@ -309,6 +384,26 @@ struct AKSUPopoverPreviewsView: View {
                         }
                     }
                 }
+            }
+
+            HStack {
+                Text("hover 立刻")
+                    .frame(width: 80, height: 40)
+                    .foregroundStyle(.white)
+                    .background(.yellow)
+                    .onAKSUPopover(delay: 0, alignment: .upCenter, size: CGSize(width: 100, height: 100), menu: menuContent)
+
+                Text("hover 2s")
+                    .frame(width: 80, height: 40)
+                    .foregroundStyle(.white)
+                    .background(.yellow)
+                    .onAKSUPopover(delay: 2, alignment: .upCenter, size: CGSize(width: 100, height: 100), menu: menuContent)
+
+                Text("click")
+                    .frame(width: 80, height: 40)
+                    .foregroundStyle(.white)
+                    .background(.yellow)
+                    .onAKSUPopover(click: true, alignment: .upCenter, size: CGSize(width: 100, height: 100), menu: menuContent)
             }
         }
     }
