@@ -30,6 +30,8 @@ public struct AKSUInput: View {
     var disableActionLabel: Bool
     // 主要颜色
     let actionColor: Color
+    // 文本颜色
+    let textColor: Color
     // 是否显示清空按钮
     var clearButton: AKSUInputButtonShowMode
     // 密码模式
@@ -72,10 +74,11 @@ public struct AKSUInput: View {
     // 大小
     @State private var size: CGSize = CGSize.zero
 
-    public init(style: AKSUInputStyle = .box, label: String, actionColor: Color = .aksuPrimary, alignment: TextAlignment = .leading, disableActionLabel: Bool = false, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, onlyNumber: Bool = false, decimalCount: Int? = nil, numberStep: Float? = nil, numberMax: Float? = nil, numberMin: Float? = nil, unit: String? = nil, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, submit: (() -> Void)? = nil)
+    public init(style: AKSUInputStyle = .box, label: String, textColor: Color = .aksuText, actionColor: Color = .aksuPrimary, alignment: TextAlignment = .leading, disableActionLabel: Bool = false, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, onlyNumber: Bool = false, decimalCount: Int? = nil, numberStep: Float? = nil, numberMax: Float? = nil, numberMin: Float? = nil, unit: String? = nil, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, submit: (() -> Void)? = nil)
     {
         self.style = style
         self.label = label
+        self.textColor = textColor
         self.actionColor = actionColor
         self.disableActionLabel = disableActionLabel
         self.clearButton = clearButton
@@ -135,7 +138,7 @@ public struct AKSUInput: View {
                             TextField("", text: $text)
                         }
                     }
-                    .foregroundStyle(.aksuText)
+                    .foregroundStyle(textColor)
                     .multilineTextAlignment(textAlignment)
                     .textFieldStyle(.plain)
                     .font(.title2)

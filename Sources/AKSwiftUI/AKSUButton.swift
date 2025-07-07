@@ -28,6 +28,9 @@ public struct AKSUButton<T: View>: View {
 
     let color: Color
     let bgColor: Color
+    let boardColor: Color?
+    let hoverColor: Color
+    let waveColor: Color
     let height: CGFloat?
     let maxWidth: CGFloat?
     let action: () -> Void
@@ -41,9 +44,28 @@ public struct AKSUButton<T: View>: View {
     @State var animationCircleOffset: (x: CGFloat, y: CGFloat) = (0, 0)
     @State var animationCircleSize: CGFloat = 100.0
 
-    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
+    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, boardColor: Color? = nil, hoverColor: Color = .black.opacity(0.1), waveColor: Color = .white.opacity(0.5), height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = color
         self.bgColor = bgColor
+        self.boardColor = boardColor
+        self.hoverColor = hoverColor
+        self.waveColor = waveColor
+        self.content = content
+        self.action = action
+        self.style = style
+        self.height = height
+        self.maxWidth = maxWidth
+        self.animationCircleSize = height ?? 0
+        self.autoPadding = autoPadding
+        self.clickStyke = clickStyke
+    }
+
+    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, boardModeColor: Color, height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
+        self.color = boardModeColor
+        self.bgColor = .clear
+        self.boardColor = boardModeColor
+        self.hoverColor = boardModeColor.opacity(0.1)
+        self.waveColor = boardModeColor.opacity(0.5)
         self.content = content
         self.action = action
         self.style = style
@@ -80,7 +102,7 @@ public struct AKSUButton<T: View>: View {
                 if clickStyke != .none {
                     ZStack {
                         Circle()
-                            .fill(.white.opacity(0.5))
+                            .fill(waveColor)
                             .frame(width: animationCircleWidth, height: animationCircleWidth)
                             .opacity(animationCircleOpacity)
                             .offset(x: clickStyke == .center ? 0 : animationCircleOffset.x - g.size.width / 2, y: clickStyke == .center ? 0 : animationCircleOffset.y - g.size.height / 2)
@@ -92,9 +114,20 @@ public struct AKSUButton<T: View>: View {
                 }
             }
         )
-        .background(hovering ? .black.opacity(0.1) : .clear)
+        .background(hovering ? hoverColor : .clear)
         .background(isEnabled ? .clear : .aksuGrayMask)
         .background(bgColor)
+        .overlay {
+            if let boardColor = boardColor {
+                if style == .normal {
+                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius * 1.5)
+                        .stroke(boardColor, lineWidth: 6)
+                } else if style == .circle {
+                    Circle()
+                        .stroke(boardColor, lineWidth: 6)
+                }
+            }
+        }
         .cornerRadius(style == .plain ? 0 : AKSUAppearance.cornerRadius)
         .onHover {
             hovering = $0
@@ -128,9 +161,28 @@ public struct AKSUButton<T: View>: View {
 }
 
 public extension AKSUButton where T == Text {
-    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
+    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, boardColor: Color? = nil, hoverColor: Color = .black.opacity(0.1), waveColor: Color = .white.opacity(0.5), height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.bgColor = bgColor
+        self.boardColor = boardColor
+        self.hoverColor = hoverColor
+        self.waveColor = waveColor
+        content = { Text(title).font(.title) }
+        self.action = action
+        self.style = style
+        self.height = height
+        self.maxWidth = maxWidth
+        self.animationCircleSize = height ?? 0
+        self.autoPadding = autoPadding
+        self.clickStyke = clickStyke
+    }
+
+    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, boardModeColor: Color, height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
+        self.color = boardModeColor
+        self.bgColor = .clear
+        self.boardColor = boardModeColor
+        self.hoverColor = boardModeColor.opacity(0.1)
+        self.waveColor = boardModeColor.opacity(0.5)
         content = { Text(title).font(.title) }
         self.action = action
         self.style = style
@@ -242,6 +294,20 @@ struct AKSUButtonPreviewsView: View {
                 AKSUButton("文本", color: .white, bgColor: .aksuWarning) {
                 }
                 AKSUButton("文本", color: .white, bgColor: .aksuLightBlue) {
+                }
+            }
+
+            HStack {
+                AKSUButton("文本", color: .aksuPrimary, bgColor: .clear, boardColor: .aksuPrimary) {
+                }
+
+                AKSUButton("文本", color: .aksuPrimary, bgColor: .clear, boardColor: .aksuPrimary, hoverColor: .aksuPrimary.opacity(0.1), waveColor: .aksuPrimary.opacity(0.5)) {
+                }
+                
+                AKSUButton("文本", boardModeColor: .aksuPrimary) {
+                }
+
+                AKSUButton("文本", style: .circle, color: .aksuPrimary, bgColor: .clear, boardColor: .aksuPrimary) {
                 }
             }
         }
