@@ -7,6 +7,6 @@
 
 import Foundation
 
-class AKSUAppearance {
-    static var cornerRadius: CGFloat = 4.0
+public class AKSUAppearance {
+    public static var cornerRadius: CGFloat = 4.0
 }

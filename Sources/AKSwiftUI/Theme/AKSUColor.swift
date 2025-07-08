@@ -10,16 +10,7 @@ import SwiftUI
 
 // MARK: - 颜色定义
 public class AKSUColor {
-    public static var blue = Color(red: 6 / 255, green: 82 / 255, blue: 237 / 255)
-    public static var lightBlue = Color(red: 76 / 255, green: 172 / 255, blue: 248 / 255)
-
-    public static var black = Color.black
-    public static var white = Color.white
-    public static var gray = Color.gray
-
-    public static var textBackground = Color(NSColor.textBackgroundColor)
-    public static var textForeground = Color.primary
-
+    // 动态颜色定义
     public static var title = Color(nsColor: NSColor(name: nil) { appearance in
         switch appearance.bestMatch(from: [.aqua, .darkAqua]) {
         case NSAppearance.Name.darkAqua:
@@ -114,16 +105,59 @@ public class AKSUColor {
         }
     }).opacity(0.4)
 
-    public static var primary = Color(red: 59 / 255, green: 113 / 255, blue: 202 / 255)
-    public static var success = Color(red: 20 / 255, green: 164 / 255, blue: 77 / 255)
-    public static var warning = Color(red: 228 / 255, green: 161 / 255, blue: 28 / 255)
-    public static var danger = Color(red: 249 / 255, green: 49 / 255, blue: 84 / 255)
+    public static var black = Color.black
+    public static var white = Color.white
+    public static var gray = Color.gray
+
+    public static var textBackground = Color(NSColor.textBackgroundColor)
+    public static var textForeground = Color.primary
+    public static var primary = Color(red: 59 / 255, green: 113 / 255, blue: 202 / 255) // #3b71ca
+    public static var success = Color(red: 20 / 255, green: 164 / 255, blue: 77 / 255) // #14a44d
+    public static var warning = Color(red: 228 / 255, green: 161 / 255, blue: 28 / 255) // #e4a11c
+    public static var danger = Color(red: 249 / 255, green: 49 / 255, blue: 84 / 255) // #f93154
+
+    // Red Colors
+    public static var brightRed = Color(red: 255 / 255, green: 59 / 255, blue: 48 / 255)  // #FF3B30
+    public static var red = Color(red: 240 / 255, green: 62 / 255, blue: 62 / 255)        // #F03E3E
+    public static var lightRed = Color(red: 255 / 255, green: 135 / 255, blue: 135 / 255)  // #FF8787
+
+    // Cyan Colors
+    public static var brightCyan = Color(red: 82 / 255, green: 237 / 255, blue: 6 / 255)   // #52ED06
+    public static var cyan = Color(red: 82 / 255, green: 237 / 255, blue: 6 / 255)         // #52ED06
+    public static var lightCyan = Color(red: 145 / 255, green: 241 / 255, blue: 112 / 255) // #91F170
+
+    // Green Colors
+    public static var brightGreen = Color(red: 40 / 255, green: 205 / 255, blue: 65 / 255) // #28CD41
+    public static var green = Color(red: 40 / 255, green: 205 / 255, blue: 65 / 255)        // #28CD41
+    public static var lightGreen = Color(red: 140 / 255, green: 233 / 255, blue: 154 / 255) // #8CE99A
+
+    // Lime Colors
+    public static var deepLime = Color(red: 130 / 255, green: 201 / 255, blue: 30 / 255)   // #82C91E
+    public static var lime = Color(red: 148 / 255, green: 216 / 255, blue: 45 / 255)        // #94D82D
+    public static var lightLime = Color(red: 192 / 255, green: 235 / 255, blue: 117 / 255) // #C0EB75
+
+    // Blue Colors
+    public static var brightBlue = Color(red: 0 / 255, green: 122 / 255, blue: 255 / 255)   // #007AFF
+    public static var blue = Color(red: 6 / 255, green: 82 / 255, blue: 237 / 255)         // #0652ED
+    public static var lightBlue = Color(red: 77 / 255, green: 171 / 255, blue: 247 / 255)  // #4DABF7
+
+    // Yellow Colors
+    public static var brightYellow = Color(red: 255 / 255, green: 204 / 255, blue: 0 / 255) // #FFCC00
+    public static var yellow = Color(red: 252 / 255, green: 196 / 255, blue: 25 / 255)      // #FCC419
+    public static var lightYellow = Color(red: 255 / 255, green: 236 / 255, blue: 153 / 255) // #FFEC99
+
+    // Pink Colors
+    public static var brightPink = Color(red: 255 / 255, green: 45 / 255, blue: 85 / 255)  // #FF2D55
+    public static var pink = Color(red: 248 / 255, green: 76 / 255, blue: 172 / 255)        // #F84CAC
+    public static var lightPink = Color(red: 250 / 255, green: 162 / 255, blue: 193 / 255)  // #FAA2C1
+
+    // Purple Colors
+    public static var brightPurple = Color(red: 190 / 255, green: 75 / 255, blue: 219 / 255) // #BE4BDB
+    public static var purple = Color(red: 175 / 255, green: 82 / 255, blue: 222 / 255)       // #AF52DE
+    public static var lightPurple = Color(red: 229 / 255, green: 153 / 255, blue: 247 / 255) // #E599F7
 }
 
 public extension Color {
-    static var aksuBlue: Color { return AKSUColor.blue }
-    static var aksuLightBlue: Color { return AKSUColor.lightBlue }
-
     static var aksuBlack: Color { return AKSUColor.black }
     static var aksuWhite: Color { return AKSUColor.white }
     static var aksuGray: Color { return AKSUColor.gray }
@@ -141,20 +175,57 @@ public extension Color {
     static var aksuGrayBackground: Color { return AKSUColor.grayBackground }
     static var aksuGrayLessBackground: Color { return AKSUColor.grayLessBackground }
     static var aksuDivider: Color { return AKSUColor.divider }
-    static var aksuGrayLightMask :Color { return AKSUColor.grayLightMask }
-    static var aksuGrayDarkMask :Color { return AKSUColor.grayDarkMask }
+    static var aksuGrayLightMask: Color { return AKSUColor.grayLightMask }
+    static var aksuGrayDarkMask: Color { return AKSUColor.grayDarkMask }
     static var aksuGrayMask: Color { return AKSUColor.grayMask }
 
     static var aksuPrimary: Color { return AKSUColor.primary }
     static var aksuSuccess: Color { return AKSUColor.success }
     static var aksuWarning: Color { return AKSUColor.warning }
     static var aksuDanger: Color { return AKSUColor.danger }
+
+    // MARK: - Red Colors
+    static var aksuBrightRed: Color { return AKSUColor.brightRed }
+    static var aksuRed: Color { return AKSUColor.red }
+    static var aksuLightRed: Color { return AKSUColor.lightRed }
+    
+    // MARK: - Cyan Colors
+    static var aksuBrightCyan: Color { return AKSUColor.brightCyan }
+    static var aksuCyan: Color { return AKSUColor.cyan }
+    static var aksuLightCyan: Color { return AKSUColor.lightCyan }
+    
+    // MARK: - Green Colors
+    static var aksuBrightGreen: Color { return AKSUColor.brightGreen }
+    static var aksuGreen: Color { return AKSUColor.green }
+    static var aksuLightGreen: Color { return AKSUColor.lightGreen }
+    
+    // MARK: - Lime Colors
+    static var aksuDeepLime: Color { return AKSUColor.deepLime }
+    static var aksuLime: Color { return AKSUColor.lime }
+    static var aksuLightLime: Color { return AKSUColor.lightLime }
+    
+    // MARK: - Blue Colors
+    static var aksuBrightBlue: Color { return AKSUColor.brightBlue }
+    static var aksuBlue: Color { return AKSUColor.blue }
+    static var aksuLightBlue: Color { return AKSUColor.lightBlue }
+    
+    // MARK: - Yellow Colors
+    static var aksuBrightYellow: Color { return AKSUColor.brightYellow }
+    static var aksuYellow: Color { return AKSUColor.yellow }
+    static var aksuLightYellow: Color { return AKSUColor.lightYellow }
+    
+    // MARK: - Pink Colors
+    static var aksuBrightPink: Color { return AKSUColor.brightPink }
+    static var aksuPink: Color { return AKSUColor.pink }
+    static var aksuLightPink: Color { return AKSUColor.lightPink }
+    
+    // MARK: - Purple Colors
+    static var aksuBrightPurple: Color { return AKSUColor.brightPurple }
+    static var aksuPurple: Color { return AKSUColor.purple }
+    static var aksuLightPurple: Color { return AKSUColor.lightPurple }
 }
 
 public extension ShapeStyle where Self == Color {
-    static var aksuBlue: Color { return AKSUColor.blue }
-    static var aksuLightBlue: Color { return AKSUColor.lightBlue }
-
     static var aksuBlack: Color { return AKSUColor.black }
     static var aksuWhite: Color { return AKSUColor.white }
     static var aksuGray: Color { return AKSUColor.gray }
@@ -172,14 +243,54 @@ public extension ShapeStyle where Self == Color {
     static var aksuGrayBackground: Color { return AKSUColor.grayBackground }
     static var aksuGrayLessBackground: Color { return AKSUColor.grayLessBackground }
     static var aksuDivider: Color { return AKSUColor.divider }
-    static var aksuGrayLightMask :Color { return AKSUColor.grayLightMask }
-    static var aksuGrayDarkMask :Color { return AKSUColor.grayDarkMask }
+    static var aksuGrayLightMask: Color { return AKSUColor.grayLightMask }
+    static var aksuGrayDarkMask: Color { return AKSUColor.grayDarkMask }
     static var aksuGrayMask: Color { return AKSUColor.grayMask }
 
     static var aksuPrimary: Color { return AKSUColor.primary }
     static var aksuSuccess: Color { return AKSUColor.success }
     static var aksuWarning: Color { return AKSUColor.warning }
     static var aksuDanger: Color { return AKSUColor.danger }
+
+    // MARK: - Red Colors
+    static var aksuBrightRed: Color { return AKSUColor.brightRed }
+    static var aksuRed: Color { return AKSUColor.red }
+    static var aksuLightRed: Color { return AKSUColor.lightRed }
+    
+    // MARK: - Cyan Colors
+    static var aksuBrightCyan: Color { return AKSUColor.brightCyan }
+    static var aksuCyan: Color { return AKSUColor.cyan }
+    static var aksuLightCyan: Color { return AKSUColor.lightCyan }
+    
+    // MARK: - Green Colors
+    static var aksuBrightGreen: Color { return AKSUColor.brightGreen }
+    static var aksuGreen: Color { return AKSUColor.green }
+    static var aksuLightGreen: Color { return AKSUColor.lightGreen }
+    
+    // MARK: - Lime Colors
+    static var aksuDeepLime: Color { return AKSUColor.deepLime }
+    static var aksuLime: Color { return AKSUColor.lime }
+    static var aksuLightLime: Color { return AKSUColor.lightLime }
+    
+    // MARK: - Blue Colors
+    static var aksuBrightBlue: Color { return AKSUColor.brightBlue }
+    static var aksuBlue: Color { return AKSUColor.blue }
+    static var aksuLightBlue: Color { return AKSUColor.lightBlue }
+    
+    // MARK: - Yellow Colors
+    static var aksuBrightYellow: Color { return AKSUColor.brightYellow }
+    static var aksuYellow: Color { return AKSUColor.yellow }
+    static var aksuLightYellow: Color { return AKSUColor.lightYellow }
+    
+    // MARK: - Pink Colors
+    static var aksuBrightPink: Color { return AKSUColor.brightPink }
+    static var aksuPink: Color { return AKSUColor.pink }
+    static var aksuLightPink: Color { return AKSUColor.lightPink }
+    
+    // MARK: - Purple Colors
+    static var aksuBrightPurple: Color { return AKSUColor.brightPurple }
+    static var aksuPurple: Color { return AKSUColor.purple }
+    static var aksuLightPurple: Color { return AKSUColor.lightPurple }
 }
 
 public extension AKSUColor {
@@ -213,6 +324,54 @@ public extension AKSUColor {
 }
 
 public extension Color {
+    /// 通过 Hex 字符串初始化颜色（支持 #RGB、#RGBA、#RRGGBB、#RRGGBBAA 格式）
+    /// - Parameters:
+    ///   - hex: Hex 字符串（如 "#0652ed" 或 "0652ed"）
+    ///   - opacity: 透明度（0.0 ~ 1.0），优先级高于 Hex 中的 Alpha 通道
+    init(hex: String, opacity: Double = 1.0) {
+        var sanitizedHex = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // 去除前缀 # 或 0x
+        if sanitizedHex.hasPrefix("#") {
+            sanitizedHex.removeFirst()
+        } else if sanitizedHex.lowercased().hasPrefix("0x") {
+            sanitizedHex = String(sanitizedHex.dropFirst(2))
+        }
+
+        // 根据 Hex 长度解析颜色
+        var rgbValue: UInt64 = 0
+        Scanner(string: sanitizedHex).scanHexInt64(&rgbValue)
+
+        var alpha = opacity
+        let red, green, blue: Double
+
+        switch sanitizedHex.count {
+        case 3: // RGB (12-bit)
+            red = Double((rgbValue >> 8) & 0xF) / 15.0
+            green = Double((rgbValue >> 4) & 0xF) / 15.0
+            blue = Double(rgbValue & 0xF) / 15.0
+        case 4: // RGBA (16-bit)
+            red = Double((rgbValue >> 12) & 0xF) / 15.0
+            green = Double((rgbValue >> 8) & 0xF) / 15.0
+            blue = Double((rgbValue >> 4) & 0xF) / 15.0
+            alpha = Double(rgbValue & 0xF) / 15.0
+        case 6: // RRGGBB (24-bit)
+            red = Double((rgbValue >> 16) & 0xFF) / 255.0
+            green = Double((rgbValue >> 8) & 0xFF) / 255.0
+            blue = Double(rgbValue & 0xFF) / 255.0
+        case 8: // RRGGBBAA (32-bit)
+            red = Double((rgbValue >> 24) & 0xFF) / 255.0
+            green = Double((rgbValue >> 16) & 0xFF) / 255.0
+            blue = Double((rgbValue >> 8) & 0xFF) / 255.0
+            alpha = Double(rgbValue & 0xFF) / 255.0
+        default: // 无效格式，返回透明色（或自定义默认值）
+            self.init(.sRGB, red: 0, green: 0, blue: 0, opacity: 0)
+            return
+        }
+
+        self.init(.sRGB, red: red, green: green, blue: blue, opacity: alpha)
+    }
+
     func getRGB(_ mode: EnvironmentValues) -> (red: CGFloat, green: CGFloat, blue: CGFloat, opacity: CGFloat) {
         if #available(macOS 14, *) {
             let components = self.resolve(in: mode)
@@ -255,8 +414,6 @@ struct AKSUColorPreviewsView: View {
     @State var index: String = "1"
 
     let color: [String: Color] = [
-        "blue": AKSUColor.blue,
-        "lightBlue": AKSUColor.lightBlue,
         "black": AKSUColor.black,
         "white": AKSUColor.white,
         "gray": AKSUColor.gray,
@@ -276,29 +433,93 @@ struct AKSUColorPreviewsView: View {
         "success": AKSUColor.success,
         "warning": AKSUColor.warning,
         "danger": AKSUColor.danger,
+
+        "brightRed": AKSUColor.brightRed,
+        "red": AKSUColor.red,
+        "lightRed": AKSUColor.lightRed,
+
+        "brightCyan": AKSUColor.brightCyan,
+        "cyan": AKSUColor.cyan,
+        "lightCyan": AKSUColor.lightCyan,
+
+        "brightGreen": AKSUColor.brightGreen,
+        "green": AKSUColor.green,
+        "lightGreen": AKSUColor.lightGreen,
+
+        "deeplime": AKSUColor.deepLime,
+        "lime": AKSUColor.lime,
+        "lightLime": AKSUColor.lightLime,
+
+        "brightBlue": AKSUColor.brightBlue,
+        "blue": AKSUColor.blue,
+        "lightBlue": AKSUColor.lightBlue,
+
+        "brightYellow": AKSUColor.brightYellow,
+        "yellow": AKSUColor.yellow,
+        "lightYellow": AKSUColor.lightYellow,
+
+        "brightPink": AKSUColor.brightPink,
+        "pink": AKSUColor.pink,
+        "lightPink": AKSUColor.lightPink,
+
+        "brightPurple": AKSUColor.brightPurple,
+        "purple": AKSUColor.purple,
+        "lightPurple": AKSUColor.lightPurple,
     ]
 
-    let list = ["blue",
-                "lightBlue",
-                "black",
-                "white",
-                "gray",
-                "textBackground",
-                "textForeground",
-                "title",
-                "text",
-                "secondaryText",
-                "lessText",
-                "board",
-                "placeholder",
-                "grayBackground",
-                "grayLessBackground",
-                "divider",
-                "grayMask",
-                "primary",
-                "success",
-                "warning",
-                "danger"]
+    let list = [
+        "brightRed",
+        "red",
+        "lightRed",
+
+        "brightCyan",
+        "cyan",
+        "lightCyan",
+
+        "brightGreen",
+        "green",
+        "lightGreen",
+
+        "deeplime",
+        "lime",
+        "lightLime",
+
+        "brightBlue",
+        "blue",
+        "lightBlue",
+
+        "brightYellow",
+        "yellow",
+        "lightYellow",
+
+        "brightPink",
+        "pink",
+        "lightPink",
+
+        "brightPurple",
+        "purple",
+        "lightPurple",
+
+        "textBackground",
+        "textForeground",
+        "title",
+        "text",
+        "secondaryText",
+        "lessText",
+        "board",
+        "placeholder",
+        "grayBackground",
+        "grayLessBackground",
+        "divider",
+        "grayMask",
+        "white",
+        "gray",
+        "black",
+        "primary",
+        "success",
+        "warning",
+        "danger",
+    ]
 
     var body: some View {
         ZStack {
