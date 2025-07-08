@@ -21,6 +21,7 @@ public enum AKSUButtonClickAnimation {
 
 public struct AKSUButton<T: View>: View {
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.self) var environment
     @ViewBuilder let content: () -> T
 
     @State var hovering: Bool = false
@@ -33,6 +34,7 @@ public struct AKSUButton<T: View>: View {
     let waveColor: Color
     let height: CGFloat?
     let maxWidth: CGFloat?
+    let contentNoMask: Bool
     let action: () -> Void
     let style: AKSUButtonStyle
     let autoPadding: Bool
@@ -44,7 +46,7 @@ public struct AKSUButton<T: View>: View {
     @State var animationCircleOffset: (x: CGFloat, y: CGFloat) = (0, 0)
     @State var animationCircleSize: CGFloat = 100.0
 
-    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, boardColor: Color? = nil, hoverColor: Color = .black.opacity(0.1), waveColor: Color = .white.opacity(0.5), height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
+    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, boardColor: Color? = nil, hoverColor: Color = .black.opacity(0.1), waveColor: Color = .white.opacity(0.5), height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, contentNoMask: Bool = false, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = color
         self.bgColor = bgColor
         self.boardColor = boardColor
@@ -58,9 +60,10 @@ public struct AKSUButton<T: View>: View {
         self.animationCircleSize = height ?? 0
         self.autoPadding = autoPadding
         self.clickStyke = clickStyke
+        self.contentNoMask = contentNoMask
     }
 
-    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, boardModeColor: Color, height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, content: @escaping () -> T, action: @escaping () -> Void) {
+    public init(style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, boardModeColor: Color, height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, contentNoMask: Bool = false, content: @escaping () -> T, action: @escaping () -> Void) {
         self.color = boardModeColor
         self.bgColor = .clear
         self.boardColor = boardModeColor
@@ -74,6 +77,7 @@ public struct AKSUButton<T: View>: View {
         self.animationCircleSize = height ?? 0
         self.autoPadding = autoPadding
         self.clickStyke = clickStyke
+        self.contentNoMask = contentNoMask
     }
 
     public var body: some View {
@@ -115,16 +119,28 @@ public struct AKSUButton<T: View>: View {
             }
         )
         .background(hovering ? hoverColor : .clear)
-        .background(isEnabled ? .clear : .aksuGrayMask)
+        .background(isEnabled || !contentNoMask ? .clear : .aksuGrayMask)
         .background(bgColor)
         .overlay {
             if let boardColor = boardColor {
                 if style == .normal {
                     RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius * 1.5)
-                        .stroke(boardColor, lineWidth: 6)
+                        .stroke(isEnabled || !contentNoMask ? boardColor : boardColor.merge(up: .aksuGrayMask, mode: environment), lineWidth: 6)
                 } else if style == .circle {
                     Circle()
-                        .stroke(boardColor, lineWidth: 6)
+                        .stroke(isEnabled || !contentNoMask ? boardColor : boardColor.merge(up: .aksuGrayMask, mode: environment), lineWidth: 6)
+                }
+            }
+            if !isEnabled && !contentNoMask {
+                if style == .normal {
+                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
+                        .fill(.aksuGrayMask)
+                } else if style == .circle {
+                    Circle()
+                        .fill(.aksuGrayMask)
+                } else if style == .plain {
+                    Rectangle()
+                        .fill(.aksuGrayMask)
                 }
             }
         }
@@ -161,7 +177,7 @@ public struct AKSUButton<T: View>: View {
 }
 
 public extension AKSUButton where T == Text {
-    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, boardColor: Color? = nil, hoverColor: Color = .black.opacity(0.1), waveColor: Color = .white.opacity(0.5), height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
+    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, boardColor: Color? = nil, hoverColor: Color = .black.opacity(0.1), waveColor: Color = .white.opacity(0.5), height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, contentNoMask: Bool = false, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.bgColor = bgColor
         self.boardColor = boardColor
@@ -175,9 +191,10 @@ public extension AKSUButton where T == Text {
         self.animationCircleSize = height ?? 0
         self.autoPadding = autoPadding
         self.clickStyke = clickStyke
+        self.contentNoMask = contentNoMask
     }
 
-    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, boardModeColor: Color, height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, action: @escaping () -> Void) where S: StringProtocol {
+    init<S>(_ title: S, style: AKSUButtonStyle = .normal, clickStyke: AKSUButtonClickAnimation = .offset, boardModeColor: Color, height: CGFloat? = nil, maxWidth: CGFloat? = nil, autoPadding: Bool = true, contentNoMask: Bool = false, action: @escaping () -> Void) where S: StringProtocol {
         self.color = boardModeColor
         self.bgColor = .clear
         self.boardColor = boardModeColor
@@ -191,6 +208,7 @@ public extension AKSUButton where T == Text {
         self.animationCircleSize = height ?? 0
         self.autoPadding = autoPadding
         self.clickStyke = clickStyke
+        self.contentNoMask = contentNoMask
     }
 }
 
@@ -303,11 +321,27 @@ struct AKSUButtonPreviewsView: View {
 
                 AKSUButton("文本", color: .aksuPrimary, bgColor: .clear, boardColor: .aksuPrimary, hoverColor: .aksuPrimary.opacity(0.1), waveColor: .aksuPrimary.opacity(0.5)) {
                 }
-                
+
                 AKSUButton("文本", boardModeColor: .aksuPrimary) {
                 }
 
                 AKSUButton("文本", style: .circle, color: .aksuPrimary, bgColor: .clear, boardColor: .aksuPrimary) {
+                }
+            }
+
+            HStack {
+                AKSUButton("文本", contentNoMask: true) {
+                }
+                AKSUButton("文本", color: .aksuPrimary, bgColor: .clear, boardColor: .aksuPrimary, contentNoMask: true) {
+                }
+
+                AKSUButton("文本", color: .aksuPrimary, bgColor: .clear, boardColor: .aksuPrimary, hoverColor: .aksuPrimary.opacity(0.1), waveColor: .aksuPrimary.opacity(0.5), contentNoMask: true) {
+                }
+
+                AKSUButton("文本", boardModeColor: .aksuPrimary, contentNoMask: true) {
+                }
+
+                AKSUButton("文本", style: .circle, color: .aksuPrimary, bgColor: .clear, boardColor: .aksuPrimary, contentNoMask: true) {
                 }
             }
         }
