@@ -23,7 +23,7 @@ public struct AKSUToggle: View {
     var actionColor: Color
     var change: ((Bool) -> Void)?
 
-    @State var realToggle: Bool = false
+    @State var realToggle: Bool
 
     public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, change: ((Bool) -> Void)? = nil) {
         self.style = style
@@ -151,7 +151,7 @@ struct AKSUCheckBox_Previews: PreviewProvider {
 }
 
 struct AKSUTogglePreviewsView: View {
-    @State var checked: Bool = false
+    @State var checked: Bool = true
     @State var list: [String] = ["E"]
 
     var body: some View {
