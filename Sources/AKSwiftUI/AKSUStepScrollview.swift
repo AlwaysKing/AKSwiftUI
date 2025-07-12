@@ -25,6 +25,8 @@ public struct AKSUStepScrollview<K, V: View>: View {
 
     @State var leftHovering: Bool = false
     @State var rightHovering: Bool = false
+    @State var showPreBtn: Bool = false
+    @State var showNextBtn: Bool = false
 
     let keys: [K]
     let direction: AKSUStepScrollviewDirection
@@ -78,7 +80,7 @@ public struct AKSUStepScrollview<K, V: View>: View {
                         }
                     }
 
-                    ScrollView(direction == .horizontal ? .horizontal : .vertical, showsIndicators: false) {
+                    AKSUScrollView(direction == .horizontal ? .horizontal : .vertical, showsIndicators: false) {
                         AKSULazyStackView(stack: direction == .horizontal ? .hstack : .vstack) {
                             ForEach(Array(0 ..< keys.count), id: \.self) {
                                 no in
@@ -103,6 +105,15 @@ public struct AKSUStepScrollview<K, V: View>: View {
                                         contentSize = contentProxy.size
                                     }
                             }
+                        }
+                    }
+                    .monitor { info in
+                        if direction == .horizontal {
+                            showPreBtn = !info.lead
+                            showNextBtn = !info.tail
+                        } else {
+                            showPreBtn = !info.top
+                            showNextBtn = !info.bottom
                         }
                     }
                     .frame(maxWidth: width(), maxHeight: height())
@@ -185,7 +196,11 @@ public struct AKSUStepScrollview<K, V: View>: View {
             return false
         }
 
-        if btnSmartHidden && showIndex.min() == 0 {
+        if showPreBtn {
+            return true
+        }
+
+        if btnSmartHidden {
             return false
         }
         return true
@@ -196,7 +211,11 @@ public struct AKSUStepScrollview<K, V: View>: View {
             return false
         }
 
-        if btnSmartHidden && showIndex.max() == keys.count - 1 {
+        if showNextBtn {
+            return true
+        }
+
+        if btnSmartHidden {
             return false
         }
         return true
@@ -267,6 +286,7 @@ struct AKSUStepScrollviewPreviewsView: View {
 
             AKSUStepScrollview(keys: Array(0 ... count), direction: direction, alignment: alignment) { key in
                 Text("\(key)")
+                    .frame(width: 100)
                     .padding()
                     .foregroundStyle(.white)
                     .background(.green)
@@ -275,6 +295,7 @@ struct AKSUStepScrollviewPreviewsView: View {
 
             AKSUStepScrollview(keys: Array(0 ... count), direction: direction, alignment: alignment, btnSmartHidden: true) { key in
                 Text("\(key)")
+                    .frame(width: 100)
                     .padding()
                     .foregroundStyle(.white)
                     .background(.green)
@@ -283,6 +304,7 @@ struct AKSUStepScrollviewPreviewsView: View {
 
             AKSUStepScrollview(keys: Array(0 ... count), direction: direction, alignment: alignment, btnSmartHidden: true) { key in
                 Text("\(key)")
+                    .frame(width: 100)
                     .padding()
                     .foregroundStyle(.white)
                     .background(.green)
@@ -300,10 +322,9 @@ struct AKSUStepScrollviewPreviewsView: View {
         ZStack {
             if head {
                 Image(systemName: direction == .horizontal ? "chevron.compact.left" : "chevron.compact.up")
-                   
+
             } else {
                 Image(systemName: direction == .horizontal ? "chevron.compact.right" : "chevron.compact.down")
-                   
             }
         }
         .frame(width: direction == .horizontal ? 10 : size, height: direction == .vertical ? 10 : size)

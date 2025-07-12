@@ -23,7 +23,7 @@ struct SplitContentView: View {
 
     let menu: [String: [String]] = [
         "主题": ["Color", "Font"],
-        "布局": ["Flex", "Grid", "Split"],
+        "布局": ["Flex", "Grid", "ScrollView", "Split"],
         "组件": ["Button", "Click", "Group", "Input", "InputGroup", "PinInput", "Dropdown", "PopWnd", "Popover", "Toast", "Toggle", "ContainBox", "Radio", "Range", "Progress", "step", "CircleProgress", "Collapse", "SetpScrollView", "Segment", "Table"]
     ]
 
@@ -59,6 +59,7 @@ struct SplitContentView: View {
                     case "Font": AKSUFontPreviewsView()
                     case "Flex": AKSUFlexPreviewsView()
                     case "Grid": AKSUGridPreviewsView()
+                    case "ScrollView": AKSUScrollViewPreviewsView()
                     case "Split": AKSUSplitStackPreviewsView()
                     case "Button": AKSUButtonPreviewsView()
                     case "Click": AKSUClickPreviewsView()
