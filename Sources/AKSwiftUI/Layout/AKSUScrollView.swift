@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AKSUScrollViewMonitor {
     let bounds: CGRect
-    let frame: CGRect
+    let frame: CGSize
 
     var lead: Bool {
         return bounds.origin.x <= 0
@@ -35,7 +35,7 @@ struct AKSUScrollView<Content: View>: View {
     var monitor: ((AKSUScrollViewMonitor) -> Void)? = nil
 
     @State var bounds: CGRect = .zero
-    @State var frame: CGRect = .zero
+    @State var frame: CGSize = .zero
 
     public init(_ axes: Axis.Set = .vertical, showsIndicators: Bool = true, @ViewBuilder content: @escaping () -> Content) {
         self.ases = axes
@@ -44,60 +44,73 @@ struct AKSUScrollView<Content: View>: View {
     }
 
     var body: some View {
-        ScrollView(ases, showsIndicators: showsIndicators) {
-            content()
-                .background {
-                    GeometryReader {
-                        reader in
-                        if #available(macOS 14.0, *) {
-                            Color.clear
-                                .onAppear {
-                                    frame = reader.frame(in: .local)
-                                    if let info = reader.bounds(of: .scrollView) {
-                                        bounds = info
-                                    }
-                                    if let monitor = monitor {
-                                        monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
-                                    }
-                                }
-                                .onChange(of: reader.frame(in: .local)) { info in
-                                    frame = info
-                                    if let monitor = monitor {
-                                        monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
-                                    }
-                                }
-                                .onChange(of: reader.bounds(of: .scrollView)) { info in
-                                    if let info = info {
-                                        bounds = info
+        if #available(macOS 15.0, *) {
+            ScrollView(ases, showsIndicators: showsIndicators, content: content)
+                .onScrollGeometryChange(for: ScrollGeometry.self) { geo in
+                    geo
+                } action: { oldValue, newValue in
+                    frame = newValue.contentSize
+                    bounds = newValue.visibleRect
+                    if let monitor = monitor {
+                        monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
+                    }
+                }
+        } else {
+            ScrollView(ases, showsIndicators: showsIndicators) {
+                content()
+                    .background {
+                        GeometryReader {
+                            reader in
+                            if #available(macOS 14.0, *) {
+                                Color.clear
+                                    .onAppear {
+                                        frame = reader.frame(in: .local).size
+                                        if let info = reader.bounds(of: .scrollView) {
+                                            bounds = info
+                                        }
                                         if let monitor = monitor {
                                             monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
                                         }
                                     }
-                                }
-                        } else {
-                            Color.clear
-                                .onAppear {
-                                    frame = reader.frame(in: .local)
-                                    if let monitor = monitor {
-                                        monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
+                                    .onChange(of: reader.frame(in: .local)) { info in
+                                        frame = info.size
+                                        if let monitor = monitor {
+                                            monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
+                                        }
                                     }
-                                }
-                                .onChange(of: reader.frame(in: .local)) { info in
-                                    frame = info
-                                    if let monitor = monitor {
-                                        monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
+                                    .onChange(of: reader.bounds(of: .scrollView)) { info in
+                                        if let info = info {
+                                            bounds = info
+                                            if let monitor = monitor {
+                                                monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
+                                            }
+                                        }
                                     }
-                                }
+                            } else {
+                                Color.clear
+                                    .onAppear {
+                                        frame = reader.frame(in: .local).size
+                                        if let monitor = monitor {
+                                            monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
+                                        }
+                                    }
+                                    .onChange(of: reader.frame(in: .local)) { info in
+                                        frame = info.size
+                                        if let monitor = monitor {
+                                            monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
+                                        }
+                                    }
 
-                            InfiniteScrollHelper { info in
-                                bounds = info
-                                if let monitor = monitor {
-                                    monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
+                                InfiniteScrollHelper { info in
+                                    bounds = info
+                                    if let monitor = monitor {
+                                        monitor(AKSUScrollViewMonitor(bounds: bounds, frame: frame))
+                                    }
                                 }
                             }
                         }
                     }
-                }
+            }
         }
     }
 
