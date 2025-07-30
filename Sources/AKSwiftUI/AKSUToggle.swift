@@ -21,11 +21,13 @@ public struct AKSUToggle: View {
     var slimSwitch: Bool
     var color: Color
     var actionColor: Color
+    var boardColor: Color
+    var bgColor: Color
     var change: ((Bool) -> Void)?
 
     @State var realToggle: Bool
 
-    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, change: ((Bool) -> Void)? = nil) {
+    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
         self.style = style
         self.label = label
         self.color = color
@@ -34,9 +36,11 @@ public struct AKSUToggle: View {
         self.change = change
         self.realToggle = false
         self.slimSwitch = slimSwitch
+        self.boardColor = boardColor
+        self.bgColor = bgColor
     }
 
-    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, toggle: Bool, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, change: ((Bool) -> Void)? = nil) {
+    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, toggle: Bool, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
         self.style = style
         self.slimSwitch = slimSwitch
         self._toggle = .constant(false)
@@ -45,9 +49,11 @@ public struct AKSUToggle: View {
         self.actionColor = actionColor
         self.change = change
         self.realToggle = toggle
+        self.boardColor = boardColor
+        self.bgColor = bgColor
     }
 
-    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, toggle: Binding<Bool>, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, change: ((Bool) -> Void)? = nil) {
+    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, toggle: Binding<Bool>, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
         self.style = style
         self.slimSwitch = slimSwitch
         self._toggle = toggle
@@ -56,6 +62,8 @@ public struct AKSUToggle: View {
         self.actionColor = actionColor
         self.change = change
         self.realToggle = toggle.wrappedValue
+        self.boardColor = boardColor
+        self.bgColor = bgColor
     }
 
     public var body: some View {
@@ -68,11 +76,11 @@ public struct AKSUToggle: View {
                     }
                 }
                 .frame(width: 20, height: 20)
-                .background(realToggle ? actionColor : nil)
+                .background(realToggle ? actionColor : bgColor)
                 .cornerRadius(4.0)
                 .overlay {
                     RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                        .stroke(realToggle ? actionColor : .aksuBoard)
+                        .stroke(realToggle ? actionColor : boardColor)
                 }
                 .overlay {
                     if !isEnabled {
@@ -83,7 +91,7 @@ public struct AKSUToggle: View {
             } else if style == .switch {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(realToggle ? actionColor : .aksuGrayLessBackground)
+                        .fill(realToggle ? actionColor : bgColor)
                         .overlay {
                             if !isEnabled {
                                 RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
@@ -94,7 +102,7 @@ public struct AKSUToggle: View {
                         .padding(.horizontal, slimSwitch ? 2 : 0)
 
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(realToggle ? actionColor : .aksuBoard)
+                        .stroke(realToggle ? actionColor : boardColor)
                         .overlay {
                             if !isEnabled {
                                 RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
@@ -157,7 +165,7 @@ struct AKSUTogglePreviewsView: View {
     var body: some View {
         VStack {
             HStack {
-                AKSUToggle(label: "A") {
+                AKSUToggle(label: "A", boardColor: .yellow, bgColor: .green) {
                     checked in
                     print("check1 = \(checked)")
                 }
@@ -174,7 +182,7 @@ struct AKSUTogglePreviewsView: View {
             }
 
             HStack {
-                AKSUToggle(style: .switch, label: "A") {
+                AKSUToggle(style: .switch, label: "A", boardColor: .yellow, bgColor: .green) {
                     checked in
                     print("check1 = \(checked)")
                 }
@@ -190,7 +198,7 @@ struct AKSUTogglePreviewsView: View {
                 .disabled(true)
             }
             HStack {
-                AKSUToggle(style: .switch, slimSwitch: true, label: "A") {
+                AKSUToggle(style: .switch, slimSwitch: true, label: "A", boardColor: .yellow, bgColor: .green) {
                     checked in
                     print("check1 = \(checked)")
                 }

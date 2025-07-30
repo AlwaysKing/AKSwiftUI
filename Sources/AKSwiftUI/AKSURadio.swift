@@ -16,13 +16,17 @@ public struct AKSURadio<V: Equatable>: View {
     @Binding var checked: V
     var color: Color
     var actionColor: Color
+    var boardColor: Color
+    var bgColor: Color
 
-    public init(label: String, key: V, checked: Binding<V>, color: Color = .aksuText, actionColor: Color = .aksuPrimary) {
+    public init(label: String, key: V, checked: Binding<V>, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear) {
         self.label = label
         self.key = key
         self._checked = checked
         self.color = color
         self.actionColor = actionColor
+        self.boardColor = boardColor
+        self.bgColor = bgColor
     }
 
     public var body: some View {
@@ -35,10 +39,13 @@ public struct AKSURadio<V: Equatable>: View {
                 }
             }
             .frame(width: 20, height: 20)
-            .cornerRadius(4.0)
+            .background {
+                Circle()
+                    .fill(bgColor)
+            }
             .overlay {
                 Circle()
-                    .stroke(key == checked ? actionColor : .aksuBoard)
+                    .stroke(key == checked ? actionColor : boardColor)
             }
             .overlay {
                 if !isEnabled {
@@ -76,7 +83,7 @@ struct AKSURadioPreviewsView: View {
         VStack {
             HStack {
                 AKSURadio(label: "A", key: "A", checked: $checked)
-                AKSURadio(label: "B", key: "B", checked: $checked)
+                AKSURadio(label: "B", key: "B", checked: $checked, boardColor: .yellow, bgColor: .green)
                 AKSURadio(label: "C", key: "C", checked: $checked)
             }
             HStack {

@@ -15,21 +15,26 @@ public struct AKSUContainBox<T: Equatable>: View {
 
     @State private var contain: Bool = false
 
-    private var color: Color
-    private var actionColor: Color
+    public var color: Color
+    public var actionColor: Color
+    public var boardColor: Color
+    public var bgColor: Color
 
-    public init(label: String, key: T, list: Binding<[T]>, color: Color = .aksuText, actionColor: Color = .aksuPrimary, change: ((Bool, T) -> Void)? = nil) {
+    public init(label: String, key: T, list: Binding<[T]>, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool, T) -> Void)? = nil)
+    {
         self.key = key
         self._list = list
         self.label = label
         self.change = change
         self.color = color
         self.actionColor = actionColor
+        self.boardColor = boardColor
+        self.bgColor = bgColor
         self.contain = list.wrappedValue.contains(where: { key == $0 })
     }
 
     public var body: some View {
-        AKSUToggle(toggle: contain, label: label, color: color, actionColor: actionColor) {
+        AKSUToggle(toggle: contain, label: label, color: color, actionColor: actionColor, boardColor: boardColor, bgColor: bgColor) {
             checked in
             if checked {
                 list.append(key)

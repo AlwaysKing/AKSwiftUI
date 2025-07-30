@@ -18,6 +18,7 @@ public struct AKSURange: View {
 
     let color: Color
     let actionColor: Color
+    let bgColor: Color
 
     var step: CGFloat? = nil
     let minCount: CGFloat
@@ -29,7 +30,7 @@ public struct AKSURange: View {
     @Binding private var progress: CGFloat
     @State private var width: CGFloat = 0.0
 
-    public init(style: AKSURangeStyle = .fat, step: CGFloat? = nil, min: CGFloat = 0, max: CGFloat = 100, progress: Binding<CGFloat>, color: Color = .aksuWhite, actionColor: Color = .aksuPrimary, height: CGFloat = 20.0) {
+    public init(style: AKSURangeStyle = .fat, step: CGFloat? = nil, min: CGFloat = 0, max: CGFloat = 100, progress: Binding<CGFloat>, color: Color = .aksuWhite, actionColor: Color = .aksuPrimary, bgColor: Color = .aksuGrayBackground, height: CGFloat = 20.0) {
         if let step = step {
             if step >= 0 {
                 self.step = Swift.min(step, max - min)
@@ -42,6 +43,7 @@ public struct AKSURange: View {
         self.color = color
         self.actionColor = actionColor
         self.style = style
+        self.bgColor = bgColor
         DispatchQueue.main.async { [self] in
             if self.progress < minCount {
                 self.progress = minCount
@@ -54,7 +56,7 @@ public struct AKSURange: View {
     public var body: some View {
         ZStack(alignment: .leading) {
             RoundedRectangle(cornerSize: CGSize(width: height, height: height))
-                .fill(.aksuGrayBackground)
+                .fill(bgColor)
                 .frame(height: style == .fat ? nil : height / 2)
 
             RoundedRectangle(cornerSize: CGSize(width: height, height: height))

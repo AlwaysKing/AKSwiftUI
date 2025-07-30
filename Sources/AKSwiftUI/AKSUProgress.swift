@@ -15,24 +15,44 @@ public struct AKSUProgress: View {
 
     public let color: Color
     public let actionColor: Color
+    public let bgColor: Color
 
     public var hiddenLabel: Bool
     public var height: CGFloat
 
+    public var fontSize: CGFloat
+
     @State private var width: CGFloat = 0.0
     @State private var titleWidth: CGFloat = 0.0
 
-    public init(progress: CGFloat, color: Color = .aksuWhite, actionColor: Color = .aksuPrimary, hiddenLabel: Bool = false, height: CGFloat = 20.0) {
+    public init(progress: CGFloat, color: Color = .aksuWhite, actionColor: Color = .aksuPrimary, bgColor: Color = .aksuGrayBackground, hiddenLabel: Bool = false, fontSize: CGFloat = 14, height: CGFloat = 20.0) {
         self.progress = progress
         self.color = color
         self.actionColor = actionColor
+        self.bgColor = bgColor
         self.hiddenLabel = hiddenLabel
         self.height = height
+        self.fontSize = fontSize
     }
 
     public var body: some View {
         GeometryReader { geometry in
             ZStack {
+                // 用来获取最终文本大小的
+                Text("100")
+                    .fixedSize(horizontal: false, vertical: false)
+                    .frame(height: 0.01)
+                    .font(.system(size: fontSize))
+                    .foregroundColor(.aksuWhite)
+                    .overlay {
+                        GeometryReader { geometry in
+                            Color.clear.task {
+                                titleWidth = geometry.size.width
+                            }
+                        }
+                    }
+                    .opacity(0)
+
                 HStack {
                     RoundedRectangle(cornerRadius: height / 2)
                         .fill(actionColor)
@@ -44,17 +64,10 @@ public struct AKSUProgress: View {
                 if !hiddenLabel {
                     HStack(spacing: 0) {
                         HStack {
-                            Text(progressString()).foregroundColor(.aksuWhite)
-                                .overlay {
-                                    GeometryReader { geometry in
-                                        Color.clear.task {
-                                            titleWidth = geometry.size.width
-                                        }
-                                        .onChange(of: progress) { _ in
-                                            titleWidth = geometry.size.width
-                                        }
-                                    }
-                                }
+                            Text(progressString())
+                                .frame(width: titleWidth)
+                                .font(.system(size: fontSize))
+                                .foregroundColor(.aksuWhite)
                                 .padding(.leading, titlePadding())
                         }
                         .frame(width: computerOffset(), alignment: .leading)
@@ -76,7 +89,7 @@ public struct AKSUProgress: View {
         .frame(height: height)
         .background {
             RoundedRectangle(cornerRadius: height / 2)
-                .fill(.aksuGrayBackground)
+                .fill(bgColor)
         }
     }
 
@@ -86,10 +99,11 @@ public struct AKSUProgress: View {
 
     func titlePadding() -> CGFloat {
         let halfPadding = (computerOffset() - titleWidth) / 2
-        if halfPadding < height / 2 {
+        if halfPadding < (height - fontSize) / 2 {
             return halfPadding
         } else {
-            return computerOffset() - titleWidth - height / 2
+            let rv = computerOffset() - titleWidth - (height - fontSize) / 2
+            return rv
         }
     }
 
@@ -108,8 +122,8 @@ struct AKSUProgress_Previews: PreviewProvider {
 }
 
 struct AKSUProgressPreviewsView: View {
-    @State var progress: CGFloat = 0
-    @State var range: CGFloat = 0
+    @State var progress: CGFloat = 0.5
+    @State var range: CGFloat = 50
 
     var body: some View {
         VStack {
@@ -124,7 +138,7 @@ struct AKSUProgressPreviewsView: View {
                 .frame(width: 300)
                 .padding()
 
-            AKSUProgress(progress: progress, height: 60)
+            AKSUProgress(progress: progress, fontSize: 40, height: 60)
                 .frame(width: 300)
                 .padding()
 
