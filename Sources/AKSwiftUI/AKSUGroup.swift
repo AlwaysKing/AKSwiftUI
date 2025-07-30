@@ -149,7 +149,7 @@ public struct AKSUGroup: View {
             let width = itemSize[item]?.width ?? 0
             rv = max(rv, width)
         }
-        return rv
+        return max(0, rv)
     }
 
     func maxHeight() -> CGFloat {
@@ -158,7 +158,7 @@ public struct AKSUGroup: View {
             let height = itemSize[item]?.height ?? 0
             rv = max(rv, height)
         }
-        return rv - 1
+        return max(0, rv - 1)
     }
 
     func getLeading() -> CGFloat {
