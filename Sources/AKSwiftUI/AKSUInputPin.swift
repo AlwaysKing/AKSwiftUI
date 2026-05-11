@@ -25,7 +25,7 @@ public struct AKSUInputPin: View {
 
     @State private var code: [String]
 
-    @FocusState private var focusedField: Int?
+    @State private var focusedField: Int = 0
 
     @Namespace var pinAnimation
 
@@ -46,19 +46,17 @@ public struct AKSUInputPin: View {
         self.bgColor = bgColor
         self.boardColor = boardColor
         self.filter = filter
-        self.focusedField = 0
     }
 
     public var body: some View {
         HStack(spacing: spacing) {
             ForEach(0 ..< count, id: \.self) { index in
-
                 ZStack {
                     Text(code[index])
                         .font(.system(size: fontSize)) // Set font size
                         .foregroundColor(color)
 
-                    AKSUKeyPressMonitor { event in
+                    AKSUKeyPressMonitor(isFocused: focusedField == index) { event in
                         if !isEnabled {
                             return
                         }
@@ -100,8 +98,6 @@ public struct AKSUInputPin: View {
                             }
                         }
                     }
-                    .focusable()
-                    .focused($focusedField, equals: index)
                 }
                 .frame(width: width, height: height)
                 .background(bgColor)
@@ -119,7 +115,6 @@ public struct AKSUInputPin: View {
                             .matchedGeometryEffect(id: "AKSUInputPin", in: self.pinAnimation)
                     }
                 }
-
                 .onTapGesture {
                     focusedField = index
                 }
@@ -127,7 +122,7 @@ public struct AKSUInputPin: View {
         }
         .onChange(of: focusedField) { _ in
             withAnimation(.linear(duration: 0.2)) {
-                selected = focusedField ?? 0
+                selected = focusedField 
             }
         }
         .onAppear {

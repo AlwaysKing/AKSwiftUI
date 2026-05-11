@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct AKSUKeyPressMonitor: NSViewRepresentable {
+struct AKSUKeyPressMonitor: NSViewRepresentable {    
+    var isFocused: Bool = false
     let onEvent: (NSEvent) -> Void
 
     func makeNSView(context: Context) -> NSView {
@@ -16,13 +17,25 @@ struct AKSUKeyPressMonitor: NSViewRepresentable {
         return view
     }
 
-    func updateNSView(_ nsView: NSView, context: Context) {}
+    func updateNSView(_ nsView: NSView, context: Context) {
+        guard let monitorView = nsView as? AKSUKeyPressMonitorView else { return }
+        monitorView.onEvent = onEvent
+        if isFocused {
+            DispatchQueue.main.async {
+                if let window = monitorView.window, window.firstResponder !== monitorView {
+                    window.makeFirstResponder(monitorView)
+                }
+            }
+        }
+    }
 }
 
 private class AKSUKeyPressMonitorView: NSView {
     var onEvent: (NSEvent) -> Void = { _ in }
 
     override var acceptsFirstResponder: Bool { true }
+    override var canBecomeKeyView: Bool { true }
+
     override func keyDown(with event: NSEvent) {
         onEvent(event)
     }
