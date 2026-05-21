@@ -230,7 +230,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                             if (max(1, backgroundColorIndex) + index) % 2 == 0 {
                                 Rectangle()
                                     .fill(splitColor)
-                                    .frame(width: tableSize.width, height: min(25.0, backgroundRowTotalHeight - CGFloat(index) * 25.0))
+                                    .frame(height: min(25.0, backgroundRowTotalHeight - CGFloat(index) * 25.0))
                                     .cornerRadius(AKSUAppearance.cornerRadius)
                                     .padding(.horizontal, 4)
                             }
@@ -241,6 +241,8 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                             }
                         }
                     }
+                    
+                    Spacer(minLength: 0)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                 .coordinateSpace(name: "lazyVStack")
@@ -267,6 +269,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                             }
                     }
                 }
+                
             }
             .coordinateSpace(name: "scrollView")
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
@@ -497,9 +500,6 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         }
 
         backgroundRowCount = Int(trunc(backgroundRowTotalHeight / 25.0))
-        if CGFloat(backgroundRowCount * 25) < backgroundRowTotalHeight {
-            backgroundRowCount += 1
-        }
     }
 
     func refreshEndPadding() {
