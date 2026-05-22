@@ -31,7 +31,11 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     let contentBgColor: Color
     let selectionColor: Color
     let splitColor: Color
+    let splitlineColor: Color
+    let headerSplitColor: Color
+    let headerDividerColor: Color
 
+    let splitline: Bool
     let multSelection: Bool
     let selection: (([Value]) -> Void)?
     let rightClick: ((Value, String, NSEvent?) -> Void)?
@@ -43,7 +47,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     @State var backgroundRowTotalHeight: CGFloat = 0.0
     @State var measuredDataHeight: CGFloat = 0.0
 
-    public init(data: Binding<[Value]>, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, multSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil)
+    public init(data: Binding<[Value]>, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, multSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil)
     {
         self._data = data
         self._initColumns = columns().map { AKSUTableColumnItem(builder: $0) }
@@ -56,6 +60,10 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         self.defaultRowHeight = defaultRowHeight
         self.getRowHeight = getRowHeight
         self.splitColor = splitColor
+        self.splitline = splitline
+        self.splitlineColor = splitlineColor
+        self.headerSplitColor = headerSplitColor
+        self.headerDividerColor = headerDividerColor
     }
 
     public var body: some View {
@@ -74,7 +82,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
                             ZStack {}
                                 .frame(width: 8, height: max(titleSize.height - 10, 10))
-                                .background(.aksuDivider)
+                                .background(headerSplitColor)
                                 .padding(.horizontal, -3.5)
                                 .padding(.vertical, 4)
                                 .mask {
@@ -83,7 +91,8 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                 .onHover { isHovering in
                                     if isHovering {
                                         NSCursor.resizeLeftRight.push()
-                                    } else {
+                                    }
+                                    else {
                                         NSCursor.pop()
                                     }
                                 }
@@ -114,7 +123,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 ZStack {}
                     .frame(maxWidth: .infinity)
                     .frame(height: 1)
-                    .background(.aksuDivider)
+                    .background(headerDividerColor)
             }
             .background {
                 GeometryReader { geometry in
@@ -127,179 +136,207 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             }
 
             // Content
-            ScrollView([.horizontal, .vertical]) {
-                VStack(alignment: .leading, spacing: 0) {
-                    LazyVStack(alignment: .leading, spacing: 0) {
-                        ForEach(rowStorage.rows) {
-                            item in
-                            ZStack(alignment: .leading) {
-                                let selected = rowStorage.isSelected(id: item.value.id)
-                                // 添加背景色
-                                if item.light {
-                                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                        .fill(splitColor)
-                                        .padding(.horizontal, 4)
-                                }
-                                else {
-                                    Rectangle().fill(contentBgColor)
-                                }
-                                if selected {
-                                    if multSelection {
-                                        if item.index == rowStorage.selectionFirst {
-                                            ZStack {
-                                                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                                    .fill(selectionColor)
-                                                    .padding(.horizontal, 2)
-                                                if item.index != rowStorage.selectionLast {
+            GeometryReader { contentGeo in
+                let availableHeight = contentGeo.size.height
+                ScrollView([.horizontal, .vertical]) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        LazyVStack(alignment: .leading, spacing: 0) {
+                            ForEach(rowStorage.rows) {
+                                item in
+                                ZStack(alignment: .leading) {
+                                    let selected = rowStorage.isSelected(id: item.value.id)
+                                    // 添加背景色
+                                    VStack(spacing: 0) {
+                                        if item.light {
+                                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
+                                                .fill(splitColor)
+                                                .padding(.horizontal, 4)
+                                        }
+                                        else {
+                                            Rectangle().fill(contentBgColor)
+                                        }
+                                        if splitline {
+                                            Rectangle()
+                                                .fill(splitlineColor)
+                                                .frame(height: 1)
+                                                .cornerRadius(AKSUAppearance.cornerRadius)
+                                                .padding(.horizontal, 4)
+                                        }
+                                    }
+
+                                    if selected {
+                                        if multSelection {
+                                            if item.index == rowStorage.selectionFirst {
+                                                ZStack {
+                                                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
+                                                        .fill(selectionColor)
+                                                        .padding(.horizontal, 2)
+                                                    if item.index != rowStorage.selectionLast {
+                                                        VStack {
+                                                            Spacer()
+                                                            Rectangle()
+                                                                .fill(selectionColor)
+                                                                .frame(height: 7)
+                                                                .padding(.horizontal, 2)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else if item.index == rowStorage.selectionLast {
+                                                ZStack {
+                                                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
+                                                        .fill(selectionColor)
+                                                        .padding(.horizontal, 2)
                                                     VStack {
-                                                        Spacer()
                                                         Rectangle()
                                                             .fill(selectionColor)
                                                             .frame(height: 7)
                                                             .padding(.horizontal, 2)
+                                                        Spacer()
                                                     }
                                                 }
                                             }
-                                        }
-                                        else if item.index == rowStorage.selectionLast {
-                                            ZStack {
-                                                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
+                                            else {
+                                                Rectangle()
                                                     .fill(selectionColor)
                                                     .padding(.horizontal, 2)
-                                                VStack {
-                                                    Rectangle()
-                                                        .fill(selectionColor)
-                                                        .frame(height: 7)
-                                                        .padding(.horizontal, 2)
-                                                    Spacer()
-                                                }
                                             }
                                         }
                                         else {
-                                            Rectangle()
+                                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                                 .fill(selectionColor)
                                                 .padding(.horizontal, 2)
                                         }
                                     }
-                                    else {
+
+                                    if item.rightSelected {
                                         RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                            .fill(selectionColor)
-                                            .padding(.horizontal, 2)
+                                            .stroke(selected ? .aksuWhite : selectionColor, lineWidth: 1.5)
+                                            .padding(.horizontal, selected ? 4 : 2)
+                                            .padding(.vertical, selected ? 2 : 1)
                                     }
-                                }
 
-                                if item.rightSelected {
-                                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                        .stroke(selected ? .aksuWhite : selectionColor, lineWidth: 1.5)
-                                        .padding(.horizontal, selected ? 4 : 2)
-                                        .padding(.vertical, selected ? 2 : 1)
-                                }
-
-                                HStack(spacing: 1) {
-                                    ForEach(columnStorage.columns) { header in
-                                        // 这里要传递数据
-                                        HStack {
-                                            header.itemBuilder(item.value).first
+                                    HStack(spacing: 1) {
+                                        ForEach(columnStorage.columns) { header in
+                                            // 这里要传递数据
+                                            HStack {
+                                                header.itemBuilder(item.value).first
+                                            }
+                                            .frame(width: header.width)
+                                            .foregroundColor(selected ? .aksuWhite : nil)
                                         }
-                                        .frame(width: header.width)
-                                        .foregroundColor(selected ? .aksuWhite : nil)
-                                    }
-                                    if endPinding > 0 {
-                                        ZStack { }
-                                            .frame(width: endPinding, height: 1)
+                                        if endPinding > 0 {
+                                            ZStack { }
+                                                .frame(width: endPinding, height: 1)
+                                        }
                                     }
                                 }
-                            }
-                            .frame(minWidth: 25)
-                            .frame(height: resolveRowHeight(item.value))
-                            .onMouseEvent(event: [.rightMouseDown]) { point, event in
-                                rightSelection(row: item, point: point, event: event)
-                                refreshUI.toggle()
-                                return true
-                            }
-                            .background {
-                                GeometryReader { geometry in
-                                    Color.clear
-                                        .onAppear {
-                                            rowStorage.appear(index: item.index, offset: geometry.frame(in: .named("dataLazyVStack")).minY, height: geometry.size.height)
-                                        }
+                                .frame(minWidth: 25)
+                                .frame(height: resolveRowHeight(item.value))
+                                .contentShape(Rectangle())
+                                .onMouseEvent(event: [.rightMouseDown]) { point, event in
+                                    rightSelection(row: item, point: point, event: event)
+                                    refreshUI.toggle()
+                                    return true
                                 }
-                            }
-                            .onDisappear {
-                                rowStorage.disappear(index: item.index)
+                                .background {
+                                    GeometryReader { geometry in
+                                        Color.clear
+                                            .onAppear {
+                                                rowStorage.appear(index: item.index, offset: geometry.frame(in: .named("dataLazyVStack")).minY, height: geometry.size.height)
+                                            }
+                                    }
+                                }
+                                .onDisappear {
+                                    rowStorage.disappear(index: item.index)
+                                }
                             }
                         }
+                        .coordinateSpace(name: "dataLazyVStack")
+                        .background(
+                            GeometryReader { geo in
+                                Color.clear
+                                    .onAppear {
+                                        let newHeight = geo.size.height
+                                        if abs(measuredDataHeight - newHeight) > 0.5 {
+                                            measuredDataHeight = newHeight
+                                            updateBackgroundRow()
+                                        }
+                                    }
+                                    .onChange(of: geo.size.height) { newHeight in
+                                        if abs(measuredDataHeight - newHeight) > 0.5 {
+                                            measuredDataHeight = newHeight
+                                            updateBackgroundRow()
+                                        }
+                                    }
+                            }
+                        )
+
+                        // 在高度不够的情况下增加背景
+                        let bgWidth: CGFloat = {
+                            let availableHeight = tableSize.height - titleSize.height
+                            if calculateDataHeight() >= availableHeight {
+                                return tableSize.width - NSScroller.scrollerWidth(for: .regular, scrollerStyle: .legacy) * 2 + 1
+                            }
+                            return tableSize.width
+                        }()
+                        VStack(spacing: 0) {
+                            ForEach(Array(0 ..< backgroundRowCount), id: \.self) {
+                                index in
+                                let bgH = resolveBackgroundRowHeight() - (splitline ? 1 : 0)
+                                if (max(1, backgroundColorIndex) + index) % 2 == 0 {
+                                    Rectangle()
+                                        .fill(splitColor)
+                                        .frame(height: min(bgH, backgroundRowTotalHeight - CGFloat(index) * bgH))
+                                        .cornerRadius(AKSUAppearance.cornerRadius)
+                                        .padding(.horizontal, 4)
+                                }
+                                else {
+                                    Rectangle()
+                                        .fill(contentBgColor)
+                                        .frame(width: bgWidth, height: min(bgH, backgroundRowTotalHeight - CGFloat(index) * bgH))
+                                }
+                                if splitline {
+                                    Rectangle()
+                                        .fill(splitlineColor)
+                                        .frame(height: 1)
+                                        .cornerRadius(AKSUAppearance.cornerRadius)
+                                        .padding(.horizontal, 4)
+                                }
+                            }
+                        }
+
+                        Spacer(minLength: 0)
                     }
-                    .coordinateSpace(name: "dataLazyVStack")
-                    .background(
-                        GeometryReader { geo in
-                            Color.clear
-                                .onAppear {
-                                    let newHeight = geo.size.height
-                                    if abs(measuredDataHeight - newHeight) > 0.5 {
-                                        measuredDataHeight = newHeight
-                                        updateBackgroundRow()
-                                    }
+                    .frame(minHeight: availableHeight, alignment: .topLeading)
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .updating($dragState) { value, state, transaction in
+                                DispatchQueue.main.async {
+                                    selectionInfo = (value.startLocation.y, value.location.y)
+                                    selectionRange(scroll: 0)
                                 }
-                                .onChange(of: geo.size.height) { newHeight in
-                                    if abs(measuredDataHeight - newHeight) > 0.5 {
-                                        measuredDataHeight = newHeight
-                                        updateBackgroundRow()
-                                    }
-                                }
-                        }
+                            }
+                            .onEnded { _ in
+                                selectionInfo = nil
+                            }
                     )
-
-                    // 在高度不够的情况下增加背景
-                    VStack(spacing: 0) {
-                        ForEach(Array(0 ..< backgroundRowCount), id: \.self) {
-                            index in
-                            let bgH = resolveBackgroundRowHeight()
-                            if (max(1, backgroundColorIndex) + index) % 2 == 0 {
-                                Rectangle()
-                                    .fill(splitColor)
-                                    .frame(height: min(bgH, backgroundRowTotalHeight - CGFloat(index) * bgH))
-                                    .cornerRadius(AKSUAppearance.cornerRadius)
-                                    .padding(.horizontal, 4)
-                            }
-                            else {
-                                Rectangle()
-                                    .fill(contentBgColor)
-                                    .frame(width: tableSize.width, height: min(bgH, backgroundRowTotalHeight - CGFloat(index) * bgH))
-                            }
+                    .background {
+                        GeometryReader { geometry in
+                            Color.clear
+                                .onChange(of: geometry.frame(in: .named("scrollView")).minY) { _ in
+                                    selectionRange(scroll: geometry.frame(in: .named("scrollView")).minY)
+                                }
+                                .onChange(of: geometry.frame(in: .named("scrollView")).origin) { _ in
+                                    scrollOffsetX = geometry.frame(in: .named("scrollView")).origin.x
+                                }
                         }
                     }
-
-                    Spacer(minLength: 0)
                 }
+                .coordinateSpace(name: "scrollView")
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .updating($dragState) { value, state, transaction in
-                            DispatchQueue.main.async {
-                                selectionInfo = (value.startLocation.y, value.location.y)
-                                selectionRange(scroll: 0)
-                            }
-                        }
-                        .onEnded { _ in
-                            selectionInfo = nil
-                        }
-                )
-                .background {
-                    GeometryReader { geometry in
-                        Color.clear
-                            .onChange(of: geometry.frame(in: .named("scrollView")).minY) { _ in
-                                selectionRange(scroll: geometry.frame(in: .named("scrollView")).minY)
-                            }
-                            .onChange(of: geometry.frame(in: .named("scrollView")).origin) { _ in
-                                scrollOffsetX = geometry.frame(in: .named("scrollView")).origin.x
-                            }
-                    }
-                }
-            }
-            .coordinateSpace(name: "scrollView")
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-            .background(contentBgColor)
+                .background(contentBgColor)
+            } // GeometryReader
         }
         .onChange(of: data) { _ in
             var light = false
@@ -506,7 +543,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         }
         backgroundColorIndex = rowStorage.rows.count - 1
         let availableHeight = tableSize.height - titleSize.height
-        backgroundRowTotalHeight = availableHeight - measuredDataHeight
+        backgroundRowTotalHeight = availableHeight - calculateDataHeight()
         if backgroundRowTotalHeight <= 0 {
             backgroundRowCount = 0
             return
@@ -526,6 +563,14 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         return resolveRowHeight(nil) ?? 25
     }
 
+    func calculateDataHeight() -> CGFloat {
+        var total: CGFloat = 0
+        for row in rowStorage.rows {
+            total += resolveRowHeight(row.value) ?? 25
+        }
+        return total
+    }
+
     func refreshEndPadding() {
         var currentWidth = 0.0
         for item in columnStorage.columns {
@@ -535,9 +580,8 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         if endPinding > 0 {
             // 要算上有没有出现右侧滚动条
             let availableHeight = tableSize.height - titleSize.height
-            if measuredDataHeight >= availableHeight {
-                endPinding -= 15
-                return
+            if calculateDataHeight() >= availableHeight {
+                endPinding -= NSScroller.scrollerWidth(for: .regular, scrollerStyle: .legacy) * 2 + 1
             }
         }
     }
@@ -887,7 +931,6 @@ struct AKSUTablePreviewsView: View {
                 for index in 0 ... 10 {
                     tmp.append(Person(index: index, givenName: "tom \(index)", familyName: "alwaysking", emailAddress: "xxx@hotmail.com"))
                 }
-                print("完成")
                 people = tmp
             }
 
@@ -920,10 +963,10 @@ struct AKSUTablePreviewsView: View {
             }
         }
 
-        AKSUTable(data: $people, defaultRowHeight:60, multSelection: true) {
+        AKSUTable(data: $people, defaultRowHeight: 60, headerBgColor: .clear, contentBgColor: .clear, splitColor: .clear, splitline: true, multSelection: false) {
             AKSUTableColumn("名字", minWidth: 100, maxWidth: 300) {
                 HStack {
-                    Text("名字").padding().frame(height: 50)
+                    Text("名字").padding().frame(height: 20)
                     Spacer()
                 }
             } itemBuilder: { value in
