@@ -151,14 +151,13 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                 }) {
                     VStack(alignment: .leading, spacing: 0) {
                         LazyVStack(alignment: .leading, spacing: 0) {
-                            ForEach(rowStorage.rows) {
-                                item in
+                            ForEach(Array(rowStorage.rows.enumerated()), id: \.element.value.id) { index, item in
                                 ZStack(alignment: .leading) {
                                     let selected = rowStorage.isSelected(id: item.value.id)
-                                    
+
                                     // 添加背景色
                                     VStack(spacing: 0) {
-                                        if item.light {
+                                        if index % 2 != 0 {
                                             RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                                 .fill(splitColor)
                                         }
@@ -177,13 +176,13 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
                                     if selected {
                                         if multSelection {
-                                            if item.index == rowStorage.selectionFirst {
+                                            if index == rowStorage.selectionFirst {
                                                 ZStack {
                                                     RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                                         .fill(selectionColor)
                                                         .padding(.leading, scrollBarWidth + 3)
                                                         .padding(.trailing, 3)
-                                                    if item.index != rowStorage.selectionLast {
+                                                    if index != rowStorage.selectionLast {
                                                         VStack {
                                                             Spacer()
                                                             Rectangle()
@@ -195,7 +194,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                                     }
                                                 }
                                             }
-                                            else if item.index == rowStorage.selectionLast {
+                                            else if index == rowStorage.selectionLast {
                                                 ZStack {
                                                     RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                                         .fill(selectionColor)
@@ -253,7 +252,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                 .frame(height: resolveRowHeight(item.value))
                                 .contentShape(Rectangle())
                                 .onMouseEvent(event: [.rightMouseDown]) { point, event in
-                                    rightSelection(row: item, point: point, event: event)
+                                    rightSelection(index: index, row: item, point: point, event: event)
                                     refreshUI.toggle()
                                     return true
                                 }
@@ -261,12 +260,12 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                     GeometryReader { geometry in
                                         Color.clear
                                             .onAppear {
-                                                rowStorage.appear(index: item.index, offset: geometry.frame(in: .named("dataLazyVStack")).minY, height: geometry.size.height)
+                                                rowStorage.appear(index: index, offset: geometry.frame(in: .named("dataLazyVStack")).minY, height: geometry.size.height)
                                             }
                                     }
                                 }
                                 .onDisappear {
-                                    rowStorage.disappear(index: item.index)
+                                    rowStorage.disappear(index: index)
                                 }
                             }
                         }
@@ -347,11 +346,21 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 .background(contentBgColor)
         }
         .onChange(of: data) { _ in
-            var light = false
+            // 按 id 查找已有行，复用 RowItem（保留选中状态）
+            var existingRows: [Value.ID: AKSUTableRowItem<Value>] = [:]
+            for row in rowStorage.rows {
+                existingRows[row.value.id] = row
+            }
+
             var tmp = [AKSUTableRowItem<Value>]()
-            for (index, item) in data.enumerated() {
-                tmp.append(AKSUTableRowItem(index: index, value: item, light: light, selected: rowStorage.isSelected(id: item.id), rightSelected: rowStorage.isRightSelected(id: item.id)))
-                light = !light
+            for item in data {
+                if let existing = existingRows[item.id] {
+                    // 已有行直接复用
+                    tmp.append(existing)
+                } else {
+                    // 新增行
+                    tmp.append(AKSUTableRowItem(value: item, selected: false, rightSelected: false))
+                }
             }
             rowStorage.rows = tmp
             rowStorage.resetSelected()
@@ -624,9 +633,9 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         }
     }
 
-    func rightSelection(row: AKSUTableRowItem<Value>, point: CGPoint, event: NSEvent?) {
+    func rightSelection(index: Int, row: AKSUTableRowItem<Value>, point: CGPoint, event: NSEvent?) {
         guard let rightClick = rightClick else { return }
-        rowStorage.rightSelected(index: row.index, selected: true)
+        rowStorage.rightSelected(index: index, selected: true)
 
         // 判断是哪一个colume
         var columnOffset = point.x
@@ -684,7 +693,7 @@ class AKSUTableRowStorage<Value: Identifiable>: ObservableObject {
         let item = rows[index]
         if selected {
             rightSelection = item.value.id
-            rightSelectionIndex = item.index
+            rightSelectionIndex = index
             item.rightSelected = selected
         }
         else {
@@ -734,15 +743,15 @@ class AKSUTableRowStorage<Value: Identifiable>: ObservableObject {
     func resetSelected() {
         var new = Set<Value.ID>()
         var index = Set<Int>()
-        for item in rows {
+        for (i, item) in rows.enumerated() {
             if item.selected {
                 new.insert(item.value.id)
-                index.insert(item.index)
+                index.insert(i)
             }
 
             if item.rightSelected {
                 rightSelection = item.value.id
-                rightSelectionIndex = item.index
+                rightSelectionIndex = i
             }
         }
         selection = new
@@ -772,16 +781,12 @@ class AKSUTableRowStorage<Value: Identifiable>: ObservableObject {
 }
 
 class AKSUTableRowItem<Value>: Identifiable, ObservableObject {
-    let index: Int
     let value: Value
-    var light: Bool
     @Published var selected: Bool
     @Published var rightSelected: Bool
 
-    init(index: Int, value: Value, light: Bool, selected: Bool, rightSelected: Bool) {
-        self.index = index
+    init(value: Value, selected: Bool, rightSelected: Bool) {
         self.value = value
-        self.light = light
         self.selected = selected
         self.rightSelected = rightSelected
     }
