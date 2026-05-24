@@ -19,7 +19,7 @@ struct SplitContentView: View {
     @State var g: CGFloat = 0.0
     @State var b: CGFloat = 0.0
 
-    @State var selected: String = "Table"
+    @State var selected: String = "Color"
 
     let menu: [String: [String]] = [
         "主题": ["Color", "Font"],
