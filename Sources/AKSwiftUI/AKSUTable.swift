@@ -49,7 +49,6 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     let getRowHeight: ((Value?) -> CGFloat?)?
 
     @State var backgroundColorIndex: Int = 0
-    @State var backgroundRowTotalHeight: CGFloat = 0.0
     @State var measuredDataHeight: CGFloat = 0.0
 
     public init(data: Binding<[Value]>, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, multSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil)
@@ -143,207 +142,207 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
             // Content
             AKSUNSScrollView(axes: [.horizontal, .vertical], scrollPosition: $contentScrollPosition, contentSize: $contentContentSize, visibleSize: $contentVisibleSize, scrollBarWidth: $scrollBarWidth,
-                                onScrollChanged: { offsetY, offsetX in
-                                    contentScrollPosition = CGPoint(x: offsetX, y: offsetY)
-                                    let newScrollY = -offsetY
-                                    selectionRange(scroll: newScrollY)
-                                    scrollOffsetX = -offsetX
-                                }) {
-                    VStack(alignment: .leading, spacing: 0) {
-                        LazyVStack(alignment: .leading, spacing: 0) {
-                            ForEach(Array(rowStorage.rows.enumerated()), id: \.element.value.id) { index, item in
-                                ZStack(alignment: .leading) {
-                                    let selected = rowStorage.isSelected(id: item.value.id)
+                             onScrollChanged: { offsetY, offsetX in
+                                 contentScrollPosition = CGPoint(x: offsetX, y: offsetY)
+                                 let newScrollY = -offsetY
+                                 selectionRange(scroll: newScrollY)
+                                 scrollOffsetX = -offsetX
+                             }) {
+                VStack(alignment: .leading, spacing: 0) {
+                    LazyVStack(alignment: .leading, spacing: 0) {
+                        ForEach(Array(rowStorage.rows.enumerated()), id: \.element.value.id) { index, item in
+                            ZStack(alignment: .leading) {
+                                let selected = rowStorage.isSelected(id: item.value.id)
 
-                                    // 添加背景色
-                                    VStack(spacing: 0) {
-                                        if index % 2 != 0 {
-                                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                                .fill(splitColor)
-                                        }
-                                        else {
-                                            Rectangle().fill(contentBgColor)
-                                        }
-                                        if splitline {
-                                            Rectangle()
-                                                .fill(splitlineColor)
-                                                .frame(height: 1)
-                                                .cornerRadius(AKSUAppearance.cornerRadius)
-                                        }
+                                // 添加背景色
+                                VStack(spacing: 0) {
+                                    if index % 2 != 0 {
+                                        RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
+                                            .fill(splitColor)
                                     }
-                                    .padding(.leading, scrollBarWidth + 3)
-                                    .padding(.trailing, 3)
+                                    else {
+                                        Rectangle().fill(contentBgColor)
+                                    }
+                                    if splitline {
+                                        Rectangle()
+                                            .fill(splitlineColor)
+                                            .frame(height: 1)
+                                            .cornerRadius(AKSUAppearance.cornerRadius)
+                                    }
+                                }
+                                .padding(.leading, scrollBarWidth + 3)
+                                .padding(.trailing, 3)
 
-                                    if selected {
-                                        if multSelection {
-                                            if index == rowStorage.selectionFirst {
-                                                ZStack {
-                                                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                                        .fill(selectionColor)
-                                                        .padding(.leading, scrollBarWidth + 3)
-                                                        .padding(.trailing, 3)
-                                                    if index != rowStorage.selectionLast {
-                                                        VStack {
-                                                            Spacer()
-                                                            Rectangle()
-                                                                .fill(selectionColor)
-                                                                .frame(height: 7)
-                                                                .padding(.leading, scrollBarWidth + 3)
-                                                                .padding(.trailing, 3)
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else if index == rowStorage.selectionLast {
-                                                ZStack {
-                                                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                                        .fill(selectionColor)
-                                                        .padding(.leading, scrollBarWidth + 3)
-                                                        .padding(.trailing, 3)
+                                if selected {
+                                    if multSelection {
+                                        if item.value.id == rowStorage.selectionFirst {
+                                            ZStack {
+                                                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
+                                                    .fill(selectionColor)
+                                                    .padding(.leading, scrollBarWidth + 3)
+                                                    .padding(.trailing, 3)
+                                                if item.value.id != rowStorage.selectionLast {
                                                     VStack {
+                                                        Spacer()
                                                         Rectangle()
                                                             .fill(selectionColor)
                                                             .frame(height: 7)
                                                             .padding(.leading, scrollBarWidth + 3)
                                                             .padding(.trailing, 3)
-                                                        Spacer()
                                                     }
                                                 }
                                             }
-                                            else {
-                                                Rectangle()
+                                        }
+                                        else if item.value.id == rowStorage.selectionLast {
+                                            ZStack {
+                                                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                                                     .fill(selectionColor)
                                                     .padding(.leading, scrollBarWidth + 3)
                                                     .padding(.trailing, 3)
+                                                VStack {
+                                                    Rectangle()
+                                                        .fill(selectionColor)
+                                                        .frame(height: 7)
+                                                        .padding(.leading, scrollBarWidth + 3)
+                                                        .padding(.trailing, 3)
+                                                    Spacer()
+                                                }
                                             }
                                         }
                                         else {
-                                            RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
+                                            Rectangle()
                                                 .fill(selectionColor)
                                                 .padding(.leading, scrollBarWidth + 3)
                                                 .padding(.trailing, 3)
                                         }
                                     }
-
-                                    if item.rightSelected {
+                                    else {
                                         RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                            .stroke(selected ? .aksuWhite : selectionColor, lineWidth: 1.5)
-                                            .padding(.leading, scrollBarWidth + (selected ? 6 : 4))
-                                            .padding(.trailing, selected ? 6 : 4)
-                                            .padding(.vertical, selected ? 3 : 2)
+                                            .fill(selectionColor)
+                                            .padding(.leading, scrollBarWidth + 3)
+                                            .padding(.trailing, 3)
                                     }
+                                }
 
-                                    HStack(spacing: 1) {
-                                        ForEach(columnStorage.columns) { header in
-                                            // 这里要传递数据
-                                            HStack {
-                                                header.itemBuilder(item.value).first
-                                            }
-                                            .frame(width: header.width)
-                                            .foregroundColor(selected ? .aksuWhite : nil)
+                                if item.rightSelected {
+                                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
+                                        .stroke(selected ? .aksuWhite : selectionColor, lineWidth: 1.5)
+                                        .padding(.leading, scrollBarWidth + (selected ? 6 : 4))
+                                        .padding(.trailing, selected ? 6 : 4)
+                                        .padding(.vertical, selected ? 3 : 2)
+                                }
+
+                                HStack(spacing: 1) {
+                                    ForEach(columnStorage.columns) { header in
+                                        // 这里要传递数据
+                                        HStack {
+                                            header.itemBuilder(item.value).first
                                         }
-                                        if endPinding > 0 {
-                                            ZStack { }
-                                                .frame(width: endPinding, height: 1)
-                                        }
+                                        .frame(width: header.width)
+                                        .foregroundColor(selected ? .aksuWhite : nil)
                                     }
-                                }
-                                .frame(minWidth: 25)
-                                .frame(height: resolveRowHeight(item.value))
-                                .contentShape(Rectangle())
-                                .onMouseEvent(event: [.rightMouseDown]) { point, event in
-                                    rightSelection(index: index, row: item, point: point, event: event)
-                                    refreshUI.toggle()
-                                    return true
-                                }
-                                .background {
-                                    GeometryReader { geometry in
-                                        Color.clear
-                                            .onAppear {
-                                                rowStorage.appear(index: index, offset: geometry.frame(in: .named("dataLazyVStack")).minY, height: geometry.size.height)
-                                            }
+                                    if endPinding > 0 {
+                                        ZStack { }
+                                            .frame(width: endPinding, height: 1)
                                     }
-                                }
-                                .onDisappear {
-                                    rowStorage.disappear(index: index)
                                 }
                             }
-                        }
-                        .coordinateSpace(name: "dataLazyVStack")
-                        .background(
-                            GeometryReader { geo in
-                                Color.clear
-                                    .onAppear {
-                                        let newHeight = geo.size.height
-                                        if abs(measuredDataHeight - newHeight) > 0.5 {
-                                            measuredDataHeight = newHeight
-                                        }
-                                    }
-                                    .onChange(of: geo.size.height) { newHeight in
-                                        if abs(measuredDataHeight - newHeight) > 0.5 {
-                                            measuredDataHeight = newHeight
-                                        }
-                                    }
+                            .frame(minWidth: 25)
+                            .frame(height: resolveRowHeight(item.value))
+                            .contentShape(Rectangle())
+                            .onMouseEvent(event: [.rightMouseDown]) { point, event in
+                                rightSelection(index: index, row: item, point: point, event: event)
+                                refreshUI.toggle()
+                                return true
                             }
-                        )
-
-                        // 在高度不够的情况下增加背景
-                        let bgTotalHeight = (contentVisibleSize.height - measuredDataHeight - scrollBarWidth)
-                        if bgTotalHeight > 0 {
-                            VStack(spacing: 0) {
-                                let bgH = resolveBackgroundRowHeight() - (splitline ? 1 : 0)
-
-                                let bgCount = Int((bgTotalHeight / bgH).rounded(.up))
-                                ForEach(Array(0 ..< bgCount), id: \.self) {
-                                    index in
-                                    HStack(spacing: 0) {
-                                        if (max(1, backgroundColorIndex) + index) % 2 == 0 {
-                                            Rectangle()
-                                                .fill(splitColor)
-                                                .frame(height: bgH)
-                                                .frame(maxWidth: .infinity)
-                                                .cornerRadius(AKSUAppearance.cornerRadius)
+                            .background {
+                                GeometryReader { geometry in
+                                    Color.clear
+                                        .onAppear {
+                                            rowStorage.appear(index: index, offset: geometry.frame(in: .named("dataLazyVStack")).minY, height: geometry.size.height)
                                         }
-                                        else {
-                                            Rectangle()
-                                                .fill(contentBgColor)
-                                                .frame(height: bgH)
-                                        }
-                                        if splitline {
-                                            Rectangle()
-                                                .fill(splitlineColor)
-                                                .frame(height: 1)
-                                                .frame(maxWidth: .infinity)
-                                                .cornerRadius(AKSUAppearance.cornerRadius)
-                                        }
-                                    }
-                                    .padding(.leading, scrollBarWidth + 3)
-                                        .padding(.trailing, 3)
                                 }
-
-                                Spacer(minLength: 0)
                             }
-                            .frame(maxHeight: bgTotalHeight.rounded(.down), alignment: .topLeading)
-                            .clipped()
-                            Spacer(minLength: 0)
+                            .onDisappear {
+                                rowStorage.disappear(index: index)
+                            }
                         }
                     }
-                    .frame(minHeight: contentVisibleSize.height > 0 ? contentVisibleSize.height : nil,  alignment: .topLeading)
-                    .gesture(
-                        DragGesture(minimumDistance: 0)
-                            .updating($dragState) { value, state, transaction in
-                                DispatchQueue.main.async {
-                                    selectionInfo = (value.startLocation.y, value.location.y)
-                                    selectionRange(scroll: 0)
+                    .coordinateSpace(name: "dataLazyVStack")
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear
+                                .onAppear {
+                                    let newHeight = geo.size.height
+                                    if abs(measuredDataHeight - newHeight) > 0.5 {
+                                        measuredDataHeight = newHeight
+                                    }
                                 }
-                            }
-                            .onEnded { _ in
-                                selectionInfo = nil
-                            }
+                                .onChange(of: geo.size.height) { newHeight in
+                                    if abs(measuredDataHeight - newHeight) > 0.5 {
+                                        measuredDataHeight = newHeight
+                                    }
+                                }
+                        }
                     )
+
+                    // 在高度不够的情况下增加背景
+                    let bgTotalHeight = (contentVisibleSize.height - measuredDataHeight - scrollBarWidth)
+                    if bgTotalHeight > 0 {
+                        VStack(spacing: 0) {
+                            let bgH = resolveBackgroundRowHeight() - (splitline ? 1 : 0)
+
+                            let bgCount = Int((bgTotalHeight / bgH).rounded(.up))
+                            ForEach(Array(0 ..< bgCount), id: \.self) {
+                                index in
+                                HStack(spacing: 0) {
+                                    if (max(1, backgroundColorIndex) + index) % 2 == 0 {
+                                        Rectangle()
+                                            .fill(splitColor)
+                                            .frame(height: bgH)
+                                            .frame(maxWidth: .infinity)
+                                            .cornerRadius(AKSUAppearance.cornerRadius)
+                                    }
+                                    else {
+                                        Rectangle()
+                                            .fill(contentBgColor)
+                                            .frame(height: bgH)
+                                    }
+                                    if splitline {
+                                        Rectangle()
+                                            .fill(splitlineColor)
+                                            .frame(height: 1)
+                                            .frame(maxWidth: .infinity)
+                                            .cornerRadius(AKSUAppearance.cornerRadius)
+                                    }
+                                }
+                                .padding(.leading, scrollBarWidth + 3)
+                                .padding(.trailing, 3)
+                            }
+
+                            Spacer(minLength: 0)
+                        }
+                        .frame(maxHeight: bgTotalHeight.rounded(.down), alignment: .topLeading)
+                        .clipped()
+                        Spacer(minLength: 0)
+                    }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                .background(contentBgColor)
+                .frame(minHeight: contentVisibleSize.height > 0 ? contentVisibleSize.height : nil, alignment: .topLeading)
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .updating($dragState) { value, state, transaction in
+                            DispatchQueue.main.async {
+                                selectionInfo = (value.startLocation.y, value.location.y)
+                                selectionRange(scroll: 0)
+                            }
+                        }
+                        .onEnded { _ in
+                            selectionInfo = nil
+                        }
+                )
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .background(contentBgColor)
         }
         .onChange(of: data) { _ in
             // 按 id 查找已有行，复用 RowItem（保留选中状态）
@@ -357,17 +356,26 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 if let existing = existingRows[item.id] {
                     // 已有行直接复用
                     tmp.append(existing)
-                } else {
+                    existingRows.removeValue(forKey: item.id) // 标记已匹配
+                }
+                else {
                     // 新增行
                     tmp.append(AKSUTableRowItem(value: item, selected: false, rightSelected: false))
                 }
             }
+            // existingRows 中剩余的就是被删除的行
+            let deletedIds = Set(existingRows.keys)
+
             rowStorage.rows = tmp
-            rowStorage.resetSelected()
-            refreshEndPadding()
-            refreshUI.toggle()
-        }
-        .onChange(of: titleSize) { _ in
+
+            // 精确移除被删除行的选中状态，不遍历所有行
+            if !deletedIds.isEmpty {
+                rowStorage.removeDeleted(deletedIds)
+            }
+            // 追加数据不影响列宽，不需要 refreshEndPadding
+//            if tmp.count != oldCount {
+//                refreshUI.toggle()
+//            }
         }
         .onChange(of: scrollBarWidth) { _ in
             if scrollBarWidth > 0 {
@@ -635,7 +643,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
     func rightSelection(index: Int, row: AKSUTableRowItem<Value>, point: CGPoint, event: NSEvent?) {
         guard let rightClick = rightClick else { return }
-        rowStorage.rightSelected(index: index, selected: true)
+        rowStorage.rightSelected(id: row.value.id, selected: true)
 
         // 判断是哪一个colume
         var columnOffset = point.x
@@ -655,58 +663,49 @@ class AKSUTableRowStorage<Value: Identifiable>: ObservableObject {
     @Published var rows: [AKSUTableRowItem<Value>] = []
 
     @Published var selection: Set<Value.ID> = []
-    @Published var selectionIndex: Set<Int> = []
-    @Published var selectionFirst: Int? = nil
-    @Published var selectionLast: Int? = nil
+    @Published var selectionFirst: Value.ID? = nil
+    @Published var selectionLast: Value.ID? = nil
+    private var selectionFirstPosition: Int? = nil
+    private var selectionLastPosition: Int? = nil
 
     @Published var rightSelection: Value.ID? = nil
-    @Published var rightSelectionIndex: Int? = nil
 
     var appearList: [Int: (count: Int, top: CGFloat, bottom: CGFloat)] = [:]
 
     func clearAllSelected() {
+        for row in rows {
+            if row.selected { row.selected = false }
+            if row.rightSelected { row.rightSelected = false }
+        }
         selection.removeAll()
-        for index in selectionIndex {
-            guard index < rows.count else { continue }
-            rows[index].selected = false
-        }
-        selectionIndex.removeAll()
-        if let oldIndex = rightSelectionIndex {
-            if oldIndex < rows.count {
-                rows[oldIndex].rightSelected = false
-            }
-        }
         rightSelection = nil
-        rightSelectionIndex = nil
         selectionFirst = nil
         selectionLast = nil
+        selectionFirstPosition = nil
+        selectionLastPosition = nil
     }
 
-    func rightSelected(index: Int, selected: Bool) {
-        if let oldIndex = rightSelectionIndex {
-            if oldIndex < rows.count {
-                rows[oldIndex].rightSelected = false
+    func rightSelected(id: Value.ID, selected: Bool) {
+        // 取消旧的右键选中
+        if let oldId = rightSelection {
+            if let oldRow = rows.first(where: { $0.value.id == oldId }) {
+                oldRow.rightSelected = false
             }
         }
 
-        guard index < rows.count else { return }
-        let item = rows[index]
         if selected {
-            rightSelection = item.value.id
-            rightSelectionIndex = index
-            item.rightSelected = selected
+            rightSelection = id
+            if let row = rows.first(where: { $0.value.id == id }) {
+                row.rightSelected = true
+            }
         }
         else {
             rightSelection = nil
-            rightSelectionIndex = nil
         }
     }
 
     func isRightSelected(id: Value.ID) -> Bool {
-        if let rightSelection = rightSelection {
-            return id == rightSelection
-        }
-        return false
+        return rightSelection == id
     }
 
     // 左键选取的内容
@@ -715,23 +714,17 @@ class AKSUTableRowStorage<Value: Identifiable>: ObservableObject {
         item.selected = true
         if selected {
             selection.insert(item.value.id)
-            selectionIndex.insert(index)
-            if selectionFirst == nil {
-                selectionFirst = index
+            if selectionFirst == nil || index < selectionFirstPosition! {
+                selectionFirst = item.value.id
+                selectionFirstPosition = index
             }
-            else {
-                selectionFirst = min(selectionFirst!, index)
-            }
-            if selectionLast == nil {
-                selectionLast = index
-            }
-            else {
-                selectionLast = max(selectionLast!, index)
+            if selectionLast == nil || index > selectionLastPosition! {
+                selectionLast = item.value.id
+                selectionLastPosition = index
             }
         }
         else {
             selection.remove(item.value.id)
-            selectionIndex.remove(index)
         }
     }
 
@@ -741,21 +734,68 @@ class AKSUTableRowStorage<Value: Identifiable>: ObservableObject {
 
     // 在数据刷新之后重新选择已经选中的内容
     func resetSelected() {
-        var new = Set<Value.ID>()
-        var index = Set<Int>()
+        var newSelection = Set<Value.ID>()
+        selectionFirst = nil
+        selectionLast = nil
+        selectionFirstPosition = nil
+        selectionLastPosition = nil
+
         for (i, item) in rows.enumerated() {
             if item.selected {
-                new.insert(item.value.id)
-                index.insert(i)
+                newSelection.insert(item.value.id)
+                if selectionFirst == nil || i < selectionFirstPosition! {
+                    selectionFirst = item.value.id
+                    selectionFirstPosition = i
+                }
+                if selectionLast == nil || i > selectionLastPosition! {
+                    selectionLast = item.value.id
+                    selectionLastPosition = i
+                }
             }
 
             if item.rightSelected {
                 rightSelection = item.value.id
-                rightSelectionIndex = i
             }
         }
-        selection = new
-        selectionIndex = index
+        selection = newSelection
+    }
+
+    // 精确移除被删除行的选中状态，不遍历所有行
+    func removeDeleted(_ deletedIds: Set<Value.ID>) {
+        var needRecalcFirstLast = false
+
+        for id in deletedIds {
+            selection.remove(id)
+            if id == selectionFirst {
+                selectionFirst = nil
+                selectionFirstPosition = nil
+                needRecalcFirstLast = true
+            }
+            if id == selectionLast {
+                selectionLast = nil
+                selectionLastPosition = nil
+                needRecalcFirstLast = true
+            }
+            if id == rightSelection {
+                rightSelection = nil
+            }
+        }
+
+        // 如果 first/last 被删了，从剩余选中项中重算
+        if needRecalcFirstLast && !selection.isEmpty {
+            for (i, item) in rows.enumerated() {
+                if item.selected {
+                    if selectionFirst == nil || i < selectionFirstPosition! {
+                        selectionFirst = item.value.id
+                        selectionFirstPosition = i
+                    }
+                    if selectionLast == nil || i > selectionLastPosition! {
+                        selectionLast = item.value.id
+                        selectionLastPosition = i
+                    }
+                }
+            }
+        }
     }
 
     // 管理已经显示的项目
@@ -907,9 +947,16 @@ struct Person: Identifiable, Equatable {
 struct AKSUTablePreviewsView: View {
     @State private var people: [Person] = []
     @State var color: Color = .aksuTextBackground
+    @State var appending: Bool = false
 
     func add() {
+        if !appending {
+            return
+        }
         for index in 0 ... 100 {
+            if !appending {
+                return
+            }
             people.append(Person(index: index, givenName: "tom \(people.count)", familyName: "alwaysking", emailAddress: "xxx@hotmail.com"))
         }
 
@@ -922,7 +969,7 @@ struct AKSUTablePreviewsView: View {
         HStack {
             Button("init") {
                 var tmp = [Person]()
-                for index in 0 ... 10 {
+                for index in 0 ... 1000 {
                     tmp.append(Person(index: index, givenName: "tom \(index)", familyName: "alwaysking", emailAddress: "xxx@hotmail.com"))
                 }
                 people = tmp
@@ -935,7 +982,11 @@ struct AKSUTablePreviewsView: View {
             }
 
             Button("time") {
-                add()
+                appending.toggle()
+                if appending {
+                    
+                    add()
+                }
             }
         }
         HStack {
@@ -957,7 +1008,7 @@ struct AKSUTablePreviewsView: View {
             }
         }
 
-        AKSUTable(data: $people, defaultRowHeight: 60) {
+        AKSUTable(data: $people, defaultRowHeight: 60, multSelection: false) {
             AKSUTableColumn("名字", minWidth: 200, maxWidth: 300) {
                 HStack {
                     Text("名字").padding().frame(height: 20)
@@ -980,7 +1031,7 @@ struct AKSUTablePreviewsView: View {
             } itemBuilder: { value in
                 Text(value.emailAddress)
             }
-            
+
         } selection: { list in
             print(list)
 

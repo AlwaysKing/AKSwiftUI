@@ -53,11 +53,11 @@ public struct AKSUClick<T: View>: View {
 }
 
 public extension AKSUClick where T == Text {
-    init<S>(_ title: S, color: Color = .aksuText, actionColor: Color = .aksuPrimary, action: @escaping () -> Void) where S: StringProtocol {
+    init<S>(_ title: S, size: Font? = .title, color: Color = .aksuText, actionColor: Color = .aksuPrimary, action: @escaping () -> Void) where S: StringProtocol {
         self.color = color
         self.actionColor = actionColor
         self.action = action
-        self.content = { Text(title).font(.title) }
+        self.content = { Text(title).font(size) }
     }
 }
 
