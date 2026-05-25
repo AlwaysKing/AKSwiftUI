@@ -2,7 +2,7 @@
 //  AKSUTable.swift
 //  AKSwiftUI
 //
-//  Created by alwaysking on 2024/9/2.
+//  基于 NSTableView 的高性能表格组件
 //
 
 import SwiftUI
@@ -20,18 +20,14 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
     @State var refreshUI: Bool = false
 
-    @GestureState var dragState: Bool = false
-
-    // 选择功能
     @State private var scrollOffsetX: CGFloat = 0.0
-    @State private var scrollOffsetY: CGFloat = 0.0
-    @State private var selectionInfo: (start: CGFloat, end: CGFloat)? = nil
-
-    // 自定义滚动条状态
-    @State private var contentScrollPosition: CGPoint = .zero
-    @State private var contentContentSize: CGSize = .zero
-    @State private var contentVisibleSize: CGSize = .zero
     @State private var scrollBarWidth: CGFloat = 0
+    @State private var contentVisibleSize: CGSize = .zero
+    @State private var measuredDataHeight: CGFloat = 0.0
+
+    // 选择
+    @State private var selectionStartRow: Int? = nil
+    @State private var isDraggingSelection = false
 
     let headerBgColor: Color
     let contentBgColor: Color
@@ -48,11 +44,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     let defaultRowHeight: CGFloat?
     let getRowHeight: ((Value?) -> CGFloat?)?
 
-    @State var backgroundColorIndex: Int = 0
-    @State var measuredDataHeight: CGFloat = 0.0
-
-    public init(data: Binding<[Value]>, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, multSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil)
-    {
+    public init(data: Binding<[Value]>, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, multSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil) {
         self._data = data
         self._initColumns = columns().map { AKSUTableColumnItem(builder: $0) }
         self.headerBgColor = headerBgColor
@@ -95,8 +87,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                 .onHover { isHovering in
                                     if isHovering {
                                         NSCursor.resizeLeftRight.push()
-                                    }
-                                    else {
+                                    } else {
                                         NSCursor.pop()
                                     }
                                 }
@@ -140,207 +131,46 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 }
             }
 
-            // Content
-            AKSUNSScrollView(axes: [.horizontal, .vertical], scrollPosition: $contentScrollPosition, contentSize: $contentContentSize, visibleSize: $contentVisibleSize, scrollBarWidth: $scrollBarWidth,
-                             onScrollChanged: { offsetY, offsetX in
-                                 contentScrollPosition = CGPoint(x: offsetX, y: offsetY)
-                                 let newScrollY = -offsetY
-                                 selectionRange(scroll: newScrollY)
-                                 scrollOffsetX = -offsetX
-                             }) {
-                VStack(alignment: .leading, spacing: 0) {
-                    LazyVStack(alignment: .leading, spacing: 0) {
-                        ForEach(Array(rowStorage.rows.enumerated()), id: \.element.value.id) { index, item in
-                            ZStack(alignment: .leading) {
-                                let selected = rowStorage.isSelected(id: item.value.id)
-
-                                // 添加背景色
-                                VStack(spacing: 0) {
-                                    if index % 2 != 0 {
-                                        RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                            .fill(splitColor)
-                                    }
-                                    else {
-                                        Rectangle().fill(contentBgColor)
-                                    }
-                                    if splitline {
-                                        Rectangle()
-                                            .fill(splitlineColor)
-                                            .frame(height: 1)
-                                            .cornerRadius(AKSUAppearance.cornerRadius)
-                                    }
-                                }
-                                .padding(.leading, scrollBarWidth + 3)
-                                .padding(.trailing, 3)
-
-                                if selected {
-                                    if multSelection {
-                                        if item.value.id == rowStorage.selectionFirst {
-                                            ZStack {
-                                                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                                    .fill(selectionColor)
-                                                    .padding(.leading, scrollBarWidth + 3)
-                                                    .padding(.trailing, 3)
-                                                if item.value.id != rowStorage.selectionLast {
-                                                    VStack {
-                                                        Spacer()
-                                                        Rectangle()
-                                                            .fill(selectionColor)
-                                                            .frame(height: 7)
-                                                            .padding(.leading, scrollBarWidth + 3)
-                                                            .padding(.trailing, 3)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else if item.value.id == rowStorage.selectionLast {
-                                            ZStack {
-                                                RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                                    .fill(selectionColor)
-                                                    .padding(.leading, scrollBarWidth + 3)
-                                                    .padding(.trailing, 3)
-                                                VStack {
-                                                    Rectangle()
-                                                        .fill(selectionColor)
-                                                        .frame(height: 7)
-                                                        .padding(.leading, scrollBarWidth + 3)
-                                                        .padding(.trailing, 3)
-                                                    Spacer()
-                                                }
-                                            }
-                                        }
-                                        else {
-                                            Rectangle()
-                                                .fill(selectionColor)
-                                                .padding(.leading, scrollBarWidth + 3)
-                                                .padding(.trailing, 3)
-                                        }
-                                    }
-                                    else {
-                                        RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                            .fill(selectionColor)
-                                            .padding(.leading, scrollBarWidth + 3)
-                                            .padding(.trailing, 3)
-                                    }
-                                }
-
-                                if item.rightSelected {
-                                    RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
-                                        .stroke(selected ? .aksuWhite : selectionColor, lineWidth: 1.5)
-                                        .padding(.leading, scrollBarWidth + (selected ? 6 : 4))
-                                        .padding(.trailing, selected ? 6 : 4)
-                                        .padding(.vertical, selected ? 3 : 2)
-                                }
-
-                                HStack(spacing: 1) {
-                                    ForEach(columnStorage.columns) { header in
-                                        // 这里要传递数据
-                                        HStack {
-                                            header.itemBuilder(item.value).first
-                                        }
-                                        .frame(width: header.width)
-                                        .foregroundColor(selected ? .aksuWhite : nil)
-                                    }
-                                    if endPinding > 0 {
-                                        ZStack { }
-                                            .frame(width: endPinding, height: 1)
-                                    }
-                                }
-                            }
-                            .frame(minWidth: 25)
-                            .frame(height: resolveRowHeight(item.value))
-                            .contentShape(Rectangle())
-                            .onMouseEvent(event: [.rightMouseDown]) { point, event in
-                                rightSelection(index: index, row: item, point: point, event: event)
-                                refreshUI.toggle()
-                                return true
-                            }
-                            .background {
-                                GeometryReader { geometry in
-                                    Color.clear
-                                        .onAppear {
-                                            rowStorage.appear(index: index, offset: geometry.frame(in: .named("dataLazyVStack")).minY, height: geometry.size.height)
-                                        }
-                                }
-                            }
-                            .onDisappear {
-                                rowStorage.disappear(index: index)
-                            }
-                        }
-                    }
-                    .coordinateSpace(name: "dataLazyVStack")
-                    .background(
-                        GeometryReader { geo in
-                            Color.clear
-                                .onAppear {
-                                    let newHeight = geo.size.height
-                                    if abs(measuredDataHeight - newHeight) > 0.5 {
-                                        measuredDataHeight = newHeight
-                                    }
-                                }
-                                .onChange(of: geo.size.height) { newHeight in
-                                    if abs(measuredDataHeight - newHeight) > 0.5 {
-                                        measuredDataHeight = newHeight
-                                    }
-                                }
-                        }
-                    )
-
-                    // 在高度不够的情况下增加背景
-                    let bgTotalHeight = (contentVisibleSize.height - measuredDataHeight - scrollBarWidth)
-                    if bgTotalHeight > 0 {
-                        VStack(spacing: 0) {
-                            let bgH = resolveBackgroundRowHeight() - (splitline ? 1 : 0)
-
-                            let bgCount = Int((bgTotalHeight / bgH).rounded(.up))
-                            ForEach(Array(0 ..< bgCount), id: \.self) {
-                                index in
-                                HStack(spacing: 0) {
-                                    if (max(1, backgroundColorIndex) + index) % 2 == 0 {
-                                        Rectangle()
-                                            .fill(splitColor)
-                                            .frame(height: bgH)
-                                            .frame(maxWidth: .infinity)
-                                            .cornerRadius(AKSUAppearance.cornerRadius)
-                                    }
-                                    else {
-                                        Rectangle()
-                                            .fill(contentBgColor)
-                                            .frame(height: bgH)
-                                    }
-                                    if splitline {
-                                        Rectangle()
-                                            .fill(splitlineColor)
-                                            .frame(height: 1)
-                                            .frame(maxWidth: .infinity)
-                                            .cornerRadius(AKSUAppearance.cornerRadius)
-                                    }
-                                }
-                                .padding(.leading, scrollBarWidth + 3)
-                                .padding(.trailing, 3)
-                            }
-
-                            Spacer(minLength: 0)
-                        }
-                        .frame(maxHeight: bgTotalHeight.rounded(.down), alignment: .topLeading)
-                        .clipped()
-                        Spacer(minLength: 0)
-                    }
+            // Content — NSTableView 渲染
+            AKSUNSTableView(
+                data: $data,
+                columnStorage: columnStorage,
+                rowStorage: rowStorage,
+                endPadding: endPinding,
+                scrollBarWidth: scrollBarWidth,
+                backgroundColorIndex: rowStorage.rows.count,
+                headerBgColor: headerBgColor,
+                contentBgColor: contentBgColor,
+                selectionColor: selectionColor,
+                splitColor: splitColor,
+                splitlineColor: splitlineColor,
+                splitline: splitline,
+                multSelection: multSelection,
+                selection: nil,
+                rightClick: nil,
+                defaultRowHeight: defaultRowHeight,
+                getRowHeight: getRowHeight,
+                refreshId: refreshUI,
+                onScrollChanged: { offsetY, offsetX in
+                    scrollOffsetX = -offsetX
+                },
+                onVisibleSizeChanged: { size in
+                    contentVisibleSize = size
+                },
+                extraBackgroundRows: calculateExtraBackgroundRows(),
+                onMouseDown: { row, _ in
+                    handleMouseDown(row: row)
+                },
+                onMouseDragged: { row, _ in
+                    handleMouseDragged(row: row)
+                },
+                onMouseUp: {
+                    handleMouseUp()
+                },
+                onRightClick: { row, point, event in
+                    handleRightClick(row: row, point: point, event: event)
                 }
-                .frame(minHeight: contentVisibleSize.height > 0 ? contentVisibleSize.height : nil, alignment: .topLeading)
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .updating($dragState) { value, state, transaction in
-                            DispatchQueue.main.async {
-                                selectionInfo = (value.startLocation.y, value.location.y)
-                                selectionRange(scroll: 0)
-                            }
-                        }
-                        .onEnded { _ in
-                            selectionInfo = nil
-                        }
-                )
-            }
+            )
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             .background(contentBgColor)
         }
@@ -354,28 +184,18 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             var tmp = [AKSUTableRowItem<Value>]()
             for item in data {
                 if let existing = existingRows[item.id] {
-                    // 已有行直接复用
                     tmp.append(existing)
-                    existingRows.removeValue(forKey: item.id) // 标记已匹配
-                }
-                else {
-                    // 新增行
+                    existingRows.removeValue(forKey: item.id)
+                } else {
                     tmp.append(AKSUTableRowItem(value: item, selected: false, rightSelected: false))
                 }
             }
-            // existingRows 中剩余的就是被删除的行
             let deletedIds = Set(existingRows.keys)
-
             rowStorage.rows = tmp
 
-            // 精确移除被删除行的选中状态，不遍历所有行
             if !deletedIds.isEmpty {
                 rowStorage.removeDeleted(deletedIds)
             }
-            // 追加数据不影响列宽，不需要 refreshEndPadding
-//            if tmp.count != oldCount {
-//                refreshUI.toggle()
-//            }
         }
         .onChange(of: scrollBarWidth) { _ in
             if scrollBarWidth > 0 {
@@ -397,21 +217,89 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             }
         }
         .onAppear {
+            scrollBarWidth = 6
             self.columnStorage.reset(_initColumns)
             initWidth()
         }
         .clipped()
     }
 
-    func initWidth() {
-        if tableSize == CGSize.zero {
-            return
+    // MARK: - Selection Handling
+
+    private func handleMouseDown(row: Int) {
+        guard row < rowStorage.rows.count else { return }
+
+        rowStorage.clearAllSelected()
+
+        if multSelection {
+            selectionStartRow = row
+            isDraggingSelection = true
+            let item = rowStorage.rows[row]
+            rowStorage.selected(index: row, selected: true)
+            selection?([item.value])
+        } else {
+            let item = rowStorage.rows[row]
+            rowStorage.selected(index: row, selected: true)
+            selection?([item.value])
         }
+        refreshUI.toggle()
+    }
+
+    private func handleMouseDragged(row: Int) {
+        guard isDraggingSelection, let startRow = selectionStartRow else { return }
+        guard row >= 0 && row < rowStorage.rows.count else { return }
+
+        rowStorage.clearAllSelected()
+
+        let from = min(startRow, row)
+        let to = max(startRow, row)
+
+        var selected = [Value]()
+        for i in from ... to {
+            rowStorage.selected(index: i, selected: true)
+            selected.append(rowStorage.rows[i].value)
+        }
+
+        selection?(selected)
+        refreshUI.toggle()
+    }
+
+    private func handleMouseUp() {
+        isDraggingSelection = false
+        selectionStartRow = nil
+    }
+
+    private func handleRightClick(row: Int, point: NSPoint, event: NSEvent) {
+        guard row < rowStorage.rows.count else { return }
+        guard let rightClick = rightClick else { return }
+
+        let item = rowStorage.rows[row]
+        rowStorage.rightSelected(id: item.value.id, selected: true)
+
+        // 判断哪一列（内容从 x=0 开始，与 header 对齐）
+        var columnOffset = point.x
+        var columnKey = ""
+        for col in columnStorage.columns {
+            columnOffset -= col.width
+            if columnOffset <= 0 {
+                columnKey = col.key
+                break
+            }
+            columnOffset -= 1 // spacing
+        }
+
+        rightClick(item.value, columnKey, event)
+        refreshUI.toggle()
+    }
+
+    // MARK: - Column Width Management
+
+    func initWidth() {
+        if tableSize == CGSize.zero { return }
 
         let totalWidth = tableSize.width - scrollBarWidth - CGFloat(max(columnStorage.columns.count - 1, 0))
         let totalCount = columnStorage.columns.count
 
-        // 第一步给idea 分配空间
         var distributedWidths = 0.0
         var distributedCount = 0
         for item in columnStorage.columns {
@@ -422,20 +310,17 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             }
         }
 
-        // 给剩余的分一分
         while distributedCount < columnStorage.columns.count {
             let savedCount = distributedCount
             let lostPerWidth = (totalWidth - distributedWidths) / CGFloat(totalCount - distributedCount)
 
-            // 参考最大最小宽度选择
             for item in columnStorage.columns {
                 if item.width == 0 {
                     if lostPerWidth < item.minWidth {
                         item.width = item.minWidth
                         distributedWidths += item.minWidth
                         distributedCount += 1
-                    }
-                    else if let maxWidth = item.maxWidth {
+                    } else if let maxWidth = item.maxWidth {
                         if lostPerWidth > maxWidth {
                             item.width = maxWidth
                             distributedWidths += maxWidth
@@ -445,13 +330,9 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 }
             }
 
-            // 这一轮轮空了，说明没有可以分配的了
-            if savedCount == distributedCount {
-                break
-            }
+            if savedCount == distributedCount { break }
         }
 
-        // 最后把剩下的分一分
         if distributedCount < totalCount {
             let lostPerWidth = (totalWidth - distributedWidths) / CGFloat(totalCount - distributedCount)
             for item in columnStorage.columns {
@@ -462,55 +343,41 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             }
         }
 
-        // 接下来就开始 缩放了
         while true {
             var keepRunning = false
 
             if distributedWidths > totalWidth {
-                // 缩小
                 let shrinkWidth = (distributedWidths - totalWidth) / CGFloat(totalCount)
                 distributedWidths = 0
                 for item in columnStorage.columns {
                     let nowWidth = item.width
                     item.width = max(item.minWidth, nowWidth - shrinkWidth)
                     distributedWidths += item.width
-                    if item.width != nowWidth {
-                        keepRunning = true
-                    }
+                    if item.width != nowWidth { keepRunning = true }
                 }
-            }
-            else if distributedWidths < totalWidth {
-                // 放宽
+            } else if distributedWidths < totalWidth {
                 let expandWidth = (totalWidth - distributedWidths) / CGFloat(totalCount)
                 distributedWidths = 0
                 for item in columnStorage.columns {
                     let nowWidth = item.width
                     if let max = item.maxWidth {
                         item.width = min(max, nowWidth + expandWidth)
-                    }
-                    else {
+                    } else {
                         item.width = nowWidth + expandWidth
                     }
-
                     distributedWidths += item.width
-                    if item.width != nowWidth {
-                        keepRunning = true
-                    }
+                    if item.width != nowWidth { keepRunning = true }
                 }
             }
 
-            if keepRunning == false {
-                break
-            }
+            if !keepRunning { break }
         }
 
         refreshEndPadding()
     }
 
     func updateWidth() {
-        if tableSize == CGSize.zero {
-            return
-        }
+        if tableSize == CGSize.zero { return }
         let targetWidth = tableSize.width - scrollBarWidth - CGFloat(max(columnStorage.columns.count - 1, 0))
         var currentWidth = 0.0
         for item in columnStorage.columns {
@@ -529,20 +396,15 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                             item.width = newWidth
                             changed = true
                         }
-                    }
-                    else {
+                    } else {
                         item.width = item.width + perExpandWidth
                         changed = true
                     }
                     currentWidth += item.width
                 }
-                if changed == false {
-                    break
-                }
+                if !changed { break }
             }
-        }
-        else if targetWidth < currentWidth {
-            // 缩减
+        } else if targetWidth < currentWidth {
             while currentWidth > targetWidth {
                 var changed = false
                 let perShrinkWidth = (currentWidth - targetWidth) / CGFloat(columnStorage.columns.count)
@@ -555,14 +417,23 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                     }
                     currentWidth += item.width
                 }
-                if changed == false {
-                    break
-                }
+                if !changed { break }
             }
         }
 
         refreshEndPadding()
     }
+
+    func refreshEndPadding() {
+        var currentWidth = 0.0
+        for item in columnStorage.columns {
+            currentWidth += item.width
+        }
+        let spacing = CGFloat(max(columnStorage.columns.count - 1, 0))
+        endPinding = tableSize.width - scrollBarWidth - spacing - currentWidth
+    }
+
+    // MARK: - Helpers
 
     func resolveRowHeight(_ value: Value?) -> CGFloat? {
         if let getRowHeight = getRowHeight {
@@ -583,82 +454,26 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         return total
     }
 
-    func refreshEndPadding() {
-        var currentWidth = 0.0
-        for item in columnStorage.columns {
-            currentWidth += item.width
+    func calculateExtraBackgroundRows() -> Int {
+        let dataHeight = calculateDataHeight()
+        // contentVisibleSize 可能尚未初始化（滚动监听器未触发），此时用 tableSize 估算
+        let visibleHeight: CGFloat
+        if contentVisibleSize.height > 0 {
+            visibleHeight = contentVisibleSize.height
+        } else {
+            visibleHeight = max(tableSize.height - titleSize.height - scrollBarWidth, 0)
         }
-        let spacing = CGFloat(max(columnStorage.columns.count - 1, 0))
-        endPinding = tableSize.width - scrollBarWidth - spacing - currentWidth
-    }
+        let bgTotalHeight = visibleHeight - dataHeight - scrollBarWidth
+        guard bgTotalHeight > 0 else { return 0 }
 
-    func selectionRange(scroll: CGFloat) {
-        guard let selection = selection else { return }
-        var scrollChanged = 0.0
-        if scroll != 0 {
-            scrollChanged = scroll - scrollOffsetY
-            scrollOffsetY = scroll
-        }
-
-        guard let selectionInfo = selectionInfo else { return }
-        var start = selectionInfo.start
-        var end = selectionInfo.end - scrollChanged
-        self.selectionInfo = (selectionInfo.start, CGFloat(end))
-
-        if start > end {
-            let tmp = end
-            end = start
-            start = tmp
-        }
-
-        if multSelection {
-            var selected = [Value]()
-            rowStorage.clearAllSelected()
-            for item in rowStorage.appearList {
-                guard item.key < rowStorage.rows.count else { continue }
-                if item.value.top > end || item.value.bottom < start {
-                    continue
-                }
-
-                selected.append(rowStorage.rows[item.key].value)
-                rowStorage.selected(index: item.key, selected: true)
-            }
-
-            // 处理一下首尾的问题
-            selection(selected)
-        }
-        else {
-            // 单选只要最后一个就行
-            rowStorage.clearAllSelected()
-            for item in rowStorage.appearList {
-                guard item.key < rowStorage.rows.count else { continue }
-                if item.value.top < end && end < item.value.bottom {
-                    rowStorage.selected(index: item.key, selected: true)
-                    selection([rowStorage.rows[item.key].value])
-                    break
-                }
-            }
-        }
-    }
-
-    func rightSelection(index: Int, row: AKSUTableRowItem<Value>, point: CGPoint, event: NSEvent?) {
-        guard let rightClick = rightClick else { return }
-        rowStorage.rightSelected(id: row.value.id, selected: true)
-
-        // 判断是哪一个colume
-        var columnOffset = point.x
-        var columnKey = ""
-        for item in columnStorage.columns {
-            columnOffset -= item.width
-            if columnOffset <= 0 {
-                columnKey = item.key
-                break
-            }
-        }
-        rightClick(row.value, columnKey, event)
+        let bgH = resolveBackgroundRowHeight()
+        let bgCount = Int((bgTotalHeight / bgH).rounded(.up))
+        return max(0, bgCount)
     }
 }
 
+
+// MARK: - Shared Types
 class AKSUTableRowStorage<Value: Identifiable>: ObservableObject {
     @Published var rows: [AKSUTableRowItem<Value>] = []
 
@@ -926,15 +741,6 @@ public struct AKSUTableColumn<V>: Identifiable {
     }
 }
 
-struct AKSUTable_Previews: PreviewProvider {
-    static var previews: some View {
-        ZStack {
-            AKSUTablePreviewsView()
-        }
-        .frame(width: 600, height: 600)
-    }
-}
-
 // struct
 struct Person: Identifiable, Equatable {
     let id = UUID()
@@ -944,22 +750,28 @@ struct Person: Identifiable, Equatable {
     let emailAddress: String
 }
 
+// MARK: - Preview
+
+struct AKSUTable_Previews: PreviewProvider {
+    static var previews: some View {
+        ZStack {
+            AKSUTablePreviewsView()
+        }
+        .frame(width: 600, height: 600)
+    }
+}
+
 struct AKSUTablePreviewsView: View {
     @State private var people: [Person] = []
     @State var color: Color = .aksuTextBackground
     @State var appending: Bool = false
 
     func add() {
-        if !appending {
-            return
-        }
+        if !appending { return }
         for index in 0 ... 100 {
-            if !appending {
-                return
-            }
+            if !appending { return }
             people.append(Person(index: index, givenName: "tom \(people.count)", familyName: "alwaysking", emailAddress: "xxx@hotmail.com"))
         }
-
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             add()
         }
@@ -969,7 +781,7 @@ struct AKSUTablePreviewsView: View {
         HStack {
             Button("init") {
                 var tmp = [Person]()
-                for index in 0 ... 1000 {
+                for index in 0 ... 10 {
                     tmp.append(Person(index: index, givenName: "tom \(index)", familyName: "alwaysking", emailAddress: "xxx@hotmail.com"))
                 }
                 people = tmp
@@ -984,7 +796,6 @@ struct AKSUTablePreviewsView: View {
             Button("time") {
                 appending.toggle()
                 if appending {
-                    
                     add()
                 }
             }
@@ -1008,48 +819,47 @@ struct AKSUTablePreviewsView: View {
             }
         }
 
-        AKSUTable(data: $people, defaultRowHeight: 60, multSelection: false) {
-            AKSUTableColumn("名字", minWidth: 200, maxWidth: 300) {
-                HStack {
-                    Text("名字").padding().frame(height: 20)
-                    Spacer()
-                }.frame(height: 50)
-            } itemBuilder: { value in
-                HStack {
-                    Text(value.givenName).padding(.leading)
-                    Spacer()
+        AKSUTable(data: $people, defaultRowHeight: 60, multSelection: true)
+            {
+                AKSUTableColumn("名字", minWidth: 200, maxWidth: 300) {
+                    HStack {
+                        Text("名字").padding().frame(height: 20)
+                        Spacer()
+                    }.frame(height: 20)
+                } itemBuilder: { value in
+                    HStack {
+                        Text(value.givenName).padding(.leading)
+                        Spacer()
+                    }
                 }
-            }
-            AKSUTableColumn("家庭", minWidth: 200, maxWidth: 300) {
-                Text("家庭")
-            } itemBuilder: { value in
-                Text(value.familyName)
-            }
+                AKSUTableColumn("家庭", minWidth: 200, maxWidth: 300) {
+                    Text("家庭")
+                } itemBuilder: { value in
+                    Text(value.familyName)
+                }
 
-            AKSUTableColumn("电子邮件", minWidth: 200, maxWidth: 300) {
-                Text("电子邮件")
-            } itemBuilder: { value in
-                Text(value.emailAddress)
-            }
+                AKSUTableColumn("电子邮件", minWidth: 200, maxWidth: 300) {
+                    Text("电子邮件")
+                } itemBuilder: { value in
+                    Text(value.emailAddress)
+                }
 
-        } selection: { list in
-            print(list)
-
-        } rightClick: { value, key, event in
-            guard let location = AKSUMouseEventMonitor.filpLocationPoint(event: event) else { return }
-            let menu = NSMenu()
-            let menuItem1 = NSMenuItem(title: "Menu Item 1", action: nil, keyEquivalent: "")
-            menu.addItem(menuItem1)
-            let menuItem2 = NSMenuItem(title: "Menu Item 2", action: nil, keyEquivalent: "")
-            menu.addItem(menuItem2)
-            menu.popUp(positioning: nil, at: location, in: event?.window?.contentView)
-        }
-        getRowHeight: {
-            value in
-            if let value = value {
-                return CGFloat(value.index % 2 * 20 + 20)
+            } selection: { list in
+                print(list)
+            } rightClick: { value, key, event in
+                guard let location = AKSUMouseEventMonitor.filpLocationPoint(event: event) else { return }
+                let menu = NSMenu()
+                let menuItem1 = NSMenuItem(title: "Menu Item 1", action: nil, keyEquivalent: "")
+                menu.addItem(menuItem1)
+                let menuItem2 = NSMenuItem(title: "Menu Item 2", action: nil, keyEquivalent: "")
+                menu.addItem(menuItem2)
+                menu.popUp(positioning: nil, at: location, in: event?.window?.contentView)
             }
-            return 30
-        }
+            getRowHeight: { value in
+                if let value = value {
+                    return CGFloat(value.index % 2 * 20 + 20)
+                }
+                return 30
+            }
     }
 }

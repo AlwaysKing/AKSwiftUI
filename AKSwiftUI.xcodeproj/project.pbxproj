@@ -56,6 +56,7 @@
 		9355A0932CA519F600CA164C /* AKSUTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0712CA519F600CA164C /* AKSUTable.swift */; };
 		9355A0942CA519F600CA164C /* AKSUToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0722CA519F600CA164C /* AKSUToast.swift */; };
 		9357F0F22FC34E130060897C /* AKSUNSScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9357F0F12FC34E130060897C /* AKSUNSScrollView.swift */; };
+		9357F0FA2FC4A7F70060897C /* AKSUNSTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9357F0F92FC4A7F70060897C /* AKSUNSTableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -109,6 +110,7 @@
 		9355A0712CA519F600CA164C /* AKSUTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUTable.swift; sourceTree = "<group>"; };
 		9355A0722CA519F600CA164C /* AKSUToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUToast.swift; sourceTree = "<group>"; };
 		9357F0F12FC34E130060897C /* AKSUNSScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUNSScrollView.swift; sourceTree = "<group>"; };
+		9357F0F92FC4A7F70060897C /* AKSUNSTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUNSTableView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +188,8 @@
 				9355A0542CA519F600CA164C /* AKSUScreen.swift */,
 				9339A1AC2CA99EEC00EC9A7A /* AKSUWindow.swift */,
 				9339A1B22CAACFBB00EC9A7A /* AKSUKeyPressMonitor.swift */,
+				9357F0F92FC4A7F70060897C /* AKSUNSTableView.swift */,
+				9357F0F12FC34E130060897C /* AKSUNSScrollView.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -241,7 +245,6 @@
 				9355A06F2CA519F600CA164C /* AKSURange.swift */,
 				9355A0702CA519F600CA164C /* AKSUSegment.swift */,
 				9355A0712CA519F600CA164C /* AKSUTable.swift */,
-				9357F0F12FC34E130060897C /* AKSUNSScrollView.swift */,
 				9355A0722CA519F600CA164C /* AKSUToast.swift */,
 				9339A1AE2CAACEA900EC9A7A /* AKSUInputPin.swift */,
 				9339A1B02CAACEB800EC9A7A /* AKSUStep.swift */,
@@ -330,6 +333,7 @@
 				9339A1B32CAACFBB00EC9A7A /* AKSUKeyPressMonitor.swift in Sources */,
 				9355A0752CA519F600CA164C /* AKSUAnyViewArrayBuilder.swift in Sources */,
 				9355A0912CA519F600CA164C /* AKSURange.swift in Sources */,
+				9357F0FA2FC4A7F70060897C /* AKSUNSTableView.swift in Sources */,
 				9355A0892CA519F600CA164C /* AKSUContainBox.swift in Sources */,
 				9355A0792CA519F600CA164C /* AKSUScreen.swift in Sources */,
 				9355A0862CA519F600CA164C /* AKSUCircleRingShape.swift in Sources */,
