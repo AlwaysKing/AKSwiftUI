@@ -141,8 +141,8 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
                 if isRightSelected {
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke(isSelected ? .aksuWhite : selColor, lineWidth: 1.5)
-                        .padding(.leading, scrollBarWidth + (isSelected ? 6 : 4))
-                        .padding(.trailing, isSelected ? 6 : 4)
+                        .padding(.leading, isSelected ? scrollBarWidth + 9 : scrollBarWidth + 6)
+                        .padding(.trailing, isSelected ? scrollBarWidth + 5 : scrollBarWidth + 2)
                         .padding(.vertical, isSelected ? 3 : 2)
                 }
             }
@@ -154,52 +154,52 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
                         ZStack {
                             RoundedRectangle(cornerRadius: cornerRadius)
                                 .fill(selColor)
-                                .padding(.leading, scrollBarWidth + 3)
-                                .padding(.trailing, 3)
+                                .padding(.leading, scrollBarWidth + 6)
+                                .padding(.trailing, scrollBarWidth + 2)
                         }
                     } else if selectionFirst && selectionLast {
                         // 多选模式但只选中了一行（first == last）
                         ZStack {
                             RoundedRectangle(cornerRadius: cornerRadius)
                                 .fill(selColor)
-                                .padding(.leading, scrollBarWidth + 3)
-                                .padding(.trailing, 3)
+                                .padding(.leading, scrollBarWidth + 6)
+                                .padding(.trailing, scrollBarWidth + 2)
                         }
                     } else if selectionFirst && !selectionLast {
                         ZStack {
                             RoundedRectangle(cornerRadius: cornerRadius)
                                 .fill(selColor)
-                                .padding(.leading, scrollBarWidth + 3)
-                                .padding(.trailing, 3)
+                                .padding(.leading, scrollBarWidth + 6)
+                                .padding(.trailing, scrollBarWidth + 2)
                             VStack {
                                 Spacer()
                                 Rectangle()
                                     .fill(selColor)
                                     .frame(height: 7)
-                                    .padding(.leading, scrollBarWidth + 3)
-                                    .padding(.trailing, 3)
+                                    .padding(.leading, scrollBarWidth + 6)
+                                    .padding(.trailing, scrollBarWidth + 2)
                             }
                         }
                     } else if selectionLast && !selectionFirst {
                         ZStack {
                             RoundedRectangle(cornerRadius: cornerRadius)
                                 .fill(selColor)
-                                .padding(.leading, scrollBarWidth + 3)
-                                .padding(.trailing, 3)
+                                .padding(.leading, scrollBarWidth + 6)
+                                .padding(.trailing, scrollBarWidth + 2)
                             VStack {
                                 Rectangle()
                                     .fill(selColor)
                                     .frame(height: 7)
-                                    .padding(.leading, scrollBarWidth + 3)
-                                    .padding(.trailing, 3)
+                                    .padding(.leading, scrollBarWidth + 6)
+                                    .padding(.trailing, scrollBarWidth + 2)
                                 Spacer()
                             }
                         }
                     } else {
                         Rectangle()
                             .fill(selColor)
-                            .padding(.leading, scrollBarWidth + 3)
-                            .padding(.trailing, 3)
+                            .padding(.leading, scrollBarWidth + 6)
+                            .padding(.trailing, scrollBarWidth + 2)
                     }
                 }
             }
