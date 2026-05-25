@@ -39,12 +39,13 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
     let splitline: Bool
     let multSelection: Bool
+    let realtimeSelection: Bool
     let selection: (([Value]) -> Void)?
     let rightClick: ((Value, String, NSEvent?) -> Void)?
     let defaultRowHeight: CGFloat?
     let getRowHeight: ((Value?) -> CGFloat?)?
 
-    public init(data: Binding<[Value]>, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, multSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil) {
+    public init(data: Binding<[Value]>, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, multSelection: Bool = false, realtimeSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil) {
         self._data = data
         self._initColumns = columns().map { AKSUTableColumnItem(builder: $0) }
         self.headerBgColor = headerBgColor
@@ -52,6 +53,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         self.selection = selection
         self.rightClick = rightClick
         self.multSelection = multSelection
+        self.realtimeSelection = realtimeSelection
         self.selectionColor = selectionColor
         self.defaultRowHeight = defaultRowHeight
         self.getRowHeight = getRowHeight
@@ -236,7 +238,9 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             isDraggingSelection = true
             let item = rowStorage.rows[row]
             rowStorage.selected(index: row, selected: true)
-            selection?([item.value])
+            if realtimeSelection {
+                selection?([item.value])
+            }
         } else {
             let item = rowStorage.rows[row]
             rowStorage.selected(index: row, selected: true)
@@ -260,11 +264,20 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             selected.append(rowStorage.rows[i].value)
         }
 
-        selection?(selected)
+        if realtimeSelection {
+            selection?(selected)
+        }
         refreshUI.toggle()
     }
 
     private func handleMouseUp() {
+        if !realtimeSelection && isDraggingSelection {
+            // 非实时模式：放开鼠标时触发一次回调
+            let selected = rowStorage.rows.filter { $0.selected }.map { $0.value }
+            if !selected.isEmpty {
+                selection?(selected)
+            }
+        }
         isDraggingSelection = false
         selectionStartRow = nil
     }
