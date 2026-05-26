@@ -12,6 +12,20 @@ public enum AKSUToggleStyle {
     case `switch`
 }
 
+public enum AKSUToggleAlignment {
+    case top
+    case center
+    case bottom
+
+    var verticalAlignment: VerticalAlignment {
+        switch self {
+        case .top: return .top
+        case .center: return .center
+        case .bottom: return .bottom
+        }
+    }
+}
+
 public struct AKSUToggle: View {
     @Environment(\.self) var environment
     @Environment(\.isEnabled) private var isEnabled
@@ -19,6 +33,9 @@ public struct AKSUToggle: View {
     var label: String = ""
     var style: AKSUToggleStyle
     var slimSwitch: Bool
+    var controlSize: CGFloat
+    var font: Font
+    var alignment: AKSUToggleAlignment
     var color: Color
     var actionColor: Color
     var boardColor: Color
@@ -27,7 +44,7 @@ public struct AKSUToggle: View {
 
     @State var realToggle: Bool
 
-    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
+    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, controlSize: CGFloat = 20, font: Font = .title2, alignment: AKSUToggleAlignment = .center, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
         self.style = style
         self.label = label
         self.color = color
@@ -36,13 +53,19 @@ public struct AKSUToggle: View {
         self.change = change
         self.realToggle = false
         self.slimSwitch = slimSwitch
+        self.controlSize = controlSize
+        self.font = font
+        self.alignment = alignment
         self.boardColor = boardColor
         self.bgColor = bgColor
     }
 
-    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, toggle: Bool, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
+    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, controlSize: CGFloat = 20, font: Font = .title2, alignment: AKSUToggleAlignment = .center, toggle: Bool, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
         self.style = style
         self.slimSwitch = slimSwitch
+        self.controlSize = controlSize
+        self.font = font
+        self.alignment = alignment
         self._toggle = .constant(false)
         self.label = label
         self.color = color
@@ -53,9 +76,12 @@ public struct AKSUToggle: View {
         self.bgColor = bgColor
     }
 
-    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, toggle: Binding<Bool>, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
+    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, controlSize: CGFloat = 20, font: Font = .title2, alignment: AKSUToggleAlignment = .center, toggle: Binding<Bool>, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
         self.style = style
         self.slimSwitch = slimSwitch
+        self.controlSize = controlSize
+        self.font = font
+        self.alignment = alignment
         self._toggle = toggle
         self.label = label
         self.color = color
@@ -67,17 +93,18 @@ public struct AKSUToggle: View {
     }
 
     public var body: some View {
-        HStack {
+        HStack(alignment: alignment.verticalAlignment) {
             if style == .checkbox {
                 ZStack {
                     if realToggle {
                         Image(systemName: "checkmark")
                             .foregroundColor(.aksuWhite)
+                            .font(.system(size: controlSize * 0.6, weight: .semibold))
                     }
                 }
-                .frame(width: 20, height: 20)
+                .frame(width: controlSize, height: controlSize)
                 .background(realToggle ? actionColor : bgColor)
-                .cornerRadius(4.0)
+                .cornerRadius(controlSize * 0.2)
                 .overlay {
                     RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius)
                         .stroke(realToggle ? actionColor : boardColor)
@@ -90,7 +117,7 @@ public struct AKSUToggle: View {
                 }
             } else if style == .switch {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: controlSize * 0.5)
                         .fill(realToggle ? actionColor : bgColor)
                         .overlay {
                             if !isEnabled {
@@ -98,10 +125,10 @@ public struct AKSUToggle: View {
                                     .fill(.aksuGrayMask)
                             }
                         }
-                        .padding(.vertical, slimSwitch ? 5 : 0)
-                        .padding(.horizontal, slimSwitch ? 2 : 0)
+                        .padding(.vertical, slimSwitch ? controlSize * 0.25 : 0)
+                        .padding(.horizontal, slimSwitch ? controlSize * 0.1 : 0)
 
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: controlSize * 0.5)
                         .stroke(realToggle ? actionColor : boardColor)
                         .overlay {
                             if !isEnabled {
@@ -109,8 +136,8 @@ public struct AKSUToggle: View {
                                     .fill(.aksuGrayMask)
                             }
                         }
-                        .padding(.vertical, slimSwitch ? 5 : 0)
-                        .padding(.horizontal, slimSwitch ? 2 : 0)
+                        .padding(.vertical, slimSwitch ? controlSize * 0.25 : 0)
+                        .padding(.horizontal, slimSwitch ? controlSize * 0.1 : 0)
 
                     Circle()
                         .foregroundStyle(.white)
@@ -120,16 +147,16 @@ public struct AKSUToggle: View {
                                     .fill(.aksuGrayMask)
                             }
                         }
-                        .padding(1)
-                        .offset(x: realToggle ? 10 : -10)
+                        .padding(controlSize * 0.05)
+                        .offset(x: realToggle ? controlSize * 0.5 : -(controlSize * 0.5))
                         .shadow(radius: 2)
                 }
-                .frame(width: 40, height: 20)
+                .frame(width: controlSize * 2, height: controlSize)
             }
 
             Text(label)
                 .foregroundStyle(.aksuText)
-                .font(.title2)
+                .font(font)
                 .foregroundColor(isEnabled ? color : color.merge(up: .aksuGrayMask, mode: environment))
                 .padding(.trailing)
         }
@@ -163,7 +190,9 @@ struct AKSUTogglePreviewsView: View {
     @State var list: [String] = ["E"]
 
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
+            // 原始默认效果
+            Text("默认 (controlSize: 20, font: .title2, center)")
             HStack {
                 AKSUToggle(label: "A", boardColor: .yellow, bgColor: .green) {
                     checked in
@@ -173,7 +202,6 @@ struct AKSUTogglePreviewsView: View {
                     checked in
                     print("check2 = \(checked)")
                 }
-
                 AKSUToggle(toggle: $checked, label: "C") {
                     checked in
                     print("check3 = \(checked)")
@@ -181,6 +209,51 @@ struct AKSUTogglePreviewsView: View {
                 .disabled(true)
             }
 
+            // 大尺寸效果
+            Text("大尺寸 (controlSize: 30, font: .largeTitle)")
+            HStack {
+                AKSUToggle(controlSize: 30, font: .largeTitle, label: "Large") {
+                    checked in
+                    print("large = \(checked)")
+                }
+                AKSUToggle(style: .switch, controlSize: 30, font: .largeTitle, label: "Large") {
+                    checked in
+                    print("large switch = \(checked)")
+                }
+            }
+
+            // 小尺寸效果
+            Text("小尺寸 (controlSize: 14, font: .caption)")
+            HStack {
+                AKSUToggle(controlSize: 14, font: .caption, label: "Small") {
+                    checked in
+                    print("small = \(checked)")
+                }
+                AKSUToggle(style: .switch, controlSize: 14, font: .caption, label: "Small") {
+                    checked in
+                    print("small switch = \(checked)")
+                }
+            }
+
+            // 不同对齐方式
+            Text("对齐方式 (top / center / bottom)")
+            HStack(alignment: .top) {
+                AKSUToggle(controlSize: 30, font: .title, alignment: .top, label: "Top") {
+                    checked in
+                    print("top = \(checked)")
+                }
+                AKSUToggle(controlSize: 30, font: .title, alignment: .center, label: "Center") {
+                    checked in
+                    print("center = \(checked)")
+                }
+                AKSUToggle(controlSize: 30, font: .title, alignment: .bottom, label: "Bottom") {
+                    checked in
+                    print("bottom = \(checked)")
+                }
+            }
+
+            // 原有的 Switch 预览
+            Text("Switch 样式")
             HStack {
                 AKSUToggle(style: .switch, label: "A", boardColor: .yellow, bgColor: .green) {
                     checked in
@@ -190,13 +263,15 @@ struct AKSUTogglePreviewsView: View {
                     checked in
                     print("check2 = \(checked)")
                 }
-
                 AKSUToggle(style: .switch, toggle: $checked, label: "C") {
                     checked in
                     print("check3 = \(checked)")
                 }
                 .disabled(true)
             }
+
+            // Slim Switch
+            Text("Slim Switch")
             HStack {
                 AKSUToggle(style: .switch, slimSwitch: true, label: "A", boardColor: .yellow, bgColor: .green) {
                     checked in
@@ -206,7 +281,6 @@ struct AKSUTogglePreviewsView: View {
                     checked in
                     print("check2 = \(checked)")
                 }
-
                 AKSUToggle(style: .switch, slimSwitch: true, toggle: $checked, label: "C") {
                     checked in
                     print("check3 = \(checked)")
@@ -214,5 +288,6 @@ struct AKSUTogglePreviewsView: View {
                 .disabled(true)
             }
         }
+        .padding()
     }
 }
