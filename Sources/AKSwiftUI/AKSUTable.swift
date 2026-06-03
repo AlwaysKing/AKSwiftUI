@@ -186,6 +186,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             var tmp = [AKSUTableRowItem<Value>]()
             for item in data {
                 if let existing = existingRows[item.id] {
+                    existing.value = item
                     tmp.append(existing)
                     existingRows.removeValue(forKey: item.id)
                 } else {
@@ -649,7 +650,7 @@ class AKSUTableRowStorage<Value: Identifiable>: ObservableObject {
 }
 
 class AKSUTableRowItem<Value>: Identifiable, ObservableObject {
-    let value: Value
+    var value: Value
     @Published var selected: Bool
     @Published var rightSelected: Bool
 
