@@ -44,9 +44,11 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     let rightClick: ((Value, String, NSEvent?) -> Void)?
     let defaultRowHeight: CGFloat?
     let getRowHeight: ((Value?) -> CGFloat?)?
+    let controller: AKSUTableController<Value>?
 
-    public init(data: Binding<[Value]>, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, multSelection: Bool = false, realtimeSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil) {
+    public init(data: Binding<[Value]>, controller: AKSUTableController<Value>? = nil, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, multSelection: Bool = false, realtimeSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil) {
         self._data = data
+        self.controller = controller
         self._initColumns = columns().map { AKSUTableColumnItem(builder: $0) }
         self.headerBgColor = headerBgColor
         self.contentBgColor = contentBgColor
@@ -153,6 +155,8 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 defaultRowHeight: defaultRowHeight,
                 getRowHeight: getRowHeight,
                 refreshId: refreshUI,
+                resolvedOps: controller?.resolvedOps ?? [],
+                clearOps: { [weak controller] in controller?.resolvedOps.removeAll() },
                 onScrollChanged: { offsetY, offsetX in
                     scrollOffsetX = -offsetX
                 },
@@ -176,7 +180,18 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             .background(contentBgColor)
         }
+        .onChange(of: controller?.pendingOps.count ?? 0) { _ in
+            if let controller, !controller.pendingOps.isEmpty {
+                applyControllerOps(controller)
+            }
+        }
         .onChange(of: data) { _ in
+            // controller 精准操作已处理，跳过全量重建
+            if let controller, controller.skipOnChange {
+                controller.skipOnChange = false
+                return
+            }
+
             // 按 id 查找已有行，复用 RowItem（保留选中状态）
             var existingRows: [Value.ID: AKSUTableRowItem<Value>] = [:]
             for row in rowStorage.rows {
@@ -225,6 +240,59 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             initWidth()
         }
         .clipped()
+    }
+
+    // MARK: - Controller Precision Operations
+
+    private func applyControllerOps(_ controller: AKSUTableController<Value>) {
+        controller.skipOnChange = true
+
+        // 解析 pendingOps
+        var toRemove: Set<Value.ID> = []
+        var toUpsert: [Value] = []
+
+        for op in controller.pendingOps {
+            switch op {
+            case .remove(let ids):
+                toRemove.formUnion(ids)
+            case .upsert(let values):
+                toUpsert.append(contentsOf: values)
+            }
+        }
+
+        var resolved: [AKSUTableController<Value>.ResolvedOp] = []
+
+        // 1. 执行 removes（按 index 降序，避免偏移）
+        var removeIndices: [(index: Int, id: Value.ID)] = []
+        for id in toRemove {
+            if let idx = rowStorage.rows.firstIndex(where: { $0.value.id == id }) {
+                removeIndices.append((idx, id))
+            }
+        }
+        removeIndices.sort { $0.index > $1.index }
+        for (index, _) in removeIndices {
+            rowStorage.rows.remove(at: index)
+            data.remove(at: index)
+            resolved.append(.remove(index: index))
+        }
+
+        // 2. 执行 upserts（存在的更新，不存在的追加）
+        for value in toUpsert {
+            if toRemove.contains(value.id) { continue }
+            if let idx = rowStorage.rows.firstIndex(where: { $0.value.id == value.id }) {
+                rowStorage.rows[idx].value = value
+                data[idx] = value
+                resolved.append(.update(index: idx))
+            } else {
+                let rowItem = AKSUTableRowItem(value: value, selected: false, rightSelected: false)
+                rowStorage.rows.append(rowItem)
+                data.append(value)
+                resolved.append(.insert(index: rowStorage.rows.count - 1))
+            }
+        }
+
+        controller.resolvedOps = resolved
+        controller.pendingOps.removeAll()
     }
 
     // MARK: - Selection Handling
@@ -779,6 +847,7 @@ struct AKSUTablePreviewsView: View {
     @State private var people: [Person] = []
     @State var color: Color = .aksuTextBackground
     @State var appending: Bool = false
+    @StateObject private var controller = AKSUTableController<Person>()
 
     func add() {
         if !appending { return }
@@ -815,6 +884,28 @@ struct AKSUTablePreviewsView: View {
             }
         }
         HStack {
+            Text("Controller:")
+            Button("upsert更新") {
+                guard let first = people.first else { return }
+                controller.update([Person(index: first.index, givenName: "updated \(Int.random(in: 0 ... 999))", familyName: first.familyName, emailAddress: first.emailAddress)])
+            }
+            Button("upsert插入") {
+                controller.update([Person(index: -1, givenName: "new \(Int.random(in: 0 ... 999))", familyName: "new", emailAddress: "new@hot.com")])
+            }
+            Button("remove") {
+                if let first = people.first {
+                    controller.remove([first.id])
+                }
+            }
+            Button("混合操作") {
+                guard people.count >= 2 else { return }
+                let target = people[1]
+                controller.update([Person(index: target.index, givenName: "mixed \(Int.random(in: 0 ... 999))", familyName: target.familyName, emailAddress: target.emailAddress)])
+                controller.remove([people[0].id])
+                controller.update([Person(index: -1, givenName: "inserted \(Int.random(in: 0 ... 999))", familyName: "new", emailAddress: "new@hot.com")])
+            }
+        }
+        HStack {
             Text("颜色")
             AKSUButton("", bgColor: .red) {
                 color = .red
@@ -833,7 +924,7 @@ struct AKSUTablePreviewsView: View {
             }
         }
 
-        AKSUTable(data: $people, defaultRowHeight: 60, multSelection: true)
+        AKSUTable(data: $people, controller: controller, defaultRowHeight: 60, multSelection: true)
             {
                 AKSUTableColumn("名字", minWidth: 200, maxWidth: 300) {
                     HStack {

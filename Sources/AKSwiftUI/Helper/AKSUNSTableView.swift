@@ -453,6 +453,10 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
     // 刷新标记：当 selection 等状态变化时，外部 toggle 此值强制 updateNSView 调用
     var refreshId: Bool = false
 
+    // 精准更新操作（由 AKSUTableController 生成）
+    var resolvedOps: [AKSUTableController<Value>.ResolvedOp] = []
+    var clearOps: (() -> Void)?
+
     // 回调
     var onScrollChanged: ((CGFloat, CGFloat) -> Void)?
     var onVisibleSizeChanged: ((CGSize) -> Void)?
@@ -645,8 +649,24 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
             }
         }
 
-        // 刷新数据
-        tableView.reloadData()
+        // 刷新数据：精准更新或全量刷新
+        if !resolvedOps.isEmpty {
+            tableView.beginUpdates()
+            for op in resolvedOps {
+                switch op {
+                case .update(let index):
+                    tableView.reloadData(forRowIndexes: IndexSet([index]), columnIndexes: IndexSet([0]))
+                case .remove(let index):
+                    tableView.removeRows(at: IndexSet([index]), withAnimation: [])
+                case .insert(let index):
+                    tableView.insertRows(at: IndexSet([index]), withAnimation: [])
+                }
+            }
+            tableView.endUpdates()
+            clearOps?()
+        } else {
+            tableView.reloadData()
+        }
 
         // 更新滚动条
         let clipBounds = scrollView.contentView.bounds

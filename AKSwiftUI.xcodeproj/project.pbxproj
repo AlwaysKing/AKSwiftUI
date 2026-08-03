@@ -57,6 +57,7 @@
 		9355A0942CA519F600CA164C /* AKSUToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9355A0722CA519F600CA164C /* AKSUToast.swift */; };
 		9357F0F22FC34E130060897C /* AKSUNSScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9357F0F12FC34E130060897C /* AKSUNSScrollView.swift */; };
 		9357F0FA2FC4A7F70060897C /* AKSUNSTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9357F0F92FC4A7F70060897C /* AKSUNSTableView.swift */; };
+		AA55A0022CA519F700CA164C /* AKSUTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA55A0012CA519F700CA164C /* AKSUTableController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -111,6 +112,7 @@
 		9355A0722CA519F600CA164C /* AKSUToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUToast.swift; sourceTree = "<group>"; };
 		9357F0F12FC34E130060897C /* AKSUNSScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUNSScrollView.swift; sourceTree = "<group>"; };
 		9357F0F92FC4A7F70060897C /* AKSUNSTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AKSUNSTableView.swift; sourceTree = "<group>"; };
+		AA55A0012CA519F700CA164C /* AKSUTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKSUTableController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +192,7 @@
 				9339A1B22CAACFBB00EC9A7A /* AKSUKeyPressMonitor.swift */,
 				9357F0F92FC4A7F70060897C /* AKSUNSTableView.swift */,
 				9357F0F12FC34E130060897C /* AKSUNSScrollView.swift */,
+				AA55A0012CA519F700CA164C /* AKSUTableController.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 				93509D652C88A7BC00CA3645 /* SplitContentView.swift in Sources */,
 				9355A08D2CA519F600CA164C /* AKSUPopover.swift in Sources */,
 				9355A0932CA519F600CA164C /* AKSUTable.swift in Sources */,
+				AA55A0022CA519F700CA164C /* AKSUTableController.swift in Sources */,
 				9355A07E2CA519F600CA164C /* AKSUWarpStack.swift in Sources */,
 				9339A1B32CAACFBB00EC9A7A /* AKSUKeyPressMonitor.swift in Sources */,
 				9355A0752CA519F600CA164C /* AKSUAnyViewArrayBuilder.swift in Sources */,
