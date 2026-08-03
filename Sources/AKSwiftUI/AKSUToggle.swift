@@ -30,7 +30,7 @@ public struct AKSUToggle: View {
     @Environment(\.self) var environment
     @Environment(\.isEnabled) private var isEnabled
     @Binding var toggle: Bool
-    var label: String = ""
+    var label: String? = nil
     var style: AKSUToggleStyle
     var slimSwitch: Bool
     var controlSize: CGFloat
@@ -44,7 +44,7 @@ public struct AKSUToggle: View {
 
     @State var realToggle: Bool
 
-    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, controlSize: CGFloat = 20, font: Font = .title2, alignment: AKSUToggleAlignment = .center, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
+    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, controlSize: CGFloat = 20, font: Font = .title2, alignment: AKSUToggleAlignment = .center, label: String? = nil, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
         self.style = style
         self.label = label
         self.color = color
@@ -60,7 +60,7 @@ public struct AKSUToggle: View {
         self.bgColor = bgColor
     }
 
-    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, controlSize: CGFloat = 20, font: Font = .title2, alignment: AKSUToggleAlignment = .center, toggle: Bool, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
+    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, controlSize: CGFloat = 20, font: Font = .title2, alignment: AKSUToggleAlignment = .center, toggle: Bool, label: String? = nil, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
         self.style = style
         self.slimSwitch = slimSwitch
         self.controlSize = controlSize
@@ -76,7 +76,7 @@ public struct AKSUToggle: View {
         self.bgColor = bgColor
     }
 
-    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, controlSize: CGFloat = 20, font: Font = .title2, alignment: AKSUToggleAlignment = .center, toggle: Binding<Bool>, label: String, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
+    public init(style: AKSUToggleStyle = .checkbox, slimSwitch: Bool = false, controlSize: CGFloat = 20, font: Font = .title2, alignment: AKSUToggleAlignment = .center, toggle: Binding<Bool>, label: String? = nil, color: Color = .aksuText, actionColor: Color = .aksuPrimary, boardColor: Color = .aksuBoard, bgColor: Color = .clear, change: ((Bool) -> Void)? = nil) {
         self.style = style
         self.slimSwitch = slimSwitch
         self.controlSize = controlSize
@@ -154,11 +154,13 @@ public struct AKSUToggle: View {
                 .frame(width: controlSize * 2, height: controlSize)
             }
 
-            Text(label)
-                .foregroundStyle(.aksuText)
-                .font(font)
-                .foregroundColor(isEnabled ? color : color.merge(up: .aksuGrayMask, mode: environment))
-                .padding(.trailing)
+            if let label {
+                Text(label)
+                    .foregroundStyle(.aksuText)
+                    .font(font)
+                    .foregroundColor(isEnabled ? color : color.merge(up: .aksuGrayMask, mode: environment))
+                    .padding(.trailing)
+            }
         }
         .background(.white.opacity(0.01))
         .onChange(of: toggle) { newValue in
