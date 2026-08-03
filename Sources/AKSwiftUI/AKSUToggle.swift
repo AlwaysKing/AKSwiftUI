@@ -161,8 +161,11 @@ public struct AKSUToggle: View {
                 .padding(.trailing)
         }
         .background(.white.opacity(0.01))
-        .onChange(of: toggle) { _ in
-            realToggle = toggle
+        .onChange(of: toggle) { newValue in
+            guard realToggle != newValue else { return }
+            withAnimation {
+                realToggle = newValue
+            }
         }
         .onTapGesture {
             withAnimation {
