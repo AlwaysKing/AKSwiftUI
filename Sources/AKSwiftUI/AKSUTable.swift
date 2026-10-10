@@ -116,9 +116,9 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                 .frame(width: endPinding, height: 1)
                         }
                     }
-                    // contentPadding 开启时表头与行内容保持相同的首尾内边距
-                    .padding(.leading, contentPadding ? scrollBarWidth + 6 : 0)
-                    .padding(.trailing, contentPadding ? scrollBarWidth + 2 : 0)
+                    // contentPadding 开启时表头与行内容保持相同的首尾内边距（含避开右键描边的 3pt）
+                    .padding(.leading, contentPadding ? scrollBarWidth + 9 : 0)
+                    .padding(.trailing, contentPadding ? scrollBarWidth + 5 : 0)
                     .offset(x: data.count == 0 ? 0 : scrollOffsetX)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -388,7 +388,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
     /// contentPadding 开启时内容区首尾额外占用的水平空间
     var contentInset: CGFloat {
-        contentPadding ? scrollBarWidth * 2 + 8 : 0
+        contentPadding ? scrollBarWidth * 2 + 14 : 0
     }
 
     func initWidth() {

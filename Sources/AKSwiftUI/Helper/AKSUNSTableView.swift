@@ -121,6 +121,9 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
         let bgLeading: CGFloat = contentPadding ? scrollBarWidth + 6 : 0
         let bgTrailing: CGFloat = contentPadding ? scrollBarWidth + 2 : 0
         let bgCornerRadius: CGFloat = contentPadding ? cornerRadius : 0
+        // 内容比背景条再多缩 3pt，避开右键描边(选中叠加时描边在 bgLeading+3 处)
+        let contentLeading: CGFloat = contentPadding ? bgLeading + 3 : 0
+        let contentTrailing: CGFloat = contentPadding ? bgTrailing + 3 : 0
 
         // 文字内容（背景行传 nil 时不渲染文字）
         let textContent = HStack(spacing: 1) {
@@ -140,8 +143,8 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         // 首尾强制内边距，保证内容在斑马纹/选中背景条内
-        .padding(.leading, bgLeading)
-        .padding(.trailing, bgTrailing)
+        .padding(.leading, contentLeading)
+        .padding(.trailing, contentTrailing)
 
         // 分层：文字 → 选中背景 → 斑马纹背景
         let content = textContent
