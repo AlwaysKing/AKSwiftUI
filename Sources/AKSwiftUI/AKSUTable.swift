@@ -223,9 +223,16 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         }
         .onChange(of: scrollBarWidth) { _ in
             if scrollBarWidth > 0 {
-                initWidth()
+                initWidth(contentPadding: contentPadding)
                 refreshUI.toggle()
             }
+        }
+        .onChange(of: contentPadding) { newValue in
+            // 注意: onChange 的 action 闭包捕获的是上一次 body 求值的 self，
+            // 闭包里读 let contentPadding 是旧值。必须用 newValue 显式传参，
+            // 否则列宽/endPadding 按旧 inset 计算，滞后一拍导致内容溢出错位
+            initWidth(contentPadding: newValue)
+            refreshUI.toggle()
         }
         .overlay {
             GeometryReader { geometry in
@@ -235,7 +242,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 }
                 .onChange(of: geometry.size) { _ in
                     tableSize = geometry.size
-                    updateWidth()
+                    updateWidth(contentPadding: contentPadding)
                     refreshUI.toggle()
                 }
             }
@@ -243,7 +250,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         .onAppear {
             scrollBarWidth = 6
             self.columnStorage.reset(_initColumns)
-            initWidth()
+            initWidth(contentPadding: contentPadding)
             // 视图创建时 data 已非空的话 onChange 不会触发，这里补一次初始填充
             if rowStorage.rows.isEmpty && !data.isEmpty {
                 rowStorage.rows = data.map { AKSUTableRowItem(value: $0, selected: false, rightSelected: false) }
@@ -387,14 +394,14 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     // MARK: - Column Width Management
 
     /// contentPadding 开启时内容区首尾额外占用的水平空间
-    var contentInset: CGFloat {
+    func contentInset(contentPadding: Bool) -> CGFloat {
         contentPadding ? scrollBarWidth * 2 + 20 : 0
     }
 
-    func initWidth() {
+    func initWidth(contentPadding: Bool) {
         if tableSize == CGSize.zero { return }
 
-        let totalWidth = tableSize.width - scrollBarWidth - contentInset - CGFloat(max(columnStorage.columns.count - 1, 0))
+        let totalWidth = tableSize.width - scrollBarWidth - contentInset(contentPadding: contentPadding) - CGFloat(max(columnStorage.columns.count - 1, 0))
         let totalCount = columnStorage.columns.count
 
         var distributedWidths = 0.0
@@ -470,12 +477,12 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             if !keepRunning { break }
         }
 
-        refreshEndPadding()
+        refreshEndPadding(contentPadding: contentPadding)
     }
 
-    func updateWidth() {
+    func updateWidth(contentPadding: Bool) {
         if tableSize == CGSize.zero { return }
-        let targetWidth = tableSize.width - scrollBarWidth - contentInset - CGFloat(max(columnStorage.columns.count - 1, 0))
+        let targetWidth = tableSize.width - scrollBarWidth - contentInset(contentPadding: contentPadding) - CGFloat(max(columnStorage.columns.count - 1, 0))
         var currentWidth = 0.0
         for item in columnStorage.columns {
             currentWidth += item.width
@@ -518,16 +525,16 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             }
         }
 
-        refreshEndPadding()
+        refreshEndPadding(contentPadding: contentPadding)
     }
 
-    func refreshEndPadding() {
+    func refreshEndPadding(contentPadding: Bool) {
         var currentWidth = 0.0
         for item in columnStorage.columns {
             currentWidth += item.width
         }
         let spacing = CGFloat(max(columnStorage.columns.count - 1, 0))
-        endPinding = tableSize.width - scrollBarWidth - contentInset - spacing - currentWidth
+        endPinding = tableSize.width - scrollBarWidth - contentInset(contentPadding: contentPadding) - spacing - currentWidth
     }
 
     // MARK: - Helpers
@@ -862,6 +869,7 @@ struct AKSUTablePreviewsView: View {
     @State private var people: [Person] = []
     @State var color: Color = .aksuTextBackground
     @State var appending: Bool = false
+    @State var paddingOn: Bool = true
     @StateObject private var controller = AKSUTableController<Person>()
 
     func add() {
@@ -937,9 +945,12 @@ struct AKSUTablePreviewsView: View {
             AKSUButton("", bgColor: .white) {
                 color = .aksuTextBackground
             }
+
+            Text("    contentPadding")
+            AKSUToggle(toggle: $paddingOn)
         }
 
-        AKSUTable(data: $people, controller: controller, defaultRowHeight: 60, multSelection: true)
+        AKSUTable(data: $people, controller: controller, defaultRowHeight: 60, contentBgColor: color, contentPadding: paddingOn, multSelection: true)
             {
                 AKSUTableColumn("名字", minWidth: 200, maxWidth: 300) {
                     HStack {
