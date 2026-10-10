@@ -490,8 +490,10 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
     var clearOps: (() -> Void)?
 
     // 回调
-    var onScrollChanged: ((CGFloat, CGFloat) -> Void)?
     var onVisibleSizeChanged: ((CGSize) -> Void)?
+
+    // header 横向同步器（滚动通知直接平移 header 承载视图）
+    var headerSync: AKSUTableHeaderSync?
 
     // 背景行数量（由外部计算传入）
     var extraBackgroundRows: Int = 0
@@ -638,11 +640,12 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
                 hBar.needsDisplay = true
             }
 
-            // 通知 SwiftUI 层同步 header
-            DispatchQueue.main.async {
-                coordinator?.parent.onScrollChanged?(bounds.origin.y, bounds.origin.x)
-                coordinator?.parent.onVisibleSizeChanged?(bounds.size)
-            }
+            // 同一 AppKit 事务直接平移 header 承载视图。
+            // 不能走 SwiftUI state（哪怕同步调用也要等下一轮渲染管线，
+            // 横向滚动时 header 必然滞后 content 一拍）
+            coordinator?.parent.headerSync?.setScrollOffset(x: bounds.origin.x)
+            // 通知 SwiftUI 层可见区域变化（背景行数计算用）
+            coordinator?.parent.onVisibleSizeChanged?(bounds.size)
         }
 
         // 存储引用
@@ -747,6 +750,87 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
         totalWidth += CGFloat(max(columnStorage.columns.count - 1, 0)) // spacing
         totalWidth += max(endPadding, 0)
         return totalWidth
+    }
+}
+
+// MARK: - Header 横向同步
+
+/// header 横向同步器：滚动通知里直接平移 header 的承载 NSView，
+/// 绕过 SwiftUI state —— state 驱动要等下一轮渲染管线，滚动时 header 必然滞后 content
+class AKSUTableHeaderSync {
+    weak var clip: NSView?
+    var leadingConstraint: NSLayoutConstraint?
+
+    func attach(clip: NSView, leadingConstraint: NSLayoutConstraint) {
+        self.clip = clip
+        self.leadingConstraint = leadingConstraint
+    }
+
+    func setScrollOffset(x: CGFloat) {
+        guard let constraint = leadingConstraint, constraint.constant != -x else { return }
+        constraint.constant = -x
+        // 立即同步布局，与 content 滚动同处一个 CATransaction，消除一拍滞后
+        clip?.needsLayout = true
+        clip?.layoutSubtreeIfNeeded()
+    }
+}
+
+/// header 内容容器：外层 clip 裁掉越界部分，内层 slide 承载 NSHostingView，
+/// 滚动时由 AKSUTableHeaderSync 直接平移 slide（与 content 同一 AppKit 事务）
+struct AKSUTableHeaderContainer<Content: View>: NSViewRepresentable {
+    let sync: AKSUTableHeaderSync
+    @ViewBuilder let content: Content
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    func makeNSView(context: Context) -> NSView {
+        let clip = NSView()
+
+        let slide = NSView()
+        slide.translatesAutoresizingMaskIntoConstraints = false
+        clip.addSubview(slide)
+
+        let hosting = NSHostingView(rootView: content)
+        hosting.translatesAutoresizingMaskIntoConstraints = false
+        slide.addSubview(hosting)
+
+        // 平移用的 leading 约束：autolayout 下直接 setFrameOrigin 会被布局 pass 覆盖，
+        // 改约束常量并立即同步布局，与 content 滚动落在同一渲染事务
+        let leading = slide.leadingAnchor.constraint(equalTo: clip.leadingAnchor)
+        leading.isActive = true
+        NSLayoutConstraint.activate([
+            slide.topAnchor.constraint(equalTo: clip.topAnchor),
+            slide.bottomAnchor.constraint(equalTo: clip.bottomAnchor),
+            hosting.leadingAnchor.constraint(equalTo: slide.leadingAnchor),
+            hosting.topAnchor.constraint(equalTo: slide.topAnchor),
+            hosting.bottomAnchor.constraint(equalTo: slide.bottomAnchor),
+            // trailing 必须约束：否则 slide 宽度解析为 0，零尺寸视图的整个子树
+            // 会被合成系统裁掉（表头内容全部不显示）
+            hosting.trailingAnchor.constraint(equalTo: slide.trailingAnchor),
+        ])
+
+        context.coordinator.hosting = hosting
+        context.coordinator.slide = slide
+        sync.attach(clip: clip, leadingConstraint: leading)
+        return clip
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        // 裁剪必须在视图进入层级后再开：创建时立刻 wantsLayer+masksToBounds
+        // 会破坏 NSHostingView 的 layer 合成（表头内容整体不渲染）
+        if !nsView.wantsLayer {
+            nsView.wantsLayer = true
+            nsView.layer?.masksToBounds = true
+        }
+        // 列宽等变化时 SwiftUI 重渲染，直接更新 hosting 内容（平移量保留在 slide 上）
+        context.coordinator.hosting?.rootView = content
+    }
+
+    class Coordinator {
+        var hosting: NSHostingView<Content>?
+        var slide: NSView?
     }
 }
 

@@ -19,8 +19,9 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     @State var endPinding: CGFloat = 0.0
 
     @State var refreshUI: Bool = false
+    // header 横向同步器：滚动通知直接平移 header 承载视图（不走 state）
+    @State var headerSync = AKSUTableHeaderSync()
 
-    @State private var scrollOffsetX: CGFloat = 0.0
     @State private var scrollBarWidth: CGFloat = 0
     @State private var contentVisibleSize: CGSize = .zero
     @State private var measuredDataHeight: CGFloat = 0.0
@@ -76,7 +77,10 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         VStack(spacing: 0) {
             // header
             VStack(spacing: 0) {
-                ScrollView([.horizontal], showsIndicators: false) {
+                // header 内容承载在 NSView 容器里：滚动时由 boundsDidChange 通知在同一
+                // AppKit 事务直接平移承载视图，绕过 SwiftUI state —— state 驱动要等下一轮
+                // 渲染管线，横向滚动时 header 必然滞后 content 一拍
+                AKSUTableHeaderContainer(sync: headerSync) {
                     HStack(spacing: 0) {
                         ForEach(columnStorage.columns) { header in
                             HStack {
@@ -121,7 +125,6 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                     // contentPadding 开启时表头与行内容保持相同的首尾内边距（含避开右键描边的 6pt）
                     .padding(.leading, contentPadding ? scrollBarWidth + 12 : 0)
                     .padding(.trailing, contentPadding ? scrollBarWidth + 8 : 0)
-                    .offset(x: data.count == 0 ? 0 : scrollOffsetX)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.trailing, scrollBarWidth)
@@ -171,12 +174,10 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 refreshId: refreshUI,
                 resolvedOps: controller?.resolvedOps ?? [],
                 clearOps: { [weak controller] in controller?.resolvedOps.removeAll() },
-                onScrollChanged: { offsetY, offsetX in
-                    scrollOffsetX = -offsetX
-                },
                 onVisibleSizeChanged: { size in
                     contentVisibleSize = size
                 },
+                headerSync: headerSync,
                 extraBackgroundRows: calculateExtraBackgroundRows(),
                 onMouseDown: { row, _ in
                     handleMouseDown(row: row)
