@@ -121,9 +121,9 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
         let bgLeading: CGFloat = contentPadding ? scrollBarWidth + 6 : 0
         let bgTrailing: CGFloat = contentPadding ? scrollBarWidth + 2 : 0
         let bgCornerRadius: CGFloat = contentPadding ? cornerRadius : 0
-        // 内容比背景条再多缩 3pt，避开右键描边(选中叠加时描边在 bgLeading+3 处)
-        let contentLeading: CGFloat = contentPadding ? bgLeading + 3 : 0
-        let contentTrailing: CGFloat = contentPadding ? bgTrailing + 3 : 0
+        // 内容比背景条再多缩 6pt，避开右键描边并留出呼吸空间
+        let contentLeading: CGFloat = contentPadding ? bgLeading + 6 : 0
+        let contentTrailing: CGFloat = contentPadding ? bgTrailing + 6 : 0
 
         // 文字内容（背景行传 nil 时不渲染文字）
         let textContent = HStack(spacing: 1) {
