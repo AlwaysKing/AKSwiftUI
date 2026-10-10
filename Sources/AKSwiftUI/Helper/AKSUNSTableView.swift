@@ -108,7 +108,8 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
         bgColor: NSColor,
         splitColor: NSColor,
         splitline: Bool,
-        splitlineColor: NSColor
+        splitlineColor: NSColor,
+        contentPadding: Bool
     ) {
         leadingPadding = scrollBarWidth + 3
         trailingPadding = 3
@@ -116,6 +117,10 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
         let isLight = row % 2 != 0
         let selColor = Color(nsColor: selectionColor)
         let cornerRadius = AKSUAppearance.cornerRadius
+        // contentPadding: true=斑马纹/选中为内缩圆角条，内容同内缩；false=背景全行铺满直角
+        let bgLeading: CGFloat = contentPadding ? scrollBarWidth + 6 : 0
+        let bgTrailing: CGFloat = contentPadding ? scrollBarWidth + 2 : 0
+        let bgCornerRadius: CGFloat = contentPadding ? cornerRadius : 0
 
         // 文字内容（背景行传 nil 时不渲染文字）
         let textContent = HStack(spacing: 1) {
@@ -134,15 +139,18 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // 首尾强制内边距，保证内容在斑马纹/选中背景条内
+        .padding(.leading, bgLeading)
+        .padding(.trailing, bgTrailing)
 
         // 分层：文字 → 选中背景 → 斑马纹背景
         let content = textContent
             .overlay(alignment: .leading) {
                 if isRightSelected {
-                    RoundedRectangle(cornerRadius: cornerRadius)
+                    RoundedRectangle(cornerRadius: bgCornerRadius)
                         .stroke(isSelected ? .aksuWhite : selColor, lineWidth: 1.5)
-                        .padding(.leading, isSelected ? scrollBarWidth + 9 : scrollBarWidth + 6)
-                        .padding(.trailing, isSelected ? scrollBarWidth + 5 : scrollBarWidth + 2)
+                        .padding(.leading, isSelected ? bgLeading + 3 : bgLeading)
+                        .padding(.trailing, isSelected ? bgTrailing + 3 : bgTrailing)
                         .padding(.vertical, isSelected ? 3 : 2)
                 }
             }
@@ -152,54 +160,54 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
                     if !multSelection {
                         // 纯单选模式
                         ZStack {
-                            RoundedRectangle(cornerRadius: cornerRadius)
+                            RoundedRectangle(cornerRadius: bgCornerRadius)
                                 .fill(selColor)
-                                .padding(.leading, scrollBarWidth + 6)
-                                .padding(.trailing, scrollBarWidth + 2)
+                                .padding(.leading, bgLeading)
+                                .padding(.trailing, bgTrailing)
                         }
                     } else if selectionFirst && selectionLast {
                         // 多选模式但只选中了一行（first == last）
                         ZStack {
-                            RoundedRectangle(cornerRadius: cornerRadius)
+                            RoundedRectangle(cornerRadius: bgCornerRadius)
                                 .fill(selColor)
-                                .padding(.leading, scrollBarWidth + 6)
-                                .padding(.trailing, scrollBarWidth + 2)
+                                .padding(.leading, bgLeading)
+                                .padding(.trailing, bgTrailing)
                         }
                     } else if selectionFirst && !selectionLast {
                         ZStack {
-                            RoundedRectangle(cornerRadius: cornerRadius)
+                            RoundedRectangle(cornerRadius: bgCornerRadius)
                                 .fill(selColor)
-                                .padding(.leading, scrollBarWidth + 6)
-                                .padding(.trailing, scrollBarWidth + 2)
+                                .padding(.leading, bgLeading)
+                                .padding(.trailing, bgTrailing)
                             VStack {
                                 Spacer()
                                 Rectangle()
                                     .fill(selColor)
                                     .frame(height: 7)
-                                    .padding(.leading, scrollBarWidth + 6)
-                                    .padding(.trailing, scrollBarWidth + 2)
+                                    .padding(.leading, bgLeading)
+                                    .padding(.trailing, bgTrailing)
                             }
                         }
                     } else if selectionLast && !selectionFirst {
                         ZStack {
-                            RoundedRectangle(cornerRadius: cornerRadius)
+                            RoundedRectangle(cornerRadius: bgCornerRadius)
                                 .fill(selColor)
-                                .padding(.leading, scrollBarWidth + 6)
-                                .padding(.trailing, scrollBarWidth + 2)
+                                .padding(.leading, bgLeading)
+                                .padding(.trailing, bgTrailing)
                             VStack {
                                 Rectangle()
                                     .fill(selColor)
                                     .frame(height: 7)
-                                    .padding(.leading, scrollBarWidth + 6)
-                                    .padding(.trailing, scrollBarWidth + 2)
+                                    .padding(.leading, bgLeading)
+                                    .padding(.trailing, bgTrailing)
                                 Spacer()
                             }
                         }
                     } else {
                         Rectangle()
                             .fill(selColor)
-                            .padding(.leading, scrollBarWidth + 6)
-                            .padding(.trailing, scrollBarWidth + 2)
+                            .padding(.leading, bgLeading)
+                            .padding(.trailing, bgTrailing)
                     }
                 }
             }
@@ -207,7 +215,7 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
             .background {
                 VStack(spacing: 0) {
                     if isLight {
-                        RoundedRectangle(cornerRadius: cornerRadius)
+                        RoundedRectangle(cornerRadius: bgCornerRadius)
                             .fill(Color(nsColor: splitColor))
                     } else {
                         Rectangle().fill(Color(nsColor: bgColor))
@@ -218,8 +226,8 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
                             .frame(height: 1)
                     }
                 }
-                .padding(.leading, scrollBarWidth + 6)
-                .padding(.trailing, scrollBarWidth + 2)
+                .padding(.leading, bgLeading)
+                .padding(.trailing, bgTrailing)
             }
 
         hostingView.rootView = AnyView(content)
@@ -390,7 +398,8 @@ class AKSUNSTableViewCoordinator<Value: Identifiable & Equatable>: NSObject, NST
                 bgColor: parent.contentBgColor.nsColor,
                 splitColor: parent.splitColor.nsColor,
                 splitline: parent.splitline,
-                splitlineColor: parent.splitlineColor.nsColor
+                splitlineColor: parent.splitlineColor.nsColor,
+                contentPadding: parent.contentPadding
             )
         } else {
             // 背景行
@@ -414,7 +423,8 @@ class AKSUNSTableViewCoordinator<Value: Identifiable & Equatable>: NSObject, NST
                 bgColor: isLight ? parent.splitColor.nsColor : parent.contentBgColor.nsColor,
                 splitColor: parent.splitColor.nsColor,
                 splitline: parent.splitline,
-                splitlineColor: parent.splitlineColor.nsColor
+                splitlineColor: parent.splitlineColor.nsColor,
+                contentPadding: parent.contentPadding
             )
         }
 
@@ -444,6 +454,7 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
     let splitColor: Color
     let splitlineColor: Color
     let splitline: Bool
+    let contentPadding: Bool
     let multSelection: Bool
     let selection: (([Value]) -> Void)?
     let rightClick: ((Value, String, NSEvent?) -> Void)?

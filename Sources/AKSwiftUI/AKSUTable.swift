@@ -38,6 +38,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     let headerDividerColor: Color
 
     let splitline: Bool
+    let contentPadding: Bool
     let multSelection: Bool
     let realtimeSelection: Bool
     let selection: (([Value]) -> Void)?
@@ -46,7 +47,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     let getRowHeight: ((Value?) -> CGFloat?)?
     let controller: AKSUTableController<Value>?
 
-    public init(data: Binding<[Value]>, controller: AKSUTableController<Value>? = nil, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, multSelection: Bool = false, realtimeSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil) {
+    public init(data: Binding<[Value]>, controller: AKSUTableController<Value>? = nil, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, contentPadding: Bool = true, multSelection: Bool = false, realtimeSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil) {
         self._data = data
         self.controller = controller
         self._initColumns = columns().map { AKSUTableColumnItem(builder: $0) }
@@ -61,6 +62,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         self.getRowHeight = getRowHeight
         self.splitColor = splitColor
         self.splitline = splitline
+        self.contentPadding = contentPadding
         self.splitlineColor = splitlineColor
         self.headerSplitColor = headerSplitColor
         self.headerDividerColor = headerDividerColor
@@ -114,6 +116,9 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                                 .frame(width: endPinding, height: 1)
                         }
                     }
+                    // contentPadding 开启时表头与行内容保持相同的首尾内边距
+                    .padding(.leading, contentPadding ? scrollBarWidth + 6 : 0)
+                    .padding(.trailing, contentPadding ? scrollBarWidth + 2 : 0)
                     .offset(x: data.count == 0 ? 0 : scrollOffsetX)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -149,6 +154,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 splitColor: splitColor,
                 splitlineColor: splitlineColor,
                 splitline: splitline,
+                contentPadding: contentPadding,
                 multSelection: multSelection,
                 selection: nil,
                 rightClick: nil,
@@ -380,10 +386,15 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
     // MARK: - Column Width Management
 
+    /// contentPadding 开启时内容区首尾额外占用的水平空间
+    var contentInset: CGFloat {
+        contentPadding ? scrollBarWidth * 2 + 8 : 0
+    }
+
     func initWidth() {
         if tableSize == CGSize.zero { return }
 
-        let totalWidth = tableSize.width - scrollBarWidth - CGFloat(max(columnStorage.columns.count - 1, 0))
+        let totalWidth = tableSize.width - scrollBarWidth - contentInset - CGFloat(max(columnStorage.columns.count - 1, 0))
         let totalCount = columnStorage.columns.count
 
         var distributedWidths = 0.0
@@ -464,7 +475,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
 
     func updateWidth() {
         if tableSize == CGSize.zero { return }
-        let targetWidth = tableSize.width - scrollBarWidth - CGFloat(max(columnStorage.columns.count - 1, 0))
+        let targetWidth = tableSize.width - scrollBarWidth - contentInset - CGFloat(max(columnStorage.columns.count - 1, 0))
         var currentWidth = 0.0
         for item in columnStorage.columns {
             currentWidth += item.width
@@ -516,7 +527,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             currentWidth += item.width
         }
         let spacing = CGFloat(max(columnStorage.columns.count - 1, 0))
-        endPinding = tableSize.width - scrollBarWidth - spacing - currentWidth
+        endPinding = tableSize.width - scrollBarWidth - contentInset - spacing - currentWidth
     }
 
     // MARK: - Helpers
@@ -932,12 +943,12 @@ struct AKSUTablePreviewsView: View {
             {
                 AKSUTableColumn("名字", minWidth: 200, maxWidth: 300) {
                     HStack {
-                        Text("名字").padding().frame(height: 20)
+                        Text("名字").frame(height: 20)
                         Spacer()
                     }.frame(height: 20)
                 } itemBuilder: { value in
                     HStack {
-                        Text(value.givenName).padding(.leading)
+                        Text(value.givenName)
                         Spacer()
                     }
                 }
