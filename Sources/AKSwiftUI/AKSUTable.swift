@@ -38,6 +38,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     let headerDividerColor: Color
 
     let splitline: Bool
+    let columnSplitline: Bool
     let contentPadding: Bool
     let multSelection: Bool
     let realtimeSelection: Bool
@@ -47,7 +48,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
     let getRowHeight: ((Value?) -> CGFloat?)?
     let controller: AKSUTableController<Value>?
 
-    public init(data: Binding<[Value]>, controller: AKSUTableController<Value>? = nil, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, contentPadding: Bool = true, multSelection: Bool = false, realtimeSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil) {
+    public init(data: Binding<[Value]>, controller: AKSUTableController<Value>? = nil, defaultRowHeight: CGFloat? = nil, headerBgColor: Color = .aksuTextBackground, headerSplitColor: Color = .aksuDivider, headerDividerColor: Color = .aksuDivider, contentBgColor: Color = .aksuTextBackground, selectionColor: Color = .aksuPrimary, splitColor: Color = .aksuGrayMask, splitline: Bool = false, splitlineColor: Color = .aksuGrayMask, columnSplitline: Bool = false, contentPadding: Bool = true, multSelection: Bool = false, realtimeSelection: Bool = false, @AKSUTableColumnBuilder<Value> columns: () -> [AKSUTableColumn<Value>], selection: (([Value]) -> Void)? = nil, rightClick: ((Value, String, NSEvent?) -> Void)? = nil, getRowHeight: ((Value?) -> CGFloat?)? = nil) {
         self._data = data
         self.controller = controller
         self._initColumns = columns().map { AKSUTableColumnItem(builder: $0) }
@@ -62,6 +63,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
         self.getRowHeight = getRowHeight
         self.splitColor = splitColor
         self.splitline = splitline
+        self.columnSplitline = columnSplitline
         self.contentPadding = contentPadding
         self.splitlineColor = splitlineColor
         self.headerSplitColor = headerSplitColor
@@ -147,6 +149,9 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 rowStorage: rowStorage,
                 endPadding: endPinding,
                 scrollBarWidth: scrollBarWidth,
+                // 单列的确定宽度：不用 clipView.bounds（首次更新时 layout 未跑为 0，
+                // 会走 totalWidth 回退导致 cell 偏窄、内容溢出居中左移与表头错位）
+                contentWidth: tableSize.width - scrollBarWidth,
                 backgroundColorIndex: rowStorage.rows.count,
                 headerBgColor: headerBgColor,
                 contentBgColor: contentBgColor,
@@ -154,6 +159,7 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 splitColor: splitColor,
                 splitlineColor: splitlineColor,
                 splitline: splitline,
+                columnSplitline: columnSplitline,
                 contentPadding: contentPadding,
                 multSelection: multSelection,
                 selection: nil,
@@ -870,6 +876,9 @@ struct AKSUTablePreviewsView: View {
     @State var color: Color = .aksuTextBackground
     @State var appending: Bool = false
     @State var paddingOn: Bool = true
+    @State var zebraOn: Bool = true
+    @State var splitlineOn: Bool = true
+    @State var columnSplitOn: Bool = true
     @StateObject private var controller = AKSUTableController<Person>()
 
     func add() {
@@ -948,9 +957,18 @@ struct AKSUTablePreviewsView: View {
 
             Text("    contentPadding")
             AKSUToggle(toggle: $paddingOn)
+
+            Text("    斑马线")
+            AKSUToggle(toggle: $zebraOn)
+
+            Text("    底线")
+            AKSUToggle(toggle: $splitlineOn)
+
+            Text("    分割线")
+            AKSUToggle(toggle: $columnSplitOn)
         }
 
-        AKSUTable(data: $people, controller: controller, defaultRowHeight: 60, contentBgColor: color, contentPadding: paddingOn, multSelection: true)
+        AKSUTable(data: $people, controller: controller, defaultRowHeight: 60, contentBgColor: color, splitColor: zebraOn ? Color.aksuGrayMask : color, splitline: splitlineOn, columnSplitline: columnSplitOn, contentPadding: paddingOn, multSelection: true)
             {
                 AKSUTableColumn("名字", minWidth: 200, maxWidth: 300) {
                     HStack {

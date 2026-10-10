@@ -109,6 +109,7 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
         splitColor: NSColor,
         splitline: Bool,
         splitlineColor: NSColor,
+        columnSplitline: Bool,
         contentPadding: Bool
     ) {
         leadingPadding = scrollBarWidth + 3
@@ -125,15 +126,27 @@ class AKSUTableViewCell<Value: Identifiable>: NSTableCellView {
         let contentLeading: CGFloat = contentPadding ? bgLeading + 6 : 0
         let contentTrailing: CGFloat = contentPadding ? bgTrailing + 6 : 0
 
-        // 文字内容（背景行传 nil 时不渲染文字）
+        // 文字内容（背景行传 nil 时不渲染文字，但保留列结构与分割线）
         let textContent = HStack(spacing: 1) {
-            if let item = item {
-                ForEach(columns) { header in
-                    HStack {
+            ForEach(columns) { header in
+                HStack {
+                    if let item = item {
                         header.itemBuilder(item.value).first
                     }
-                    .frame(width: header.width)
-                    .foregroundColor(isSelected ? .aksuWhite : nil)
+                }
+                .frame(width: header.width)
+                .frame(maxHeight: .infinity)
+                .foregroundColor(isSelected ? .aksuWhite : nil)
+                // 分割线：列与列之间的竖线，把 cell 一个一个隔开（末列不画、选中行不画）
+                // 颜色复用 splitlineColor 与底线同色；列撑满行高使竖线顶天立地；
+                // offset 移入 1pt 间距内与表头分割线对齐
+                .overlay(alignment: .trailing) {
+                    if columnSplitline, !isSelected, header.id != columns.last?.id {
+                        Rectangle()
+                            .fill(Color(nsColor: splitlineColor))
+                            .frame(width: 1)
+                            .offset(x: 1)
+                    }
                 }
             }
             if endPadding > 0 {
@@ -402,6 +415,7 @@ class AKSUNSTableViewCoordinator<Value: Identifiable & Equatable>: NSObject, NST
                 splitColor: parent.splitColor.nsColor,
                 splitline: parent.splitline,
                 splitlineColor: parent.splitlineColor.nsColor,
+                columnSplitline: parent.columnSplitline,
                 contentPadding: parent.contentPadding
             )
         } else {
@@ -427,6 +441,7 @@ class AKSUNSTableViewCoordinator<Value: Identifiable & Equatable>: NSObject, NST
                 splitColor: parent.splitColor.nsColor,
                 splitline: parent.splitline,
                 splitlineColor: parent.splitlineColor.nsColor,
+                columnSplitline: parent.columnSplitline,
                 contentPadding: parent.contentPadding
             )
         }
@@ -450,6 +465,7 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
 
     let endPadding: CGFloat
     let scrollBarWidth: CGFloat
+    let contentWidth: CGFloat
     let backgroundColorIndex: Int
     let headerBgColor: Color
     let contentBgColor: Color
@@ -457,6 +473,7 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
     let splitColor: Color
     let splitlineColor: Color
     let splitline: Bool
+    let columnSplitline: Bool
     let contentPadding: Bool
     let multSelection: Bool
     let selection: (([Value]) -> Void)?
@@ -647,11 +664,12 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
 
         // 同步单列宽度：endPadding >= 0 表示内容不需要水平滚动，精确填满可见区域
         let totalWidth = calculateTotalContentWidth()
-        let clipWidth = scrollView.contentView.bounds.width
         let columnWidth: CGFloat
         if endPadding >= 0 {
-            // 内容能放下，精确填满可见区域（clipWidth 为 0 时用 totalWidth 回退）
-            columnWidth = clipWidth > 0 ? clipWidth : totalWidth
+            // 内容能放下，精确填满可见区域。宽度用外部传入的 contentWidth（tableSize - scrollBarWidth），
+            // 不用 clipView.bounds.width：首次更新时 layout 未执行其为 0，会走 totalWidth 回退，
+            // 导致 cell 偏窄、SwiftUI HStack 溢出居中左移与表头错位
+            columnWidth = contentWidth > 0 ? contentWidth : totalWidth
         } else {
             // 列被拖宽导致内容超出，允许水平滚动
             columnWidth = totalWidth
