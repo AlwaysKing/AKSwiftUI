@@ -466,6 +466,7 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
     let endPadding: CGFloat
     let scrollBarWidth: CGFloat
     let contentWidth: CGFloat
+    let contentInset: CGFloat
     let backgroundColorIndex: Int
     let headerBgColor: Color
     let contentBgColor: Color
@@ -539,7 +540,8 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
         }
 
         // 只用一个 NSTableColumn 横跨整行，cell 内部用 HStack 渲染所有 SwiftUI 列
-        let totalWidth = calculateTotalContentWidth()
+        // （初始宽度可能溢出，updateNSView 会按 endPadding/contentWidth 精确同步）
+        let totalWidth = calculateTotalContentWidth() + contentInset
         let singleColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("AKSUTableSingleColumn"))
         singleColumn.width = totalWidth
         singleColumn.resizingMask = .autoresizingMask
@@ -671,8 +673,10 @@ struct AKSUNSTableView<Value: Identifiable & Equatable>: NSViewRepresentable {
             // 导致 cell 偏窄、SwiftUI HStack 溢出居中左移与表头错位
             columnWidth = contentWidth > 0 ? contentWidth : totalWidth
         } else {
-            // 列被拖宽导致内容超出，允许水平滚动
-            columnWidth = totalWidth
+            // 列被拖宽导致内容超出，允许水平滚动。
+            // 宽度须补上 contentInset（首尾内缩），否则内容 HStack 溢出被居中，
+            // 整体左移 inset/2，第一列的 contentPadding 视觉失效且与表头错位
+            columnWidth = totalWidth + contentInset
         }
         if tableView.tableColumns.count > 0 {
             let tc = tableView.tableColumns[0]

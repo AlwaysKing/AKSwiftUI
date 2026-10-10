@@ -152,6 +152,8 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
                 // 单列的确定宽度：不用 clipView.bounds（首次更新时 layout 未跑为 0，
                 // 会走 totalWidth 回退导致 cell 偏窄、内容溢出居中左移与表头错位）
                 contentWidth: tableSize.width - scrollBarWidth,
+                // contentPadding 首尾内缩总量，横向滚动时单列宽度需补上，否则内容溢出居中左移
+                contentInset: contentInset(contentPadding: contentPadding),
                 backgroundColorIndex: rowStorage.rows.count,
                 headerBgColor: headerBgColor,
                 contentBgColor: contentBgColor,
