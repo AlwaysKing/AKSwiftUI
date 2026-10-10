@@ -238,6 +238,10 @@ public struct AKSUTable<Value: Identifiable & Equatable>: View {
             scrollBarWidth = 6
             self.columnStorage.reset(_initColumns)
             initWidth()
+            // 视图创建时 data 已非空的话 onChange 不会触发，这里补一次初始填充
+            if rowStorage.rows.isEmpty && !data.isEmpty {
+                rowStorage.rows = data.map { AKSUTableRowItem(value: $0, selected: false, rightSelected: false) }
+            }
         }
         .clipped()
     }
