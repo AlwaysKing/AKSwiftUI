@@ -75,6 +75,7 @@ public struct AKSUDropdown<K: Hashable>: View {
             .frame(minHeight: 18)
             .padding([.top, .bottom], noPadding ? 0 : 10)
             .frame(height: self.height)
+            .contentShape(Rectangle())
             .background(self.hoveringContent && self.style == .selectBtn ? .black.opacity(0.1) : .clear)
             .onHover {
                 self.hoveringContent = $0
@@ -120,6 +121,7 @@ public struct AKSUDropdown<K: Hashable>: View {
                             }
                     }
                 }
+                .contentShape(Rectangle())
                 .onHover {
                     self.hoveringToggle = $0
                 }
@@ -129,6 +131,7 @@ public struct AKSUDropdown<K: Hashable>: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
         .background(!self.isEnabled ? .aksuGrayMask : .clear)
         .background(self.hoveringAll && self.style != .selectBtn ? .black.opacity(0.1) : .clear)
         .background(self.bgColor)

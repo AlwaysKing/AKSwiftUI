@@ -26,6 +26,8 @@ public struct AKSUInputGroup: View {
     var alignment: TextAlignment
     // 回车事件触发
     public var submit: (() -> Void)?
+    // 是否仅禁用输入区域
+    public var inputDisabled: Bool
     // 是否获得焦点
     @FocusState private var focused: Bool
     // clear 按钮 hover 状态
@@ -40,12 +42,13 @@ public struct AKSUInputGroup: View {
     var leadingView: [AnyView] = []
     var trailingView: [AnyView] = []
 
-    public init(label: String, alignment: TextAlignment = .leading, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, actionColor: Color = .aksuPrimary, submit: (() -> Void)? = nil) {
+    public init(label: String, alignment: TextAlignment = .leading, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, actionColor: Color = .aksuPrimary, submit: (() -> Void)? = nil, inputDisabled: Bool = false) {
         self.label = label
         self._text = text
         self.password = password
         self.actionColor = actionColor
         self.submit = submit
+        self.inputDisabled = inputDisabled
         self.clearButton = clearButton
         self.passwordButton = passwordButton
         self.alignment = alignment
@@ -148,6 +151,8 @@ public struct AKSUInputGroup: View {
                             }
                         }
                     }
+                    .disabled(inputDisabled)
+                    .opacity(inputDisabled ? 0.55 : 1)
 
                     if showPasswordButton() {
                         ZStack {
@@ -254,7 +259,14 @@ public struct AKSUInputGroup: View {
                     }
                 )
                 .onTapGesture {
-                    focused = true
+                    if !inputDisabled {
+                        focused = true
+                    }
+                }
+                .onChange(of: inputDisabled) { disabled in
+                    if disabled {
+                        focused = false
+                    }
                 }
             }
             .overlay {
@@ -280,6 +292,9 @@ public struct AKSUInputGroup: View {
     }
 
     func showPasswordButton() -> Bool {
+        if inputDisabled {
+            return false
+        }
         if !password {
             return false
         }
@@ -294,6 +309,9 @@ public struct AKSUInputGroup: View {
     }
 
     func showClearButton() -> Bool {
+        if inputDisabled {
+            return false
+        }
         if clearButton == .none {
             return false
         } else if clearButton == .show {
