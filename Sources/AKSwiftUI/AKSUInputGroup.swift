@@ -28,6 +28,8 @@ public struct AKSUInputGroup: View {
     public var submit: (() -> Void)?
     // 是否仅禁用输入区域
     public var inputDisabled: Bool
+    // 输入区域禁用时的背景色
+    public var inputDisabledBackground: Color
     // 是否获得焦点
     @FocusState private var focused: Bool
     // clear 按钮 hover 状态
@@ -42,13 +44,14 @@ public struct AKSUInputGroup: View {
     var leadingView: [AnyView] = []
     var trailingView: [AnyView] = []
 
-    public init(label: String, alignment: TextAlignment = .leading, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, actionColor: Color = .aksuPrimary, submit: (() -> Void)? = nil, inputDisabled: Bool = false) {
+    public init(label: String, alignment: TextAlignment = .leading, clearButton: AKSUInputButtonShowMode = .auto, password: Bool = false, passwordButton: AKSUInputButtonShowMode = .auto, text: Binding<String>, actionColor: Color = .aksuPrimary, submit: (() -> Void)? = nil, inputDisabled: Bool = false, inputDisabledBackground: Color = .clear) {
         self.label = label
         self._text = text
         self.password = password
         self.actionColor = actionColor
         self.submit = submit
         self.inputDisabled = inputDisabled
+        self.inputDisabledBackground = inputDisabledBackground
         self.clearButton = clearButton
         self.passwordButton = passwordButton
         self.alignment = alignment
@@ -233,6 +236,7 @@ public struct AKSUInputGroup: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .background(inputDisabled ? inputDisabledBackground : .clear)
                 .background(
                     // 边框
                     ZStack {
@@ -280,6 +284,7 @@ public struct AKSUInputGroup: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .clipShape(RoundedRectangle(cornerRadius: AKSUAppearance.cornerRadius))
     }
 
     public func addLeading<V: View>(@ViewBuilder builder: () -> V) -> Self {
