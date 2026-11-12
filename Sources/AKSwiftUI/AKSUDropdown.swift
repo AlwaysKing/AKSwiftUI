@@ -25,6 +25,7 @@ public struct AKSUDropdown<K: Hashable>: View {
     var height: CGFloat?
     var dropMaxHeight: CGFloat?
     var hiddenTriangle: Bool
+    var triangleLeadingPadding: CGFloat
     var content: [K: AKSUDropdownItem<K>] = [:]
     var sort: [K] = []
     let menu = AKSUPopWnd()
@@ -44,7 +45,7 @@ public struct AKSUDropdown<K: Hashable>: View {
     @State var dropBtnSize: CGSize = CGSize.zero
     @State var mouseEvent: NSEvent? = nil
 
-    public init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, dropTextColor: Color = .aksuText, dropTextHoverColor: Color = .aksuWhite, dropBgColor:Color = .aksuTextBackground, height: CGFloat? = nil, dropHeight: CGFloat? = nil, noPadding: Bool = false, hiddenTriangle: Bool = false, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
+    public init(style: AKSUDropdownStyle = .select, selected: Binding<K>, plain: Bool = false, color: Color = .aksuWhite, bgColor: Color = .aksuPrimary, dropTextColor: Color = .aksuText, dropTextHoverColor: Color = .aksuWhite, dropBgColor:Color = .aksuTextBackground, height: CGFloat? = nil, dropHeight: CGFloat? = nil, noPadding: Bool = false, hiddenTriangle: Bool = false, triangleLeadingPadding: CGFloat = 10, @AKSUDropdownBuilder<K> content: () -> [AKSUDropdownItem<K>]) {
         self._selected = selected
         for item in content() {
             self.content[item.index] = AKSUDropdownItem(index: item.index, height: item.height, noPadding: item.noPadding ?? noPadding, textColor: dropTextColor, hoverTextColor: dropTextHoverColor, hoverBgColor: bgColor, content: item.content, action: item.action)
@@ -58,6 +59,7 @@ public struct AKSUDropdown<K: Hashable>: View {
         self.style = style
         self.noPadding = noPadding
         self.hiddenTriangle = hiddenTriangle
+        self.triangleLeadingPadding = triangleLeadingPadding
         self.dropBgColor = dropBgColor
     }
 
@@ -108,7 +110,7 @@ public struct AKSUDropdown<K: Hashable>: View {
                         .padding(.trailing, 10)
                 }
                 .frame(height: self.selectedRealHeight)
-                .padding([.leading, .top, .bottom], 10)
+                .padding([.leading, .top, .bottom], triangleLeadingPadding)
                 .background(self.hoveringToggle && self.style == .selectBtn ? .black.opacity(0.1) : .clear)
                 .background {
                     GeometryReader { g in

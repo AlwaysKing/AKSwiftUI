@@ -229,8 +229,10 @@ public struct AKSUInputGroup: View {
                                 }
                             }
                         }
+                        .layoutPriority(1)
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .background(
                     // 边框
                     ZStack {
@@ -277,6 +279,7 @@ public struct AKSUInputGroup: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity)
     }
 
     public func addLeading<V: View>(@ViewBuilder builder: () -> V) -> Self {
